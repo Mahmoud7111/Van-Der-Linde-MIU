@@ -1,0 +1,29 @@
+<!-- CURRENCY SWITCHER COMPONENT -->
+<!-- Dropdown to switch between USD, EUR, GBP -->
+
+<div class="currency-switcher">
+    <!-- Currency Button -->
+    <button class="currency-btn" id="currency-btn">
+        <span class="flag" id="current-flag">🇺🇸</span>
+        <span class="currency-code" id="current-currency">USD</span>
+        <span class="arrow">▼</span>
+    </button>
+
+    <!-- Currency Dropdown (hidden by default) -->
+    <ul class="currency-dropdown" id="currency-dropdown" style="display: none;">
+        <li data-currency="USD" data-rate="1">
+            <span class="flag">🇺🇸</span>
+            <span class="currency-name">USD ($)</span>
+        </li>
+        <li data-currency="EUR" data-rate="0.85">
+            <span class="flag">🇪🇺</span>
+            <span class="currency-name">EUR (€)</span>
+        </li>
+        <li data-currency="GBP" data-rate="0.73">
+            <span class="flag">🇬🇧</span>
+            <span class="currency-name">GBP (£)</span>
+        </li>
+    </ul>
+</div>
+
+<!-- Note: JavaScript will handle currency conversion and save selection to localStorage -->

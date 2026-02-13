@@ -2,3 +2,19 @@
 <!-- This is a template - actual toasts are created dynamically by toast.js -->
 
 <!--A Toast Notification is a temporary, non-intrusive message that appears on the screen to inform users of actions or events-->
+<!-- Popup notification for success/error messages -->
+
+<div class="toast" id="toast" style="display: none;">
+    <div class="toast-content">
+        <!-- Icon (changes based on success/error) -->
+        <span class="toast-icon" id="toast-icon">✓</span>
+        
+        <!-- Message Text -->
+        <span class="toast-message" id="toast-message">Action completed successfully!</span>
+        
+        <!-- Close Button -->
+        <button class="toast-close" id="toast-close" title="Close">×</button>
+    </div>
+</div>
+
+<!-- Note: JavaScript will show this toast with custom messages like "Added to cart!" -->
