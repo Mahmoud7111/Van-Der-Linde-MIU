@@ -9,17 +9,22 @@
     </button>
 
     <!-- Language Dropdown (hidden by default) -->
-    <ul class="language-dropdown" id="language-dropdown" style="display: none;">
-        <li data-lang="en">
+    <ul class="language-dropdown" id="language-dropdown" style="display: none;" role="listbox">
+        <li data-lang="en" role="option">
             <span class="language-name">English</span>
         </li>
-        <li data-lang="ar">
+        <li data-lang="ar" role="option">
             <span class="language-name">العربية</span>
-        </li>
-        <li data-lang="fr">
-            <span class="language-name">Français</span>
         </li>
     </ul>
 </div>
 
 <!-- Note: JavaScript will translate page content using data-translate attributes -->
+<div class="language-selector">
+    <label id="language-label" for="language-select">Select Language:</label>
+    <select id="language-select" class="language-dropdown" required>
+        <option value="en" data-lang="en">🇺🇸 English</option>
+        <option value="ar" data-lang="ar">🇸🇦 العربية</option>
+    </select>
+</div>
+

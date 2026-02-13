@@ -5,52 +5,43 @@
     <nav class="nav">
         <div class="nav-container">
             <!-- Logo -->
-            <a href="HomePage.html" class="nav-logo">
+            <a href="../HomePage.html" class="nav-logo">
                 <span class="logo-text">Van der Linde</span>
             </a>
 
             <!-- Desktop Navigation Links -->
             <ul class="nav-menu">
-                <li class="nav-item"><a href="HomePage.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="pages/shop.html" class="nav-link">Shop</a></li>
-                <li class="nav-item"><a href="pages/collections-gallery.html" class="nav-link">Collections</a></li>
-                <li class="nav-item"><a href="pages/about.html" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="pages/contact.html" class="nav-link">Contact</a></li>
+                <li class="nav-item"><a href="../HomePage.html" class="nav-link">HOME</a></li>
+                <li class="nav-item"><a href="../pages/shop.html" class="nav-link">SHOP ALL</a></li>
+                <li class="nav-item"><a href="../pages/collections-gallery.html" class="nav-link">COLLECTIONS</a></li>
+                <li class="nav-item"><a href="../pages/configurator.html" class="nav-link">CONFIGURE</a></li>
+                <li class="nav-item"><a href="../pages/gifting.html" class="nav-link">GIFTING</a></li>
+                <li class="nav-item"><a href="../pages/watch-quiz.html" class="nav-link">QUIZ</a></li>
+                <li class="nav-item"><a href="../pages/about.html" class="nav-link">ABOUT</a></li>
             </ul>
 
             <!-- Right side icons and dropdowns -->
-            <div class="nav-actions">
-                <!-- Currency Switcher -->
-                <div class="currency-switcher">
-                    <button class="currency-btn" id="currency-btn">
-                        <span class="currency-code">USD</span>
-                        <span class="arrow">▼</span>
-                    </button>
-                    <ul class="currency-dropdown" id="currency-dropdown">
-                        <li data-currency="USD">🇺🇸 USD ($)</li>
-                        <li data-currency="EUR">🇪🇺 EUR (€)</li>
-                        <li data-currency="GBP">🇬🇧 GBP (£)</li>
-                    </ul>
-                </div>
+            <div id ="currency-switcher-placeholder"></div>
 
-                <!-- Language Selector -->
-                <div class="language-selector">
-                    <button class="language-btn" id="language-btn">
-                        <span class="language-code">EN</span>
-                        <span class="arrow">▼</span>
-                    </button>
-                    <ul class="language-dropdown" id="language-dropdown">
-                        <li data-lang="en">English</li>
-                        <li data-lang="ar">العربية</li>
-                        <li data-lang="fr">Français</li>
-                    </ul>
-                </div>
+            <br>
 
+            <!-- Language Selector -->
+            <div id="language-selector-placeholder"></div>
+
+
+            <!--Dark Mode-->
+            <div id="dark-mode-toggle-placeholder"></div>
+
+
+
+            <br>
                 <!-- Wishlist Icon -->
-                <a href="pages/wishlist.html" class="nav-icon" title="Wishlist">
+                <a href="../pages/wishlist.html" class="nav-icon" title="Wishlist">
                     <span class="icon">♥</span>
                     <span class="badge" id="wishlist-badge">0</span>
                 </a>
+
+                <br>
 
                 <!-- Shopping Cart Icon -->
                 <button class="nav-icon cart-trigger" id="cart-trigger" title="Shopping Cart">
@@ -58,13 +49,17 @@
                     <span class="badge" id="cart-badge">0</span>
                 </button>
 
+                <br>
+
                 <!-- User Account Icon -->
-                <a href="pages/account.html" class="nav-icon" title="Account">
+                <a href="../pages/account.html" class="nav-icon" title="Account">
                     <span class="icon">👤</span>
                 </a>
             </div>
 
-            <!-- Mobile Menu Button (hamburger icon) -->
+            <br>
+
+            <!-- Mobile Menu Button (hamburger icon) (menu icon (☰) that you see on mobile websites.) -->
             <button class="mobile-menu-toggle" id="mobile-menu-toggle">
                 <span></span>
                 <span></span>
@@ -73,3 +68,4 @@
         </div>
     </nav>
 </header>
+<hr>
