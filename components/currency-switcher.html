@@ -4,26 +4,28 @@
 <div class="currency-switcher">
     <!-- Currency Button -->
     <button class="currency-btn" id="currency-btn">
-        <span class="flag" id="current-flag">🇺🇸</span>
         <span class="currency-code" id="current-currency">USD</span>
         <span class="arrow">▼</span>
     </button>
 
     <!-- Currency Dropdown (hidden by default) -->
-    <ul class="currency-dropdown" id="currency-dropdown" style="display: none;">
-        <li data-currency="USD" data-rate="1">
-            <span class="flag">🇺🇸</span>
-            <span class="currency-name">USD ($)</span>
+    <ul class="currency-dropdown" id="currency-dropdown" style="display: none;" role="listbox">
+        <li data-currency="USD" data-rate="1" role="option">
+            <span class="currency-name">🇺🇸 USD ($)</span>
         </li>
-        <li data-currency="EUR" data-rate="0.85">
-            <span class="flag">🇪🇺</span>
-            <span class="currency-name">EUR (€)</span>
-        </li>
-        <li data-currency="GBP" data-rate="0.73">
-            <span class="flag">🇬🇧</span>
-            <span class="currency-name">GBP (£)</span>
+        <li data-currency="EUR" data-rate="0.85" role="option">
+            <span class="currency-name">🇪🇺 EUR (€)</span>
         </li>
     </ul>
+</div>
+
+<!-- Alternative: Select Dropdown -->
+<div class="currency-switcher-select">
+    <label id="currency-label" for="currency-select">Select Currency:</label>
+    <select id="currency-select" class="currency-dropdown" aria-label="Currency selection dropdown" required>
+        <option value="USD" data-rate="1">🇺🇸 USD ($)</option>
+        <option value="EUR" data-rate="0.85">🇪🇺 EUR (€)</option>
+    </select>
 </div>
 
 <!-- Note: JavaScript will handle currency conversion and save selection to localStorage -->
