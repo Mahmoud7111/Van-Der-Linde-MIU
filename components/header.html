@@ -1,0 +1,75 @@
+<!-- HEADER COMPONENT -->
+<!-- This is the navigation bar that appears on every page -->
+
+<header class="header" id="main-header">
+    <nav class="nav">
+        <div class="nav-container">
+            <!-- Logo -->
+            <a href="HomePage.html" class="nav-logo">
+                <span class="logo-text">Van der Linde</span>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="HomePage.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="pages/shop.html" class="nav-link">Shop</a></li>
+                <li class="nav-item"><a href="pages/collections-gallery.html" class="nav-link">Collections</a></li>
+                <li class="nav-item"><a href="pages/about.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="pages/contact.html" class="nav-link">Contact</a></li>
+            </ul>
+
+            <!-- Right side icons and dropdowns -->
+            <div class="nav-actions">
+                <!-- Currency Switcher -->
+                <div class="currency-switcher">
+                    <button class="currency-btn" id="currency-btn">
+                        <span class="currency-code">USD</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <ul class="currency-dropdown" id="currency-dropdown">
+                        <li data-currency="USD">🇺🇸 USD ($)</li>
+                        <li data-currency="EUR">🇪🇺 EUR (€)</li>
+                        <li data-currency="GBP">🇬🇧 GBP (£)</li>
+                    </ul>
+                </div>
+
+                <!-- Language Selector -->
+                <div class="language-selector">
+                    <button class="language-btn" id="language-btn">
+                        <span class="language-code">EN</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <ul class="language-dropdown" id="language-dropdown">
+                        <li data-lang="en">English</li>
+                        <li data-lang="ar">العربية</li>
+                        <li data-lang="fr">Français</li>
+                    </ul>
+                </div>
+
+                <!-- Wishlist Icon -->
+                <a href="pages/wishlist.html" class="nav-icon" title="Wishlist">
+                    <span class="icon">♥</span>
+                    <span class="badge" id="wishlist-badge">0</span>
+                </a>
+
+                <!-- Shopping Cart Icon -->
+                <button class="nav-icon cart-trigger" id="cart-trigger" title="Shopping Cart">
+                    <span class="icon">🛒</span>
+                    <span class="badge" id="cart-badge">0</span>
+                </button>
+
+                <!-- User Account Icon -->
+                <a href="pages/account.html" class="nav-icon" title="Account">
+                    <span class="icon">👤</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button (hamburger icon) -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+</header>

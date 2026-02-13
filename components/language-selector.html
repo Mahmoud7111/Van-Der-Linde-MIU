@@ -1,0 +1,25 @@
+<!-- LANGUAGE SELECTOR COMPONENT -->
+<!-- Dropdown to switch between English, Arabic, French -->
+
+<div class="language-selector">
+    <!-- Language Button -->
+    <button class="language-btn" id="language-btn">
+        <span class="language-code" id="current-language">EN</span>
+        <span class="arrow">▼</span>
+    </button>
+
+    <!-- Language Dropdown (hidden by default) -->
+    <ul class="language-dropdown" id="language-dropdown" style="display: none;">
+        <li data-lang="en">
+            <span class="language-name">English</span>
+        </li>
+        <li data-lang="ar">
+            <span class="language-name">العربية</span>
+        </li>
+        <li data-lang="fr">
+            <span class="language-name">Français</span>
+        </li>
+    </ul>
+</div>
+
+<!-- Note: JavaScript will translate page content using data-translate attributes -->
