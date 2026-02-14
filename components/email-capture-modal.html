@@ -1,0 +1,34 @@
+<!-- EMAIL CAPTURE MODAL COMPONENT -->
+<!-- Newsletter popup (appears after 5 seconds) -->
+
+<div class="email-modal" id="email-modal" style="display: none;">
+    <!-- Modal Overlay (dark background) -->
+    <div class="email-modal-overlay"></div>
+
+    <!-- Modal Content -->
+    <div class="email-modal-content">
+        <!-- Close Button -->
+        <button class="email-modal-close" id="email-modal-close" title="Close">×</button>
+
+        <!-- Modal Header -->
+        <h2 class="email-modal-title">Get 10% Off Your First Order</h2>
+        <p class="email-modal-subtitle">Subscribe to our newsletter and receive exclusive offers</p>
+
+        <!-- Email Form -->
+        <form class="email-modal-form" id="email-capture-form">
+            <input 
+                type="email" 
+                placeholder="Enter your email" 
+                class="email-modal-input" 
+                id="email-input"
+                required
+            >
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+
+        <!-- Decline Button -->
+        <button class="email-modal-decline" id="email-modal-decline">No thanks</button>
+    </div>
+</div>
+
+<!-- Note: JavaScript will show this modal after 5 seconds and save response to localStorage -->
