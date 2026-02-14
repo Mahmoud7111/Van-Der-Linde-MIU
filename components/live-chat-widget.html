@@ -1,36 +1,36 @@
 <!-- LIVE CHAT WIDGET COMPONENT -->
 <!-- Floating chat button in bottom-right corner -->
 
-<div class="live-chat-widget" id="live-chat-widget">
+<div class="live-chat-widget" id="live-chat-widget" role="region" aria-label="Live chat widget">
     <!-- Chat Toggle Button (always visible) -->
-    <button class="chat-toggle" id="chat-toggle" title="Chat with us">
-        <span class="chat-icon">💬</span>
+    <button class="chat-toggle" id="chat-toggle" title="Chat with us" aria-expanded="false" aria-controls="chat-window">
+        <span class="chat-icon" aria-hidden="true">💬</span>
     </button>
 
     <!-- Chat Window (hidden by default, opens when button clicked) -->
-    <div class="chat-window" id="chat-window" style="display: none;">
+    <div class="chat-window" id="chat-window" style="display: none;" role="dialog" aria-labelledby="chat-header-title">
         <!-- Chat Header -->
         <div class="chat-header">
-            <h3>Van der Linde Support</h3>
+            <h3 id="chat-header-title">Van der Linde Support</h3>
             <div class="chat-actions">
-                <button class="chat-minimize" id="chat-minimize" title="Minimize">−</button>
                 <button class="chat-close" id="chat-close-btn" title="Close">×</button>
             </div>
         </div>
 
         <!-- Chat Messages -->
-        <div class="chat-messages" id="chat-messages">
+        <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
             <!-- Welcome Message -->
-            <div class="chat-message bot">
+            <div class="chat-message bot" role="article">
                 <p>Welcome to Van der Linde! How can we assist you today?</p>
                 <span class="chat-time">Just now</span>
             </div>
         </div>
 
         <!-- Chat Input Form -->
-        <form class="chat-input-form" id="chat-form">
-            <input type="text" placeholder="Type your message..." class="chat-input" id="chat-input" required>
-            <button type="submit" class="chat-send" title="Send">
+        <form class="chat-input-form" id="chat-form" role="search">
+            <label for="chat-input" class="sr-only">Message input</label>
+            <input type="text" placeholder="Type your message..." class="chat-input" id="chat-input" required aria-label="Message input">
+            <button type="submit" class="chat-send" title="Send" aria-label="Send message">
                 <span>Send</span>
             </button>
         </form>
