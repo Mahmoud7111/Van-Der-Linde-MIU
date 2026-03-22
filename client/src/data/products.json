@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "1",
+    "name": "Chrono Elite",
+    "brand": "Aurum",
+    "price": 1299,
+    "category": "luxury",
+    "rating": 4.8,
+    "numReviews": 124,
+    "stock": 10,
+    "images": ["/images/watch-placeholder.jpg"],
+    "description": "Swiss movement. Sapphire crystal. Timeless."
+  },
+  {
+    "_id": "2",
+    "name": "Sport Pro X",
+    "brand": "Aurum",
+    "price": 499,
+    "category": "sport",
+    "rating": 4.5,
+    "numReviews": 89,
+    "stock": 25,
+    "images": ["/images/watch-placeholder.jpg"],
+    "description": "Built for performance. 200m water resistant."
+  },
+  {
+    "_id": "3",
+    "name": "Classic Heritage",
+    "brand": "Aurum",
+    "price": 899,
+    "category": "classic",
+    "rating": 4.7,
+    "numReviews": 56,
+    "stock": 8,
+    "images": ["/images/watch-placeholder.jpg"],
+    "description": "Vintage-inspired horology for the modern collector."
+  },
+  {
+    "_id": "4",
+    "name": "Noir Minimal",
+    "brand": "Aurum",
+    "price": 749,
+    "category": "classic",
+    "rating": 4.6,
+    "numReviews": 38,
+    "stock": 15,
+    "images": ["/images/watch-placeholder.jpg"],
+    "description": "All-black dial. Understated dominance."
+  }
+]

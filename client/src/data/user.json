@@ -1,0 +1,12 @@
+{
+  "_id": "u1",
+  "name": "Mahmoud Sayed",
+  "email": "mahmoud@example.com",
+  "role": "admin",
+  "address": {
+    "street": "123 Nile St",
+    "city": "Cairo",
+    "country": "Egypt",
+    "zip": "11511"
+  }
+}
