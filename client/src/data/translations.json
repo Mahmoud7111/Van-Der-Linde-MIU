@@ -1,0 +1,22 @@
+{
+  "en": {
+    "nav.shop": "Shop", "nav.collections": "Collections",
+    "nav.about": "About", "nav.cart": "Cart",
+    "btn.addToCart": "Add to Cart", "btn.buyNow": "Buy Now",
+    "cart.empty": "Your cart is empty",
+    "product.outOfStock": "Out of Stock",
+    "checkout.shipping": "Shipping Information",
+    "checkout.payment": "Payment",
+    "checkout.review": "Review Order"
+  },
+  "ar": {
+    "nav.shop": "تسوق", "nav.collections": "المجموعات",
+    "nav.about": "من نحن", "nav.cart": "السلة",
+    "btn.addToCart": "أضف إلى السلة", "btn.buyNow": "اشتري الآن",
+    "cart.empty": "سلة التسوق فارغة",
+    "product.outOfStock": "نفذ من المخزون",
+    "checkout.shipping": "معلومات الشحن",
+    "checkout.payment": "الدفع",
+    "checkout.review": "مراجعة الطلب"
+  }
+}
