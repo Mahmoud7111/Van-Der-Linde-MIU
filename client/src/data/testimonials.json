@@ -1,0 +1,34 @@
+﻿[
+  {
+    "_id": "test-001",
+    "name": "Youssef Khaled",
+    "location": "Cairo, Egypt",
+    "quote": "The finishing quality is exceptional. My Sovereign Tourbillon feels like a true heirloom piece.",
+    "rating": 5,
+    "watchPurchased": "Van Der Linde Sovereign Tourbillon"
+  },
+  {
+    "_id": "test-002",
+    "name": "Lina Samir",
+    "location": "Alexandria, Egypt",
+    "quote": "The Women's Collection strikes the perfect balance between elegance and everyday comfort.",
+    "rating": 5,
+    "watchPurchased": "Van Der Linde Heritage Slim"
+  },
+  {
+    "_id": "test-003",
+    "name": "Omar Nabil",
+    "location": "Dubai, UAE",
+    "quote": "I needed something sporty but premium, and Velocity Pro exceeded my expectations.",
+    "rating": 4,
+    "watchPurchased": "Van Der Linde Velocity Pro"
+  },
+  {
+    "_id": "test-004",
+    "name": "Mariam Adel",
+    "location": "Riyadh, Saudi Arabia",
+    "quote": "Fast shipping, beautiful packaging, and the watch looks even better in person.",
+    "rating": 5,
+    "watchPurchased": "Van Der Linde Nocturne Chronograph"
+  }
+]

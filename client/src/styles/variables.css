@@ -1,0 +1,106 @@
+﻿/*
+  File: variables.css
+
+  What this file is:
+  The single source of design tokens for the entire Van Der Linde frontend.
+
+  What it does:
+  Defines CSS custom properties for colors, typography, spacing, breakpoints,
+  layering, transitions, and radii. No component styles are declared here.
+
+  Where it is used:
+  Imported globally from main.jsx and consumed by all CSS files through var(--token-name).
+*/
+
+:root {
+  /*
+    Brand color system:
+    Used across buttons, links, surfaces, text, alerts, borders, and status UI.
+  */
+  --color-gold: #c9a84c; /* Primary brand accent for interactive elements and highlights. */
+  --color-gold-light: #e8c97a; /* Lighter variant for hover states and subtle backgrounds. */
+  --color-brass: #b5925f; /* Secondary accent for less prominent actions and decorative elements. */
+  --color-dark: #0d1b2a; /* Primary text color and dark surfaces. */
+  --color-surface: #f8f0e5; /* Primary background color for light theme surfaces. */
+  --color-muted: #8a8378; /* Used for secondary text, disabled states, and subtle borders. */
+  --color-border: rgba(201, 168, 76, 0.3); /* Semi-transparent border color for cards, inputs, and dividers. */
+  --color-white: #ffffff; /* Used for text on dark backgrounds, light surfaces, and UI elements that require high contrast. */
+  --color-error: #c0392b; /* Used for error states, destructive actions, and critical alerts. */
+  --color-success: #1d9e75; /* Used for success states, confirmations, and positive feedback. */
+
+  /*
+    Typography system:
+    - Display font for hero text and headings.
+    - Body font for primary reading text and UI copy.
+    - Monospace font for technical values like tracking numbers and codes.
+  */
+  --font-display: 'Cormorant Garamond', serif; /* Used for hero text and headings. */
+  --font-body: 'Inter', sans-serif; /* Used for primary reading text and UI copy. */
+  --font-mono: 'IBM Plex Mono', monospace; /* Used for technical values like tracking numbers and codes. */
+
+  /*
+    Spacing scale:
+    Shared spacing tokens for margins, paddings, grid gaps, and section rhythm.
+  */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 48px;
+  --space-2xl: 96px;
+
+  /*
+    Responsive breakpoints:
+    Used by media queries for mobile, tablet, and laptop+ layouts.
+  */
+  --bp-mobile: 480px;
+  --bp-tablet: 768px;
+  --bp-laptop: 1180px;
+
+  /*
+    Z-index layering scale: 
+    Keeps stacking behavior predictable for dropdowns, sticky bars, modals, and toasts.
+  */
+  /*
+    Z-index comes from the concept of a Z-axis in 3D space. While a webpage is flat (using X for horizontal and Y for vertical), the Z-axis represents depth — how close or far something is from the viewer.
+    A higher z-index value means the element appears on top of others.
+    A lower z-index value means the element appears behind others.
+  */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 1000;
+  --z-toast: 1100;
+  --z-cursor: 1200;
+
+  /*
+    Transition timing tokens:
+    Reused for hover states, panel open/close, theme changes, and subtle motion.
+  */
+  --transition-fast: 120ms ease;
+  --transition-normal: 220ms ease;
+  --transition-slow: 420ms ease;
+
+  /*
+    Border radius tokens:
+    Shared for buttons, cards, inputs, badges, modals, and pill-shaped controls.
+  */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 22px;
+  --radius-full: 9999px;
+}
+
+/*
+  Dark mode token overrides:
+  Activated by ThemeContext via `document.body.setAttribute('data-theme', 'dark')`.
+  Every component automatically updates because it reads from the same CSS variables.
+*/
+[data-theme='dark'] {
+  --color-surface: #0d1b2a;
+  --color-dark: #f8f0e5;
+  --color-white: #152238;
+  --color-muted: #9a9890;
+  --color-gold: #c9a84c;
+}
