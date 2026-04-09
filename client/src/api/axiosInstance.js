@@ -3,7 +3,7 @@
  *
  * What this file is:
  * A preconfigured axios client shared by every service module.
- * 
+ *
  * //? why we use it:
  *  Imagine in the watchService, we need to fetch the list of watches from the backend.
  *  Instead of writing something like this in watchService:
@@ -11,7 +11,7 @@
     axios.get('http://localhost:5000/api/watches', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
- *  
+ *
     ->You're copy-pasting the same two things every single time:
 
     The full URL http://localhost:5000/api
@@ -22,7 +22,7 @@
 
     The "Good" Way (with axiosInstance) ->
     You define the URL and token logic once in axiosInstance.js, and now every service just does:
-    
+
     // watchService.js
     api.get('/watches')   // token added automatically, URL prepended automatically
 
@@ -51,7 +51,7 @@ api.interceptors.request.use(
 
     // If a token exists, attach it to the request headers as Bearer auth header.
     //The backend reads this header to know who is making the request
-    //Bearer is just the standard prefix for JWT tokens — the backend expects exactly that format.
+    //Bearer is just the standard prefix for JWT tokens - the backend expects exactly that format.
     if (token) {
       // Ensure headers object exists before assigning Authorization.
       config.headers = config.headers || {} //a safety check: if headers doesn't exist yet, create an empty object before trying to add to it.
@@ -77,7 +77,7 @@ api.interceptors.response.use(
     // Extract status safely in case error shape differs by network condition.
     const statusCode = error?.response?.status
 
-    // HTTP 401 means Unauthorized — the server is saying "I don't recognize you, or your token is expired/invalid." This is the JWT expiry scenario.
+    // HTTP 401 means Unauthorized - the server is saying "I don't recognize you, or your token is expired/invalid." This is the JWT expiry scenario.
     if (statusCode === 401) {
       // Remove invalid token so future requests do not repeat unauthorized calls.
       localStorage.removeItem('token')
@@ -86,8 +86,8 @@ api.interceptors.response.use(
       if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
         window.location.href = '/login'
       }
-      //typeof window !== 'undefined' — makes sure this code is running in a browser, not in a server-side rendering environment where window doesn't exist
-      //window.location.pathname !== '/login' — prevents an infinite redirect loop. If you're already on /login and the login request itself returns 401, you don't want to redirect to /login again forever
+      //typeof window !== 'undefined' - makes sure this code is running in a browser, not in a server-side rendering environment where window doesn't exist
+      //window.location.pathname !== '/login' - prevents an infinite redirect loop. If you're already on /login and the login request itself returns 401, you don't want to redirect to /login again forever
       // Then window.location.href = '/login' does a hard redirect to the login page.
     }
 
@@ -106,7 +106,7 @@ Component (ProductCard)
     ↓ calls
 watchService.getAll()
     ↓ calls
-api.get('/watches')         ← your axiosInstance
+api.get('/watches')         <- your axiosInstance
     ↓ interceptor adds token automatically
 Backend receives request with Authorization header
     ↓ returns data
