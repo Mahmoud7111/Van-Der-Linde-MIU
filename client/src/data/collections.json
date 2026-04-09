@@ -1,0 +1,30 @@
+﻿[
+  {
+    "_id": "col-001",
+    "name": "Heritage",
+    "description": "Traditional silhouettes rooted in classical horology with modern reliability.",
+    "coverImage": "/images/collections/heritage.jpg",
+    "slug": "heritage"
+  },
+  {
+    "_id": "col-002",
+    "name": "Sport Elite",
+    "description": "Performance-first timepieces built for motion, endurance, and bold presence.",
+    "coverImage": "/images/collections/sport-elite.jpg",
+    "slug": "sport-elite"
+  },
+  {
+    "_id": "col-003",
+    "name": "Noir Series",
+    "description": "Dark-toned luxury watches with refined contrast and understated aggression.",
+    "coverImage": "/images/collections/noir-series.jpg",
+    "slug": "noir-series"
+  },
+  {
+    "_id": "col-004",
+    "name": "Women's Collection",
+    "description": "Elegant, versatile pieces balancing precision engineering with graceful detailing.",
+    "coverImage": "/images/collections/womens-collection.jpg",
+    "slug": "womens-collection"
+  }
+]

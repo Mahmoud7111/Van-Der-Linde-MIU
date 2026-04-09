@@ -1,12 +1,12 @@
-{
-  "_id": "u1",
-  "name": "Mahmoud Sayed",
-  "email": "mahmoud@example.com",
+﻿{
+  "_id": "user-001",
+  "name": "Van Der Linde Admin",
+  "email": "admin@Van Der Lindewatches.com",
   "role": "admin",
   "address": {
-    "street": "123 Nile St",
+    "street": "90 Luxury Avenue",
     "city": "Cairo",
     "country": "Egypt",
-    "zip": "11511"
+    "zip": "11371"
   }
 }

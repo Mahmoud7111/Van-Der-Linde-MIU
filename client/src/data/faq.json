@@ -1,0 +1,50 @@
+﻿[
+  {
+    "_id": "faq-001",
+    "category": "shipping",
+    "question": "How long does shipping take?",
+    "answer": "Domestic delivery usually takes 2-4 business days. International orders typically arrive within 5-10 business days based on destination and customs processing."
+  },
+  {
+    "_id": "faq-002",
+    "category": "shipping",
+    "question": "Do you ship internationally?",
+    "answer": "Yes. Van Der Linde ships to most countries worldwide. Shipping fees and delivery timelines are shown at checkout after entering your address."
+  },
+  {
+    "_id": "faq-003",
+    "category": "returns",
+    "question": "What is your return policy?",
+    "answer": "You may request a return within 14 days of delivery if the watch is unworn, undamaged, and returned with original packaging and documentation."
+  },
+  {
+    "_id": "faq-004",
+    "category": "returns",
+    "question": "How do I request an exchange?",
+    "answer": "Contact support with your order number and preferred replacement model. Our team will confirm stock and guide you through the exchange steps."
+  },
+  {
+    "_id": "faq-005",
+    "category": "watches",
+    "question": "Are Van Der Linde watches water resistant?",
+    "answer": "Most Van Der Linde models are water resistant to at least 5 ATM. Check each product page for exact resistance depth and care instructions."
+  },
+  {
+    "_id": "faq-006",
+    "category": "watches",
+    "question": "Do your watches come with warranty?",
+    "answer": "Yes. Every Van Der Linde watch includes a 2-year international warranty covering manufacturing defects under normal use conditions."
+  },
+  {
+    "_id": "faq-007",
+    "category": "payment",
+    "question": "Which payment methods do you accept?",
+    "answer": "We accept major credit/debit cards, bank cards, and selected regional digital wallets depending on your location."
+  },
+  {
+    "_id": "faq-008",
+    "category": "payment",
+    "question": "Is my payment information secure?",
+    "answer": "Yes. Checkout uses secure encrypted channels, and Van Der Linde does not store full card details on its own servers."
+  }
+]
