@@ -1,20 +1,61 @@
-[
+﻿[
   {
-    "_id": "order-001",
-    "items": [{ "watch": "watch-001", "name": "Chrono Elite", "quantity": 1, "price": 1299 }],
-    "totalPrice": 1299,
+    "_id": "order-1001",
+    "items": [
+      {
+        "_id": "watch-001",
+        "name": "Van Der Linde Sovereign Tourbillon",
+        "price": 2499,
+        "quantity": 1,
+        "image": "/images/products/sovereign-tourbillon.jpg"
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Mahmoud Ahmed",
+      "email": "mahmoud@example.com",
+      "phone": "+20-100-555-1234",
+      "street": "12 Nile Corniche",
+      "city": "Cairo",
+      "country": "Egypt",
+      "zip": "11511"
+    },
+    "totalPrice": 2499,
     "status": "delivered",
     "isPaid": true,
     "isDelivered": true,
-    "createdAt": "2024-11-15T10:00:00Z"
+    "createdAt": "2026-03-22T10:30:00.000Z"
   },
   {
-    "_id": "order-002",
-    "items": [{ "watch": "watch-002", "name": "Sport Pro X", "quantity": 2, "price": 499 }],
-    "totalPrice": 998,
+    "_id": "order-1002",
+    "items": [
+      {
+        "_id": "watch-003",
+        "name": "Van Der Linde Velocity Pro",
+        "price": 799,
+        "quantity": 1,
+        "image": "/images/products/velocity-pro.jpg"
+      },
+      {
+        "_id": "watch-006",
+        "name": "Van Der Linde Pulse Connected",
+        "price": 299,
+        "quantity": 2,
+        "image": "/images/products/pulse-connected.jpg"
+      }
+    ],
+    "shippingAddress": {
+      "fullName": "Sara Nabil",
+      "email": "sara.nabil@example.com",
+      "phone": "+20-109-222-4433",
+      "street": "45 Tahrir Street",
+      "city": "Alexandria",
+      "country": "Egypt",
+      "zip": "21532"
+    },
+    "totalPrice": 1397,
     "status": "shipped",
     "isPaid": true,
     "isDelivered": false,
-    "createdAt": "2024-12-01T14:30:00Z"
+    "createdAt": "2026-04-02T14:05:00.000Z"
   }
 ]
