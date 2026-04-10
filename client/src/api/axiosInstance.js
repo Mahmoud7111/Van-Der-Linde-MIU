@@ -7,7 +7,7 @@
  * //? why we use it:
  *  Imagine in the watchService, we need to fetch the list of watches from the backend.
  *  Instead of writing something like this in watchService:
- *  // watchService.js
+ *  
     axios.get('http://localhost:5000/api/watches', {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })

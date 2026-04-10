@@ -14,9 +14,10 @@
  * Full header implementation (SearchBar, DarkModeToggle, CurrencySwitcher,
  * MobileMenu, sticky behavior, and responsive interactions) is owned by Dev 5.
  */
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import './Header.css'
 
 // Stub header component until complete responsive/header feature set is implemented.
 export default function Header() {
@@ -26,23 +27,68 @@ export default function Header() {
   // Reads authenticated user; full header uses this for account menu, logout, and role links.
   const { user } = useAuth()
 
+  const navLinkClassName = ({ isActive }) =>
+    `header__link${isActive ? ' header__link--active' : ''}`
+
+  const accountLinkClassName = ({ isActive }) =>
+    `header__action${isActive ? ' header__action--active' : ''}`
+
+  const cartLinkClassName = ({ isActive }) =>
+    `header__action header__action--cart${isActive ? ' header__action--active' : ''}`
+
   return (
     <header className="header">
       <div className="header__inner">
         {/* Brand link always returns user to home page. */}
-        <Link to="/">Van Der Linde</Link>
+        <Link className="header__brand" to="/">
+          <img
+            className="header__logo"
+            src="/Logo2.png"
+            alt="Van Der Linde"
+            loading="eager"
+          />
+        </Link>
 
         {/* Minimal nav links for primary discovery routes. */}
-        <nav aria-label="Primary">
-          <Link to="/shop">Shop</Link>
-          <Link to="/collections">Collections</Link>
-          <Link to="/about">About</Link>
+        <nav className="header__nav" aria-label="Primary">
+          <NavLink className={navLinkClassName} to="/shop">
+            SHOP ALL
+          </NavLink>
+          <NavLink className={navLinkClassName} to="/collections">
+            COLLECTIONS
+          </NavLink>
+          <NavLink className={navLinkClassName} to="/services">
+            SERVICES
+          </NavLink>
+          <NavLink className={navLinkClassName} to="/about">
+            ABOUT 
+          </NavLink>
+          <NavLink className={navLinkClassName} to="/contact">
+            CONTACT
+          </NavLink>
         </nav>
 
         {/* Utility links show cart count and auth-dependent entry point. */}
         <div className="header__actions">
-          <Link to="/cart">Cart ({totalItems})</Link>
-          {user ? <Link to="/profile">Profile</Link> : <Link to="/login">Login</Link>}
+          <NavLink
+            aria-label={`Cart with ${totalItems} items`}
+            className={cartLinkClassName}
+            to="/cart"
+          >
+            Cart
+            <span className="header__pill" aria-hidden="true">
+              {totalItems}
+            </span>
+          </NavLink>
+          {user ? (
+            <NavLink className={accountLinkClassName} to="/profile">
+              Profile
+            </NavLink>
+          ) : (
+            <NavLink className={accountLinkClassName} to="/login">
+              Login
+            </NavLink>
+          )}
         </div>
       </div>
     </header>
