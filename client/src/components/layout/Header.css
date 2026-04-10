@@ -1,0 +1,258 @@
+/*
+	Branded top navigation for Van Der Linde.
+	Uses global tokens from styles/variables.css for consistent theming.
+*/
+
+.header {
+	position: sticky;
+	top: 0;
+	z-index: var(--z-sticky);
+	border-bottom: 1px solid var(--color-border);
+	background: linear-gradient(
+		108deg,
+		color-mix(in srgb, var(--color-surface) 95%, var(--color-dark) 5%) 0%,
+		color-mix(in srgb, var(--color-surface) 87%, var(--color-gold) 13%) 46%,
+		color-mix(in srgb, var(--color-surface) 95%, var(--color-dark) 5%) 100%
+	);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 14px 28px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
+	animation: fadeIn 0.45s ease both;
+}
+
+.header::after {
+	content: '';
+	display: block;
+	height: 2px;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		color-mix(in srgb, var(--color-gold) 78%, var(--color-brass) 22%) 50%,
+		transparent 100%
+	);
+	opacity: 0.75;
+}
+
+.header__inner {
+	max-width: 1320px;
+	margin: 0 auto;
+	padding: var(--space-md) clamp(var(--space-md), 3vw, var(--space-xl));
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	grid-template-areas: 'nav brand actions';
+	gap: clamp(var(--space-md), 2vw, var(--space-xl));
+	align-items: center;
+}
+
+.header__brand {
+	grid-area: brand;
+	display: inline-flex;
+	align-items: center;
+	justify-self: center;
+	padding: 2px var(--space-sm);
+	border-radius: var(--radius-full);
+}
+
+
+.header__logo {
+	width: clamp(130px, 15vw, 190px);
+	height: auto;
+	display: grid;
+	filter: drop-shadow(0 5px 10px color-mix(in srgb, var(--color-dark) 18%, transparent 82%));
+}
+
+.header__nav {
+	grid-area: nav;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: clamp(var(--space-sm), 1.6vw, var(--space-lg));
+	min-width: 0;
+}
+
+.header__link {
+	position: relative;
+	padding: var(--space-xs) 0;
+	font-size: 0.73rem;
+	font-weight: 500;
+	letter-spacing: 0.17em;
+	text-transform: uppercase;
+	color: color-mix(in srgb, var(--color-dark) 75%, var(--color-muted) 25%);
+	transition: color var(--transition-normal);
+}
+
+.header__link::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: -5px;
+	width: 100%;
+	height: 1px;
+	background: var(--color-gold);
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform var(--transition-normal);
+}
+
+.header__link:hover,
+.header__link--active {
+	color: var(--color-dark);
+}
+
+.header__link:hover::after,
+.header__link--active::after {
+	transform: scaleX(1);
+}
+
+.header__actions {
+	grid-area: actions;
+	display: flex;
+	align-items: center;
+	justify-self: end;
+	gap: var(--space-sm);
+}
+
+.header__action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-xs);
+	border-radius: var(--radius-full);
+	border: 1px solid color-mix(in srgb, var(--color-gold) 44%, transparent 56%);
+	background: color-mix(in srgb, var(--color-white) 88%, var(--color-gold) 12%);
+	padding: calc(var(--space-sm) - 1px) var(--space-md);
+	font-size: 0.67rem;
+	font-weight: 600;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--color-dark);
+	transition:
+		transform var(--transition-fast),
+		box-shadow var(--transition-fast),
+		border-color var(--transition-normal),
+		background-color var(--transition-normal);
+}
+
+.header__action--cart {
+	background: color-mix(in srgb, var(--color-gold) 18%, var(--color-white) 82%);
+}
+
+.header__action:hover,
+.header__action:focus-visible,
+.header__action--active {
+	transform: translateY(-1px);
+	border-color: var(--color-gold);
+	box-shadow: 0 10px 16px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
+}
+
+.header__pill {
+	min-width: 1.4rem;
+	height: 1.4rem;
+	border-radius: var(--radius-full);
+	display: grid;
+	place-items: center;
+	background: var(--color-gold);
+	color: #151515;
+	font-family: var(--font-mono);
+	font-size: 0.68rem;
+	line-height: 1;
+}
+
+.header__brand:focus-visible,
+.header__link:focus-visible,
+.header__action:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 3px;
+}
+
+@media (max-width: 1080px) {
+	.header__inner {
+		grid-template-columns: 1fr auto 1fr;
+		grid-template-areas: 'nav brand actions';
+		row-gap: var(--space-sm);
+		padding-top: var(--space-sm);
+		padding-bottom: var(--space-sm);
+	}
+
+	.header__brand {
+		padding-inline: var(--space-xs);
+	}
+
+	.header__actions {
+		justify-content: flex-end;
+	}
+
+	.header__nav {
+		justify-content: flex-start;
+		overflow-x: auto;
+		scrollbar-width: none;
+		padding-bottom: 2px;
+	}
+
+	.header__nav::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+@media (max-width: 680px) {
+	.header__inner {
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			'brand'
+			'nav'
+			'actions';
+	}
+
+	.header__brand {
+		justify-content: center;
+	}
+
+	.header__logo {
+		width: clamp(120px, 42vw, 185px);
+	}
+
+	.header__nav {
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: var(--space-md);
+		overflow: visible;
+	}
+
+	.header__actions {
+		justify-self: center;
+		width: 100%;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+
+	.header__action {
+		flex: 1 1 140px;
+		max-width: 220px;
+	}
+}
+
+[data-theme='dark'] .header {
+	background: linear-gradient(
+		108deg,
+		color-mix(in srgb, var(--color-surface) 94%, #000000 6%) 0%,
+		color-mix(in srgb, var(--color-surface) 82%, var(--color-gold) 18%) 47%,
+		color-mix(in srgb, var(--color-surface) 93%, #000000 7%) 100%
+	);
+	box-shadow: 0 14px 26px color-mix(in srgb, #000000 52%, transparent 48%);
+}
+
+[data-theme='dark'] .header__link {
+	color: color-mix(in srgb, var(--color-dark) 76%, var(--color-muted) 24%);
+}
+
+[data-theme='dark'] .header__action {
+	background: color-mix(in srgb, var(--color-white) 78%, var(--color-surface) 22%);
+	border-color: color-mix(in srgb, var(--color-gold) 58%, transparent 42%);
+}
+
+[data-theme='dark'] .header__logo {
+	filter: drop-shadow(0 7px 14px color-mix(in srgb, #000000 45%, transparent 55%));
+}
+
+[data-theme='dark'] .header__pill {
+	color: #1a1a1a;
+}

@@ -28,7 +28,6 @@ export default function PrivateRoute({ children }) {
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
-
     // state={{ from: location }} = "remember where I was going"
     // replace = don't add /login to browser history
     // (back button won't loop through /login)
