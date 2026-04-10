@@ -17,9 +17,16 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import {
+  FiDollarSign,
+  FiGlobe,
+  FiHeart,
+  FiMoon,
+  FiShoppingCart,
+  FiUser,
+} from 'react-icons/fi'
 import './Header.css'
 
-// Stub header component until complete responsive/header feature set is implemented.
 export default function Header() {
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
@@ -30,16 +37,30 @@ export default function Header() {
   const navLinkClassName = ({ isActive }) =>
     `header__link${isActive ? ' header__link--active' : ''}`
 
-  const accountLinkClassName = ({ isActive }) =>
-    `header__action${isActive ? ' header__action--active' : ''}`
+  const iconLinkClassName = ({ isActive }) =>
+    `header__icon-control${isActive ? ' header__icon-control--active' : ''}`
 
   const cartLinkClassName = ({ isActive }) =>
-    `header__action header__action--cart${isActive ? ' header__action--active' : ''}`
+    `header__icon-control header__icon-control--cart${isActive ? ' header__icon-control--active' : ''}`
+
+  const accountPath = user ? '/profile' : '/login'
+  const accountLabel = user ? 'Profile' : 'Login'
 
   return (
     <header className="header">
       <div className="header__inner">
-        {/* Brand link always returns user to home page. */}
+        <nav className="header__left header__nav" aria-label="Shop links">
+          <NavLink className={navLinkClassName} to="/shop">
+            SHOP ALL
+          </NavLink>
+          <NavLink className={navLinkClassName} to="/collections">
+            COLLECTIONS
+          </NavLink>
+          <NavLink className={navLinkClassName} to="/gifting">
+            GIFTING
+          </NavLink>
+        </nav>
+
         <Link className="header__brand" to="/">
           <img
             className="header__logo"
@@ -49,46 +70,57 @@ export default function Header() {
           />
         </Link>
 
-        {/* Minimal nav links for primary discovery routes. */}
-        <nav className="header__nav" aria-label="Primary">
-          <NavLink className={navLinkClassName} to="/shop">
-            SHOP ALL
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/collections">
-            COLLECTIONS
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/services">
-            SERVICES
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/about">
-            ABOUT 
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/contact">
-            CONTACT
-          </NavLink>
-        </nav>
+        <div className="header__right">
+          <nav className="header__nav header__nav--right" aria-label="Company links">
+            <NavLink className={navLinkClassName} to="/services">
+              SERVICES
+            </NavLink>
+            <NavLink className={navLinkClassName} to="/about">
+              ABOUT
+            </NavLink>
+            <NavLink className={navLinkClassName} to="/contact">
+              CONTACT
+            </NavLink>
+          </nav>
 
-        {/* Utility links show cart count and auth-dependent entry point. */}
-        <div className="header__actions">
-          <NavLink
-            aria-label={`Cart with ${totalItems} items`}
-            className={cartLinkClassName}
-            to="/cart"
-          >
-            Cart
-            <span className="header__pill" aria-hidden="true">
-              {totalItems}
+          <div className="header__icons-wrap">
+            <span className="header__divider" aria-hidden="true">
+              |
             </span>
-          </NavLink>
-          {user ? (
-            <NavLink className={accountLinkClassName} to="/profile">
-              Profile
-            </NavLink>
-          ) : (
-            <NavLink className={accountLinkClassName} to="/login">
-              Login
-            </NavLink>
-          )}
+
+            <div className="header__actions">
+              <NavLink
+                aria-label={`Cart with ${totalItems} items`}
+                className={cartLinkClassName}
+                to="/cart"
+              >
+                <FiShoppingCart aria-hidden="true" />
+                <span className="header__pill" aria-hidden="true">
+                  {totalItems}
+                </span>
+              </NavLink>
+
+              <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
+                <FiUser aria-hidden="true" />
+              </NavLink>
+
+              <button type="button" className="header__icon-control" aria-label="Language selector">
+                <FiGlobe aria-hidden="true" />
+              </button>
+
+              <NavLink aria-label="Wishlist" className={iconLinkClassName} to="/wishlist">
+                <FiHeart aria-hidden="true" />
+              </NavLink>
+
+              <button type="button" className="header__icon-control" aria-label="Dark mode toggle">
+                <FiMoon aria-hidden="true" />
+              </button>
+
+              <button type="button" className="header__icon-control" aria-label="Currency switcher">
+                <FiDollarSign aria-hidden="true" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </header>
