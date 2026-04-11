@@ -1,0 +1,146 @@
+/*
+	File: HomePage.css
+	Scoped styles for the HomePage hero section with premium editorial visual direction.
+*/
+
+.home-page {
+	overflow-x: hidden;
+}
+
+.home-hero {
+	position: relative;
+	isolation: isolate;
+	height: 100vh;
+	min-height: 600px;
+	overflow: hidden;
+	background: var(--color-dark);
+}
+
+.home-hero__video {
+	position: absolute;
+	inset: 0;
+	z-index: -2;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	pointer-events: none;
+}
+
+.home-hero__overlay {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	/* User requested a clear hero video without color wash. */
+	background: transparent;
+}
+
+.home-hero__content {
+	position: relative;
+	z-index: 2;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-end;
+	text-align: left;
+	gap: var(--space-md);
+	padding:
+		calc(var(--space-2xl) + var(--space-xl))
+		clamp(var(--space-lg), 6vw, var(--space-2xl))
+		clamp(var(--space-xl), 10vh, calc(var(--space-2xl) + var(--space-xl)));
+}
+
+.home-hero__title {
+	margin: 0;
+	max-width: none;
+	font-family: var(--font-display);
+	font-size: clamp(2.4rem, 5.2vw, 5rem);
+	font-weight: 600;
+	line-height: 1.08;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--color-white);
+	text-shadow: 0 8px 24px color-mix(in srgb, var(--color-dark) 70%, transparent 30%);
+	opacity: 0;
+	animation: slideUp var(--transition-slow) 0.2s forwards;
+}
+
+.home-hero__title-line {
+	display: block;
+	white-space: nowrap;
+}
+
+.home-hero__subtitle {
+	margin: 0;
+	max-width: 43ch;
+	font-family: var(--font-body);
+	font-size: 1.02rem;
+	line-height: 1.7;
+	color: color-mix(in srgb, var(--color-white) 88%, var(--color-gold) 12%);
+	text-shadow: 0 6px 18px color-mix(in srgb, var(--color-dark) 62%, transparent 38%);
+	opacity: 0;
+	animation: slideUp var(--transition-slow) 0.5s forwards;
+}
+
+.home-hero__cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: var(--space-sm);
+	padding: var(--space-sm) var(--space-xl);
+	border: 1px solid var(--color-gold);
+	border-radius: var(--radius-full);
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--color-gold);
+	background: transparent;
+	opacity: 0;
+	transition:
+		background-color var(--transition-normal),
+		color var(--transition-normal),
+		border-color var(--transition-normal),
+		transform var(--transition-fast);
+	animation: fadeIn var(--transition-slow) 0.9s forwards;
+}
+
+.home-hero__cta:hover {
+	background: var(--color-gold);
+	color: var(--color-dark);
+	border-color: var(--color-gold);
+	transform: translateY(-1px);
+}
+
+.home-hero__cta:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: var(--space-xs);
+}
+
+@media (max-width: 768px) {
+	.home-hero__content {
+		gap: var(--space-sm);
+		justify-content: flex-end;
+		padding:
+			calc(var(--space-2xl) + var(--space-lg))
+			var(--space-md)
+			calc(var(--space-2xl) + var(--space-md));
+	}
+
+	.home-hero__title {
+		font-size: clamp(1.9rem, 9.6vw, 3.1rem);
+		max-width: none;
+	}
+
+	.home-hero__subtitle {
+		max-width: 34ch;
+		font-size: 0.95rem;
+		line-height: 1.6;
+	}
+
+	.home-hero__cta {
+		width: auto;
+		max-width: 100%;
+	}
+}
