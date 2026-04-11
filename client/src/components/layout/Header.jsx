@@ -14,9 +14,11 @@
  * Full header implementation (SearchBar, DarkModeToggle, CurrencySwitcher,
  * MobileMenu, sticky behavior, and responsive interactions) is owned by Dev 5.
  */
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import { useScrollPosition } from '@/hooks/useScrollPosition'
+import { cn } from '@/utils/cn'
 import {
   FiDollarSign,
   FiGlobe,
@@ -28,6 +30,11 @@ import {
 import './Header.css'
 
 export default function Header() {
+  // Reads scroll position to toggle header background and shadow after scrolling past hero.
+  const scrollY = useScrollPosition()
+  const location = useLocation()
+  const isHomePage = location.pathname === '/'
+
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
 
@@ -47,7 +54,13 @@ export default function Header() {
   const accountLabel = user ? 'Profile' : 'Login'
 
   return (
-    <header className="header">
+    <header
+      className={cn(
+        'header',
+        isHomePage && 'header--home',
+        isHomePage && scrollY < 80 && 'header--transparent'
+      )}
+    >
       <div className="header__inner">
         <nav className="header__left header__nav" aria-label="Shop links">
           <NavLink className={navLinkClassName} to="/shop">
@@ -76,7 +89,7 @@ export default function Header() {
               SERVICES
             </NavLink>
             <NavLink className={navLinkClassName} to="/about">
-              ABOUT
+              OUR STORY
             </NavLink>
             <NavLink className={navLinkClassName} to="/contact">
               CONTACT
