@@ -12,9 +12,14 @@
 	backdrop-filter: blur(10px);
 	box-shadow: 0 14px 28px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
 	transition:
+		transform var(--transition-normal),
 		background var(--transition-normal),
 		box-shadow var(--transition-normal);
 	animation: fadeIn 0.45s ease both;
+}
+
+.header--hidden {
+	transform: translateY(-100%);
 }
 
 .header--home {

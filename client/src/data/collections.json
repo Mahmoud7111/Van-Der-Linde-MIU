@@ -6,22 +6,36 @@
     "coverImage": "/images/collections/heritage.jpg",
     "slug": "heritage"
   },
-  {
+    {
     "_id": "col-002",
+    "name": "Casual & Everyday",
+    "description": "Timeless designs that seamlessly integrate into daily life, combining functionality with subtle style.",
+    "coverImage": "/images/collections/casual-everyday.jpg",
+    "slug": "casual-everyday"
+  },
+  {
+    "_id": "col-003",
     "name": "Sport Elite",
     "description": "Performance-first timepieces built for motion, endurance, and bold presence.",
     "coverImage": "/images/collections/sport-elite.jpg",
     "slug": "sport-elite"
   },
   {
-    "_id": "col-003",
+    "_id": "col-004",
     "name": "Noir Series",
     "description": "Dark-toned luxury watches with refined contrast and understated aggression.",
     "coverImage": "/images/collections/noir-series.jpg",
     "slug": "noir-series"
   },
   {
-    "_id": "col-004",
+    "_id": "col-005",
+    "name": "Men's Collection",
+    "description": "Elegant, versatile pieces designed for the modern man.",
+    "coverImage": "/images/collections/mens-collection.jpg",
+    "slug": "mens-collection"
+  },
+  {
+    "_id": "col-006",
     "name": "Women's Collection",
     "description": "Elegant, versatile pieces balancing precision engineering with graceful detailing.",
     "coverImage": "/images/collections/womens-collection.jpg",
