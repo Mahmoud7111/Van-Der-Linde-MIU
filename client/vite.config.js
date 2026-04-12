@@ -21,6 +21,8 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  // Treat 3D binary model files as static assets so they are not parsed as JS modules.
+  assetsInclude: ['**/*.glb'],
   plugins: [
     // Enables React 18 JSX transform and fast refresh support during development.
     react(),

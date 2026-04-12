@@ -17,14 +17,16 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import heroVideo from '@/assets/Assets/videos/hero.mp4'
+import heroVideo from '@/assets/videos/hero.mp4'
 import collectionFallbackImage from '@/assets/images/hero-watch.jpg'
+import watchModel from '@/assets/3D Models/watch.glb'
 import collections from '@/data/collections.json'
 import '@/pages/home/HomePage.css'
 
 export default function HomePage() {
   // IntersectionObserver watches the section element to trigger entrance animations.
   const collectionsSectionRef = useRef(null)
+  const configuratorSectionRef = useRef(null)
 
   // Scroll ref is on the inner scroll container, separate from the section.
   // Previously both refs were on the same element — the section ref was overwritten.
@@ -39,8 +41,10 @@ export default function HomePage() {
   const dragDistanceRef = useRef(0)
 
   const [isCollectionsVisible, setIsCollectionsVisible] = useState(false)
+  const [isConfiguratorVisible, setIsConfiguratorVisible] = useState(false)
 
   const featured = collections.slice(0, 4)
+  const watchInitialOrbit = '315deg 25deg auto'
 
   // IntersectionObserver triggers the stagger entrance animation once on first viewport entry.
   useEffect(() => {
@@ -55,6 +59,24 @@ export default function HomePage() {
         }
       },
       { threshold: 0.2 }
+    )
+
+    observer.observe(sectionNode)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const sectionNode = configuratorSectionRef.current
+    if (!sectionNode) return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsConfiguratorVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.25 }
     )
 
     observer.observe(sectionNode)
@@ -200,7 +222,7 @@ export default function HomePage() {
               className="home-collections__view-all"
               to="/collections"
             >
-              Explore our collection of watches
+              Explore our collections
             </Link>
 
             {/* Arrows are inside the intro so they're always accessible regardless of scroll position. */}
@@ -278,6 +300,59 @@ export default function HomePage() {
         </div>
       </section>
       {/* ── END COLLECTIONS ── */}
+
+      {/* ── CONFIGURATOR CTA ─────────────────────────────────────────── */}
+      <section
+        id="configurator-cta"
+        ref={configuratorSectionRef}
+        className="home-configurator"
+        aria-label="Configure your time"
+      >
+        <div className="home-configurator__inner">
+          <div
+            className={`home-configurator__left${
+              isConfiguratorVisible ? ' home-configurator__left--visible' : ''
+            }`}
+          >
+            <p className="home-configurator__label">Configure Your</p>
+            <h2 className="home-configurator__title">TIME</h2>
+            <p className="home-configurator__desc">
+              Create a watch that reflects your style. Choose materials, straps, and finishes
+              inspired by classic vintage craftsmanship.
+            </p>
+
+            <div className="home-configurator__cta-row">
+              <span className="home-configurator__cta-line" aria-hidden="true" />
+              <Link to="/configurator">START CONFIGURATION</Link>
+            </div>
+          </div>
+
+          <div
+            className={`home-configurator__right${
+              isConfiguratorVisible ? ' home-configurator__right--visible' : ''
+            }`}
+          >
+            {/*
+              Add this in index.html:
+              <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+            */}
+            <div className="home-configurator__model-wrap">
+              <model-viewer
+                src={watchModel}
+                auto-rotate
+                auto-rotate-delay="0"
+                camera-controls
+                camera-orbit={watchInitialOrbit}
+                shadow-intensity="1"
+                exposure="0.8"
+                style={{ width: '100%', height: 'clamp(400px, 60vh, 700px)', background: 'transparent' }}
+                ar
+                ar-modes="webxr scene-viewer quick-look"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* TODO: New arrivals section */}
       {/* TODO: Heritage section */}
