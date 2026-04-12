@@ -30,5 +30,13 @@
     "quote": "Fast shipping, beautiful packaging, and the watch looks even better in person.",
     "rating": 5,
     "watchPurchased": "Van Der Linde Nocturne Chronograph"
+  },
+  {
+    "_id": "test-005",
+    "name": "Hassan Farouk",
+    "location": "Doha, Qatar",
+    "quote": "Elegant proportions, precise movement, and a truly premium feel on the wrist. Van Der Linde exceeded my expectations.",
+    "rating": 5,
+    "watchPurchased": "Van Der Linde Atelier Classic"
   }
 ]
