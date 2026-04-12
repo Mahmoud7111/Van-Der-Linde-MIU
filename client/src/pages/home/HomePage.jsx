@@ -17,16 +17,31 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion as Motion, useInView } from 'framer-motion'
 import heroVideo from '@/assets/videos/hero.mp4'
-import collectionFallbackImage from '@/assets/images/hero-watch.jpg'
+import collectionFallbackImage from '@/assets/images/notFound1.svg'
+import heritageImage from '@/assets/images/Photos/Heritage.avif'
+import watchCartierTankMust from '@/assets/images/Watches/Cartier Tank Must.png'
+import watchDeVilleTresor from '@/assets/images/Watches/De Ville Tresor.png'
+import watchRolexLadyDatejust from '@/assets/images/Watches/Rolex Lady Datejust.png'
+import watchPatekNautilusWhiteGold from '@/assets/images/Watches/Patek Philippe Nautilus White Gold.png'
+import watchSaxonia from '@/assets/images/Watches/Saxonia.png'
+import watchAPRoyalOakOffshore from '@/assets/images/Watches/Audemars Piguet Royal Oak Offshore.png'
+import watchSantosDeCartier from '@/assets/images/Watches/Santos de Cartier.png'
+import watchTankLouisCartier from '@/assets/images/Watches/Tank Louis Cartier.png'
 import watchModel from '@/assets/3D Models/watch.glb'
 import collections from '@/data/collections.json'
+import testimonials from '@/data/testimonials.json'
 import '@/pages/home/HomePage.css'
 
 export default function HomePage() {
   // IntersectionObserver watches the section element to trigger entrance animations.
   const collectionsSectionRef = useRef(null)
   const configuratorSectionRef = useRef(null)
+  const genderSectionRef = useRef(null)
+  const quizSectionRef = useRef(null)
+  const heritageSectionRef = useRef(null)
+  const reviewsSectionRef = useRef(null)
 
   // Scroll ref is on the inner scroll container, separate from the section.
   // Previously both refs were on the same element — the section ref was overwritten.
@@ -42,9 +57,84 @@ export default function HomePage() {
 
   const [isCollectionsVisible, setIsCollectionsVisible] = useState(false)
   const [isConfiguratorVisible, setIsConfiguratorVisible] = useState(false)
+  const [activeReviewPage, setActiveReviewPage] = useState(0)
+  const [reviewsPerPage, setReviewsPerPage] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches ? 1 : 3
+  )
 
   const featured = collections.slice(0, 4)
   const watchInitialOrbit = '315deg 25deg auto'
+  const isGenderInView = useInView(genderSectionRef, { once: true, margin: '-100px' })
+  const isQuizInView = useInView(quizSectionRef, { once: true, margin: '-100px' })
+  const isHeritageInView = useInView(heritageSectionRef, { once: true, margin: '-120px' })
+  const isReviewsInView = useInView(reviewsSectionRef, { once: true, margin: '-120px' })
+
+  const genderImageHoverVariants = {
+    hover: { scale: 1.06 },
+  }
+
+  const heritageBoxVariants = {
+    hidden: { opacity: 0, y: 36, scale: 0.97 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1],
+        when: 'beforeChildren',
+        staggerChildren: 0.12,
+      },
+    },
+  }
+
+  const heritageItemVariants = {
+    hidden: { opacity: 0, y: 18 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+    },
+  }
+
+  const quizWatches = [
+    { src: watchCartierTankMust, name: 'Cartier Tank Must' },
+    { src: watchRolexLadyDatejust, name: 'Rolex Lady Datejust' },
+    { src: watchDeVilleTresor, name: 'De Ville Tresor' },
+    { src: watchAPRoyalOakOffshore, name: 'Audemars Piguet Royal Oak Offshore' },
+    { src: watchPatekNautilusWhiteGold, name: 'Patek Philippe Nautilus White Gold' },
+    { src: watchSaxonia, name: 'Saxonia' },
+    { src: watchSantosDeCartier, name: 'Santos de Cartier' },
+    { src: watchTankLouisCartier, name: 'Tank Louis Cartier' },
+  ]
+
+  const totalReviewPages = Math.max(1, Math.ceil(testimonials.length / reviewsPerPage))
+  const clampedReviewPage = Math.min(activeReviewPage, totalReviewPages - 1)
+  const visibleTestimonials = testimonials.slice(
+    clampedReviewPage * reviewsPerPage,
+    clampedReviewPage * reviewsPerPage + reviewsPerPage
+  )
+
+  const getReviewerInitials = (name) =>
+    name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((chunk) => chunk.charAt(0))
+      .join('')
+      .toUpperCase()
+
+  const goToPreviousReviewPage = () => {
+    setActiveReviewPage((prev) => (Math.min(prev, totalReviewPages - 1) - 1 + totalReviewPages) % totalReviewPages)
+  }
+
+  const goToNextReviewPage = () => {
+    setActiveReviewPage((prev) => (Math.min(prev, totalReviewPages - 1) + 1) % totalReviewPages)
+  }
+
+  const goToReviewPage = (pageIndex) => {
+    setActiveReviewPage(pageIndex)
+  }
 
   // IntersectionObserver triggers the stagger entrance animation once on first viewport entry.
   useEffect(() => {
@@ -81,6 +171,19 @@ export default function HomePage() {
 
     observer.observe(sectionNode)
     return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    const query = window.matchMedia('(max-width: 768px)')
+    const updateReviewsPerPage = () => {
+      setReviewsPerPage(query.matches ? 1 : 3)
+    }
+
+    updateReviewsPerPage()
+    query.addEventListener('change', updateReviewsPerPage)
+    return () => query.removeEventListener('change', updateReviewsPerPage)
   }, [])
 
   // Always restore State 1 on mount so the section starts from the composed baseline.
@@ -354,8 +457,250 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── GENDER SPLIT ───────────────────────────────────────────────── */}
+      <section
+        ref={genderSectionRef}
+        className="home-gender"
+        aria-label="Shop by gender"
+      >
+        <Motion.article
+          className="home-gender__panel home-gender__panel--him"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isGenderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.7, delay: 0, ease: 'easeOut' }}
+          whileHover="hover"
+        >
+          <Link
+            className="home-gender__panel-link"
+            to="/shop/men"
+            aria-label="Shop men's watches"
+          />
+          <Motion.div
+            className="home-gender__image"
+            variants={genderImageHoverVariants}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          />
+          <div className="home-gender__overlay" aria-hidden="true" />
+
+          <div className="home-gender__content">
+            <h3 className="home-gender__title">FOR HIM</h3>
+            <p className="home-gender__subtitle">BOLD. SOPHISTICATED. TIMELESS.</p>
+            <Link className="home-gender__cta" to="/shop/men">
+              SHOP MEN&apos;S WATCHES
+            </Link>
+          </div>
+        </Motion.article>
+
+        <span className="home-gender__divider" aria-hidden="true" />
+
+        <Motion.article
+          className="home-gender__panel home-gender__panel--her"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isGenderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+          whileHover="hover"
+        >
+          <Link
+            className="home-gender__panel-link"
+            to="/shop/women"
+            aria-label="Shop women's watches"
+          />
+          <Motion.div
+            className="home-gender__image"
+            variants={genderImageHoverVariants}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          />
+          <div className="home-gender__overlay" aria-hidden="true" />
+
+          <div className="home-gender__content">
+            <h3 className="home-gender__title">FOR HER</h3>
+            <p className="home-gender__subtitle">ELEGANT. REFINED. EXQUISITE.</p>
+            <Link className="home-gender__cta" to="/shop/women">
+              SHOP WOMEN&apos;S WATCHES
+            </Link>
+          </div>
+        </Motion.article>
+      </section>
+
+      {/* ── WATCH QUIZ ─────────────────────────────────────────────────── */}
+      <section
+        ref={quizSectionRef}
+        className="home-quiz"
+        aria-label="Find your watch quiz"
+      >
+        <div className="home-quiz__inner">
+          <Motion.div
+            className="home-quiz__header"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isQuizInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+          >
+            <p className="home-quiz__eyebrow">Personal Selector</p>
+            <h2 className="home-quiz__title">Find Your Watch</h2>
+            <p className="home-quiz__subtitle">
+              Need help narrowing down the best watches for your style? Take our quick quiz
+              and discover your perfect match.
+            </p>
+
+            <Link className="home-quiz__cta" to="/quiz">
+              Find Your Watch
+            </Link>
+          </Motion.div>
+
+          <Motion.div
+            className="home-quiz__rail"
+            initial={{ opacity: 0, y: 26 }}
+            animate={isQuizInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: 'easeOut' }}
+          >
+            {quizWatches.map((watch, index) => (
+              <Motion.figure
+                key={watch.name}
+                className="home-quiz__item"
+                initial={{ opacity: 0, y: 14 }}
+                animate={isQuizInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+                transition={{ duration: 0.45, delay: index * 0.07, ease: 'easeOut' }}
+              >
+                <img
+                  className="home-quiz__watch"
+                  src={watch.src}
+                  alt={watch.name}
+                  loading="lazy"
+                />
+              </Motion.figure>
+            ))}
+          </Motion.div>
+        </div>
+      </section>
+
+      {/* ── OUR HERITAGE (ABOUT) ───────────────────────────────────────── */}
+      <section
+        ref={heritageSectionRef}
+        className="home-heritage"
+        aria-label="Our heritage"
+        style={{ '--home-heritage-bg': `url(${heritageImage})` }}
+      >
+        <Motion.div
+          className="home-heritage__inner"
+          variants={heritageBoxVariants}
+          initial="hidden"
+          animate={isHeritageInView ? 'visible' : 'hidden'}
+        >
+          <Motion.p className="home-heritage__eyebrow" variants={heritageItemVariants}>
+            OUR HERITAGE
+          </Motion.p>
+
+          <Motion.h2 className="home-heritage__title" variants={heritageItemVariants}>
+            <span>Crafting&nbsp;time&nbsp;since</span>
+            <span>1875</span>
+          </Motion.h2>
+
+          <Motion.p className="home-heritage__lead" variants={heritageItemVariants}>
+            From a discreet Geneva workshop to a global community of collectors, Van Der Linde
+            has remained devoted to precision, restraint, and timeless design.
+          </Motion.p>
+
+          <Motion.div variants={heritageItemVariants}>
+            <Link className="home-heritage__cta" to="/about">
+              Explore Our Heritage
+            </Link>
+          </Motion.div>
+        </Motion.div>
+      </section>
+
+      {/* ── REVIEWS ────────────────────────────────────────────────────── */}
+      <section
+        ref={reviewsSectionRef}
+        className="home-reviews"
+        aria-label="Customer reviews"
+      >
+        <div className="home-reviews__inner">
+          <Motion.div
+            className="home-reviews__header"
+            initial={{ opacity: 0, y: 22 }}
+            animate={isReviewsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+          >
+            <p className="home-reviews__eyebrow">Testimonials</p>
+            <h2 className="home-reviews__title">Trusted by Watch Collectors Worldwide</h2>
+          </Motion.div>
+
+          <Motion.div
+            key={`reviews-page-${clampedReviewPage}-${reviewsPerPage}`}
+            className="home-reviews__grid"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isReviewsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+          >
+            {visibleTestimonials.map((testimonial, index) => (
+              <Motion.article
+                key={testimonial._id}
+                className="home-review-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={isReviewsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.45, delay: index * 0.1, ease: 'easeOut' }}
+              >
+                <div className="home-review-card__top">
+                  <div className="home-review-card__avatar" aria-hidden="true">
+                    {getReviewerInitials(testimonial.name)}
+                  </div>
+
+                  <div className="home-review-card__meta">
+                    <p className="home-review-card__name">{testimonial.name}</p>
+                    <p className="home-review-card__location">{testimonial.location}</p>
+                  </div>
+                </div>
+
+                <p className="home-review-card__stars" aria-label={`${testimonial.rating} out of 5 stars`}>
+                  {Array.from({ length: 5 }, (_, starIndex) =>
+                    starIndex < testimonial.rating ? '★' : '☆'
+                  ).join(' ')}
+                </p>
+
+                <p className="home-review-card__quote">&quot;{testimonial.quote}&quot;</p>
+              </Motion.article>
+            ))}
+          </Motion.div>
+
+          <div className="home-reviews__controls" aria-label="Reviews navigation">
+            <button
+              type="button"
+              className="home-reviews__arrow"
+              onClick={goToPreviousReviewPage}
+              aria-label="Show previous reviews"
+            >
+              ←
+            </button>
+
+            <div className="home-reviews__dots" role="tablist" aria-label="Review pages">
+              {Array.from({ length: totalReviewPages }, (_, pageIndex) => (
+                <button
+                  key={`review-dot-${pageIndex}`}
+                  type="button"
+                  className={`home-reviews__dot${
+                    clampedReviewPage === pageIndex ? ' home-reviews__dot--active' : ''
+                  }`}
+                  onClick={() => goToReviewPage(pageIndex)}
+                  aria-label={`Show reviews page ${pageIndex + 1}`}
+                  aria-selected={clampedReviewPage === pageIndex}
+                  role="tab"
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="home-reviews__arrow"
+              onClick={goToNextReviewPage}
+              aria-label="Show next reviews"
+            >
+              →
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* TODO: New arrivals section */}
-      {/* TODO: Heritage section */}
     </div>
   )
 }
