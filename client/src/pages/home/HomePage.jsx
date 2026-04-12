@@ -20,6 +20,10 @@ import { Link } from 'react-router-dom'
 import { motion as Motion, useInView } from 'framer-motion'
 import heroVideo from '@/assets/videos/hero.mp4'
 import collectionFallbackImage from '@/assets/images/notFound1.svg'
+import marqueeCrown from '@/assets/images/Marquee/crown.png'
+import marqueeHorse from '@/assets/images/Marquee/horse.png'
+import marqueeSwissMade from '@/assets/images/Marquee/SwissMade.png'
+import marqueeKey from '@/assets/images/Marquee/key.png'
 import heritageImage from '@/assets/images/Photos/Heritage.avif'
 import watchCartierTankMust from '@/assets/images/Watches/Cartier Tank Must.png'
 import watchDeVilleTresor from '@/assets/images/Watches/De Ville Tresor.png'
@@ -106,6 +110,29 @@ export default function HomePage() {
     { src: watchSaxonia, name: 'Saxonia' },
     { src: watchSantosDeCartier, name: 'Santos de Cartier' },
     { src: watchTankLouisCartier, name: 'Tank Louis Cartier' },
+  ]
+
+  const trustStripItems = [
+    {
+      icon: marqueeCrown,
+      title: 'Customer Service',
+      subtitle: 'For any question please contact customer service@gmail.com',
+    },
+    {
+      icon: marqueeHorse,
+      title: 'Complimentary Delivery',
+      subtitle: 'on all orders',
+    },
+    {
+      icon: marqueeSwissMade,
+      title: 'Swiss Made',
+      subtitle: 'guaranteed authenticity',
+    },
+    {
+      icon: marqueeKey,
+      title: 'Secure Payment',
+      subtitle: 'for all payments',
+    },
   ]
 
   const totalReviewPages = Math.max(1, Math.ceil(testimonials.length / reviewsPerPage))
@@ -273,6 +300,39 @@ export default function HomePage() {
           >
             Discover More
           </button>
+        </div>
+      </section>
+
+      {/* ── TRUST STRIP MARQUEE ─────────────────────────────────────────── */}
+      <section
+        className="home-trust"
+        aria-label="Service and trust highlights"
+      >
+        <div className="home-trust__marquee">
+          <div className="home-trust__track">
+            {/* Duplicate group creates a seamless right-to-left loop. */}
+            {[0, 1].map((groupIndex) => (
+              <div
+                key={`trust-group-${groupIndex}`}
+                className="home-trust__group"
+                aria-hidden={groupIndex === 1}
+              >
+                {trustStripItems.map((item) => (
+                  <article key={`${groupIndex}-${item.title}`} className="home-trust__item">
+                    <img
+                      className="home-trust__icon"
+                      src={item.icon}
+                      alt=""
+                      loading="lazy"
+                      aria-hidden="true"
+                    />
+                    <h2 className="home-trust__title">{item.title}</h2>
+                    <p className="home-trust__subtitle">{item.subtitle}</p>
+                  </article>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
