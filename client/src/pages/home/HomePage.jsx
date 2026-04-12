@@ -17,8 +17,10 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion as Motion, useInView } from 'framer-motion'
 import heroVideo from '@/assets/videos/hero.mp4'
-import collectionFallbackImage from '@/assets/images/hero-watch.jpg'
+import collectionFallbackImage from '@/assets/images/notFound1.svg'
+import heritageImage from '@/assets/images/Photos/Heritage.avif'
 import watchModel from '@/assets/3D Models/watch.glb'
 import collections from '@/data/collections.json'
 import '@/pages/home/HomePage.css'
@@ -27,6 +29,8 @@ export default function HomePage() {
   // IntersectionObserver watches the section element to trigger entrance animations.
   const collectionsSectionRef = useRef(null)
   const configuratorSectionRef = useRef(null)
+  const genderSectionRef = useRef(null)
+  const heritageSectionRef = useRef(null)
 
   // Scroll ref is on the inner scroll container, separate from the section.
   // Previously both refs were on the same element — the section ref was overwritten.
@@ -45,6 +49,36 @@ export default function HomePage() {
 
   const featured = collections.slice(0, 4)
   const watchInitialOrbit = '315deg 25deg auto'
+  const isGenderInView = useInView(genderSectionRef, { once: true, margin: '-100px' })
+  const isHeritageInView = useInView(heritageSectionRef, { once: true, margin: '-120px' })
+
+  const genderImageHoverVariants = {
+    hover: { scale: 1.06 },
+  }
+
+  const heritageBoxVariants = {
+    hidden: { opacity: 0, y: 36, scale: 0.97 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1],
+        when: 'beforeChildren',
+        staggerChildren: 0.12,
+      },
+    },
+  }
+
+  const heritageItemVariants = {
+    hidden: { opacity: 0, y: 18 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+    },
+  }
 
   // IntersectionObserver triggers the stagger entrance animation once on first viewport entry.
   useEffect(() => {
@@ -354,8 +388,107 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── GENDER SPLIT ───────────────────────────────────────────────── */}
+      <section
+        ref={genderSectionRef}
+        className="home-gender"
+        aria-label="Shop by gender"
+      >
+        <Motion.article
+          className="home-gender__panel home-gender__panel--him"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isGenderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.7, delay: 0, ease: 'easeOut' }}
+          whileHover="hover"
+        >
+          <Link
+            className="home-gender__panel-link"
+            to="/shop/men"
+            aria-label="Shop men's watches"
+          />
+          <Motion.div
+            className="home-gender__image"
+            variants={genderImageHoverVariants}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          />
+          <div className="home-gender__overlay" aria-hidden="true" />
+
+          <div className="home-gender__content">
+            <h3 className="home-gender__title">FOR HIM</h3>
+            <p className="home-gender__subtitle">BOLD. SOPHISTICATED. TIMELESS.</p>
+            <Link className="home-gender__cta" to="/shop/men">
+              SHOP MEN&apos;S WATCHES
+            </Link>
+          </div>
+        </Motion.article>
+
+        <span className="home-gender__divider" aria-hidden="true" />
+
+        <Motion.article
+          className="home-gender__panel home-gender__panel--her"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isGenderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+          whileHover="hover"
+        >
+          <Link
+            className="home-gender__panel-link"
+            to="/shop/women"
+            aria-label="Shop women's watches"
+          />
+          <Motion.div
+            className="home-gender__image"
+            variants={genderImageHoverVariants}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          />
+          <div className="home-gender__overlay" aria-hidden="true" />
+
+          <div className="home-gender__content">
+            <h3 className="home-gender__title">FOR HER</h3>
+            <p className="home-gender__subtitle">ELEGANT. REFINED. EXQUISITE.</p>
+            <Link className="home-gender__cta" to="/shop/women">
+              SHOP WOMEN&apos;S WATCHES
+            </Link>
+          </div>
+        </Motion.article>
+      </section>
+
+      {/* ── OUR HERITAGE (ABOUT) ───────────────────────────────────────── */}
+      <section
+        ref={heritageSectionRef}
+        className="home-heritage"
+        aria-label="Our heritage"
+        style={{ '--home-heritage-bg': `url(${heritageImage})` }}
+      >
+        <Motion.div
+          className="home-heritage__inner"
+          variants={heritageBoxVariants}
+          initial="hidden"
+          animate={isHeritageInView ? 'visible' : 'hidden'}
+        >
+          <Motion.p className="home-heritage__eyebrow" variants={heritageItemVariants}>
+            OUR HERITAGE
+          </Motion.p>
+
+          <Motion.h2 className="home-heritage__title" variants={heritageItemVariants}>
+            <span>Crafting&nbsp;time&nbsp;since</span>
+            <span>1875</span>
+          </Motion.h2>
+
+          <Motion.p className="home-heritage__lead" variants={heritageItemVariants}>
+            From a discreet Geneva workshop to a global community of collectors, Van Der Linde
+            has remained devoted to precision, restraint, and timeless design.
+          </Motion.p>
+
+          <Motion.div variants={heritageItemVariants}>
+            <Link className="home-heritage__cta" to="/about">
+              Explore Our Heritage
+            </Link>
+          </Motion.div>
+        </Motion.div>
+      </section>
+
       {/* TODO: New arrivals section */}
-      {/* TODO: Heritage section */}
     </div>
   )
 }
