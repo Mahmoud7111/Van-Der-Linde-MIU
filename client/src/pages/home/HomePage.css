@@ -1,0 +1,515 @@
+/*
+  File: HomePage.css
+  Scoped styles for the Van Der Linde homepage.
+
+  Collections section layout model:
+  - .home-collections           → section wrapper, background, no overflow
+  - .home-collections__scroll   → the actual scroll container (overflow-x:scroll)
+  - .home-collections__intro    → position:sticky left:0, always visible
+  - .home-collections__cards    → padding-left positions first card at right side of viewport
+*/
+
+.home-page {
+  overflow-x: hidden;
+}
+
+/* ── HERO ──────────────────────────────────────────────────────────────────── */
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: var(--color-dark);
+}
+
+.home-hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.home-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* Transparent per design direction — full video visibility. */
+  background: transparent;
+}
+
+.home-hero__content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  padding:
+    calc(var(--space-2xl) + var(--space-xl))
+    clamp(var(--space-lg), 6vw, var(--space-2xl))
+    clamp(var(--space-xl), 10vh, calc(var(--space-2xl) + var(--space-xl)));
+}
+
+.home-hero__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5.2vw, 5rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  text-shadow: 0 8px 24px color-mix(in srgb, var(--color-dark) 70%, transparent 30%);
+  opacity: 0;
+  animation: slideUp var(--transition-slow) 0.2s forwards;
+}
+
+.home-hero__title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.home-hero__subtitle {
+  margin: 0;
+  max-width: 43ch;
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-white) 88%, var(--color-gold) 12%);
+  text-shadow: 0 6px 18px color-mix(in srgb, var(--color-dark) 62%, transparent 38%);
+  opacity: 0;
+  animation: slideUp var(--transition-slow) 0.5s forwards;
+}
+
+.home-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-xl);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    border-color var(--transition-normal),
+    transform var(--transition-fast);
+  animation: fadeIn var(--transition-slow) 0.9s forwards;
+}
+
+.home-hero__cta:hover {
+  background: var(--color-gold);
+  color: var(--color-dark);
+  transform: translateY(-1px);
+}
+
+.home-hero__cta:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: var(--space-xs);
+}
+
+@media (max-width: 768px) {
+  .home-hero__content {
+    gap: var(--space-sm);
+    padding:
+      calc(var(--space-2xl) + var(--space-lg))
+      var(--space-md)
+      calc(var(--space-2xl) + var(--space-md));
+  }
+
+  .home-hero__title {
+    font-size: clamp(1.9rem, 9.6vw, 3.1rem);
+  }
+
+  .home-hero__subtitle {
+    max-width: 34ch;
+    font-size: 0.95rem;
+  }
+}
+
+/* ── COLLECTIONS ───────────────────────────────────────────────────────────── */
+
+.home-collections {
+  --card-width: min(560px, 85vw);
+  --card-height: min(640px, 80vh);
+  --intro-width: clamp(280px, 28vw, 420px);
+  /*
+    No --cards-start-offset variable here anymore.
+    The padding-left on .home-collections__cards uses a direct calc instead.
+  */
+
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-surface) 94%, var(--color-dark) 6%) 0%,
+    var(--color-surface) 100%
+  );
+}
+
+/*
+  Actual scroll container — separate from <section> so
+  IntersectionObserver ref and scroll ref don't overwrite each other.
+*/
+.home-collections__scroll {
+  display: flex;
+  align-items: stretch;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  user-select: none;
+  touch-action: pan-x;
+  min-height: calc(var(--card-height) + var(--space-2xl) * 2);
+}
+
+.home-collections__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+
+/*
+  Sticky intro panel.
+  position:sticky + left:0 keeps the intro anchored to the left edge
+  of the scroll container at all times.
+  z-index:2 keeps it above cards so it appears in front at rest (scrollLeft=0).
+  The right gradient fades cleanly into cards sliding underneath.
+*/
+.home-collections__intro {
+  position: sticky;
+  left: 0;
+  /* Make State 1 a valid snap point so track can rest at true start (scrollLeft=0). */
+  scroll-snap-align: start;
+  z-index: 2;
+  flex: 0 0 var(--intro-width);
+  width: var(--intro-width);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding:
+    var(--space-2xl)
+    var(--space-xl)
+    var(--space-2xl)
+    clamp(var(--space-lg), 4vw, var(--space-2xl));
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-surface) 72%,
+    color-mix(in srgb, var(--color-surface) 0%, transparent 100%) 100%
+  );
+  opacity: 0;
+  transform: translateY(var(--space-md));
+}
+
+.home-collections__intro--visible {
+  animation: slideUp var(--transition-slow) forwards;
+}
+
+.home-collections__label {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.home-collections__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-dark);
+}
+
+.home-collections__view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  transition: color var(--transition-normal), transform var(--transition-normal);
+}
+
+.home-collections__view-all:hover {
+  color: var(--color-brass);
+  transform: translateX(var(--space-xs));
+}
+
+.home-collections__arrows {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.home-collections__arrow {
+  width: 2.6rem;
+  height: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 42%, transparent 58%);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-white) 88%, transparent 12%);
+  color: var(--color-gold);
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    transform var(--transition-fast);
+}
+
+.home-collections__arrow:hover {
+  background: var(--color-gold);
+  color: var(--color-dark);
+  transform: translateY(-1px);
+}
+
+.home-collections__arrow:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/*
+  Cards wrapper.
+
+  THIS IS THE KEY RULE — padding-left controls State 1 position.
+
+  The scroll container layout at scrollLeft=0:
+    [sticky intro: 0 → intro-width][padding-left][first card → ...]
+
+  calc(52vw - var(--intro-width)) puts the first card's LEFT EDGE
+  at exactly 52% of the viewport width.
+
+  At a typical 1440px screen:
+    intro-width ≈ 403px
+    52vw = 748px
+    padding-left = 748 - 403 = 345px
+    first card left edge = 403 + 345 = 748px = 52% of viewport ✓
+
+  State 1: first card starts at 52vw, fills right side, second card peeks.
+  Drag left: cards slide left, cover the sticky intro.
+  Drag right: scrollLeft returns to 0, State 1 exact.
+
+  Adjust the vw value (52vw) to taste:
+  - Lower (e.g. 42vw) → card starts closer to intro
+  - Higher (e.g. 52vw) → card starts further right
+*/
+.home-collections__cards {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--space-md);
+  padding:
+    var(--space-2xl)
+    var(--space-xl)
+    var(--space-2xl)
+    calc(43vw - var(--intro-width));   /* ← positions first card at 47% of viewport */}
+
+.home-collection-card {
+  flex: 0 0 var(--card-width);
+  width: var(--card-width);
+  height: var(--card-height);
+  scroll-snap-align: start;
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-dark);
+  border: 1px solid color-mix(in srgb, var(--color-white) 20%, transparent 80%);
+  box-shadow: 0 var(--space-lg) var(--space-xl)
+    color-mix(in srgb, var(--color-dark) 34%, transparent 66%);
+  opacity: 0;
+  transform: translateY(var(--space-md));
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal),
+    border-color var(--transition-normal);
+  /* z-index:1 keeps cards behind the sticky intro at rest. */
+  z-index: 1;
+}
+
+.home-collection-card--visible {
+  animation: slideUp var(--transition-slow) forwards;
+}
+
+.home-collection-card:hover {
+  transform: translateY(calc(var(--space-xs) * -1));
+  border-color: color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
+  box-shadow:
+    0 calc(var(--space-xl) + var(--space-sm)) calc(var(--space-2xl) + var(--space-sm))
+    color-mix(in srgb, var(--color-dark) 42%, transparent 58%);
+}
+
+.home-collection-card__media {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-dark);
+  background-size: cover;
+  background-position: center;
+  transform: scale(1);
+  will-change: transform;
+  transition: transform var(--transition-slow);
+}
+
+.home-collection-card:hover .home-collection-card__media {
+  transform: scale(1.04);
+}
+
+/* Bottom gradient keeps text legible over any image. */
+.home-collection-card__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-dark) 8%, transparent 92%) 0%,
+    color-mix(in srgb, var(--color-dark) 22%, transparent 78%) 52%,
+    color-mix(in srgb, var(--color-dark) 78%, transparent 22%) 100%
+  );
+}
+
+.home-collection-card__content {
+  /* Pin the text block to the bottom-left regardless of image dimensions. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: var(--space-sm);
+  padding: calc(var(--space-lg) + var(--space-sm));
+}
+
+.home-collection-card__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-weight: 500;
+  line-height: 1.06;
+  text-transform: uppercase;
+  color: var(--color-white);
+}
+
+.home-collection-card__description {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-white) 86%, var(--color-muted) 14%);
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.home-collection-card__link {
+  /* Keep CTA aligned with the text block baseline at the bottom-left. */
+  margin-top: var(--space-xs);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-white) 92%, var(--color-gold) 8%);
+  transition: color var(--transition-normal), transform var(--transition-normal);
+}
+
+.home-collection-card__link:hover {
+  color: var(--color-gold);
+  transform: translateX(var(--space-xs));
+}
+
+/* ── Dark mode ──────────────────────────────────────────────────────────── */
+
+[data-theme='dark'] .home-collections {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
+    var(--color-surface) 100%
+  );
+}
+
+[data-theme='dark'] .home-collections__intro {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-surface) 72%,
+    color-mix(in srgb, var(--color-surface) 0%, transparent 100%) 100%
+  );
+}
+
+[data-theme='dark'] .home-collections__title {
+  color: var(--color-dark);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .home-collections {
+    --card-width: 80vw;
+    --card-height: min(480px, 72vh);
+    --intro-width: 85vw;
+  }
+
+  .home-collections__scroll {
+    flex-direction: column;
+    overflow-x: auto;
+    min-height: auto;
+  }
+
+  /*
+    On mobile the sticky intro doesn't work at small widths.
+    Release sticky so intro scrolls normally above the cards.
+  */
+  .home-collections__intro {
+    position: relative;
+    width: 100%;
+    flex: none;
+    padding: var(--space-xl) var(--space-lg);
+    background: var(--color-surface);
+  }
+
+  .home-collections__cards {
+    flex-direction: row;
+    /* Reset desktop offset — not needed on mobile. */
+    padding: 0 var(--space-lg) var(--space-xl);
+    gap: var(--space-md);
+  }
+
+  .home-collections__arrows {
+    display: none;
+  }
+}
+/* ── END COLLECTIONS ── */

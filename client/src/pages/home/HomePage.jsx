@@ -1,3 +1,286 @@
+/**
+ * HomePage
+ *
+ * What this file is:
+ * Hero-first homepage for Van Der Linde.
+ *
+ * Collections section uses a sticky-intro scroll pattern:
+ * The intro panel is position:sticky left:0 inside the scroll container,
+ * so cards slide over it on drag.
+ *
+ * State 1 (scrollLeft=0): intro visible, first card fills the right side of the viewport.
+ * State 2 (drag left): cards slide left, covering the sticky intro.
+ * Drag right back: scrollLeft returns to 0, intro re-emerges exactly.
+ *
+ * Bug fix: section and scroll container are now separate elements so
+ * IntersectionObserver ref and scroll ref don't overwrite each other.
+ */
+import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import heroVideo from '@/assets/Assets/videos/hero.mp4'
+import collectionFallbackImage from '@/assets/images/hero-watch.jpg'
+import collections from '@/data/collections.json'
+import '@/pages/home/HomePage.css'
+
 export default function HomePage() {
-  return <div>HomePage - coming soon</div>;
+  // IntersectionObserver watches the section element to trigger entrance animations.
+  const collectionsSectionRef = useRef(null)
+
+  // Scroll ref is on the inner scroll container, separate from the section.
+  // Previously both refs were on the same element — the section ref was overwritten.
+  const scrollTrackRef = useRef(null)
+
+  // Drag state tracked in refs to avoid unnecessary re-renders during pointer events.
+  const isDraggingRef = useRef(false)
+  const pointerStartXRef = useRef(0)
+  const pointerStartScrollRef = useRef(0)
+
+  // Tracks total drag distance so click-through on cards is suppressed after a real drag.
+  const dragDistanceRef = useRef(0)
+
+  const [isCollectionsVisible, setIsCollectionsVisible] = useState(false)
+
+  const featured = collections.slice(0, 4)
+
+  // IntersectionObserver triggers the stagger entrance animation once on first viewport entry.
+  useEffect(() => {
+    const sectionNode = collectionsSectionRef.current
+    if (!sectionNode) return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsCollectionsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.2 }
+    )
+
+    observer.observe(sectionNode)
+    return () => observer.disconnect()
+  }, [])
+
+  // Always restore State 1 on mount so the section starts from the composed baseline.
+  useEffect(() => {
+    if (!scrollTrackRef.current) return
+    scrollTrackRef.current.scrollLeft = 0
+  }, [])
+
+  // Arrow buttons scroll the inner track by one card-width step.
+  const scrollBy = (offset) => {
+    scrollTrackRef.current?.scrollBy({ left: offset, behavior: 'smooth' })
+  }
+
+  // ── Pointer drag handlers ──────────────────────────────────────────────────
+  // Supports mouse drag on desktop in addition to native touch/wheel scroll.
+
+  const handlePointerDown = (e) => {
+    if (!scrollTrackRef.current) return
+    isDraggingRef.current = true
+    dragDistanceRef.current = 0
+    pointerStartXRef.current = e.clientX
+    pointerStartScrollRef.current = scrollTrackRef.current.scrollLeft
+    scrollTrackRef.current.setPointerCapture?.(e.pointerId)
+  }
+
+  const handlePointerMove = (e) => {
+    if (!isDraggingRef.current || !scrollTrackRef.current) return
+    const deltaX = e.clientX - pointerStartXRef.current
+    dragDistanceRef.current = Math.abs(deltaX)
+    // Invert deltaX: dragging left (negative delta) increases scrollLeft.
+    scrollTrackRef.current.scrollLeft = pointerStartScrollRef.current - deltaX
+  }
+
+  const handlePointerUp = (e) => {
+    isDraggingRef.current = false
+    scrollTrackRef.current?.releasePointerCapture?.(e.pointerId)
+  }
+
+  // Suppress link navigation if the pointer moved more than 8px — it was a drag, not a click.
+  const handleCardClick = (e) => {
+    if (dragDistanceRef.current > 8) {
+      e.preventDefault()
+    }
+  }
+
+  return (
+    <div className="home-page">
+
+      {/* ── HERO ──────────────────────────────────────────────────────────── */}
+      <section className="home-hero" aria-label="Van Der Linde luxury watches">
+        <video
+          className="home-hero__video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        >
+          {/* Vite import ensures correct asset fingerprinting and CDN path. */}
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+
+        {/* Overlay kept transparent per design direction — preserves full video clarity. */}
+        <div className="home-hero__overlay" aria-hidden="true" />
+
+        <div className="home-hero__content">
+          <h1 className="home-hero__title">
+            <span className="home-hero__title-line">THE ART OF</span>
+            <span className="home-hero__title-line">WATCHMAKING</span>
+          </h1>
+          <p className="home-hero__subtitle">
+            Explore exceptional vintage and luxury watches crafted with precision, heritage,
+            and timeless elegance.
+          </p>
+          {/*
+            JS scroll avoids the fixed header covering the section target,
+            which would happen with a plain href="#collections" anchor.
+          */}
+          <button
+            type="button"
+            className="home-hero__cta"
+            onClick={() =>
+              document
+                .getElementById('collections')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+          >
+            Discover More
+          </button>
+        </div>
+      </section>
+
+      {/* ── COLLECTIONS ───────────────────────────────────────────────────── */}
+      {/*
+        Layout model:
+        <section>                      → IntersectionObserver target, background, no scroll
+          .home-collections__scroll    → overflow-x:scroll, flex container, drag target
+            .home-collections__intro   → position:sticky left:0, never scrolls away
+            .home-collections__cards   → flex row, padding-left pushes first card to right side
+
+        State 1 (scrollLeft=0):
+          intro fully visible on left,
+          first card's left edge starts at (100vw - card-width) — fills right side.
+
+        State 2 (drag left):
+          cards slide left, covering the sticky intro underneath.
+
+        Drag right back:
+          scrollLeft returns to 0, intro fully re-emerges. Exact state 1.
+      */}
+      <section
+        id="collections"
+        ref={collectionsSectionRef}
+        className="home-collections"
+        aria-label="Featured collections"
+      >
+        {/*
+          Scroll container is its own element so the section ref (IntersectionObserver)
+          and scroll ref don't overwrite each other — that was the original bug.
+          All pointer events live here so the full scroll surface is draggable.
+        */}
+        <div
+          className="home-collections__scroll"
+          ref={scrollTrackRef}
+        >
+
+          {/*
+            Intro is sticky left:0 with z-index above cards so it sits in front at rest.
+            The right-side fade gradient dissolves cleanly into cards sliding underneath.
+          */}
+          <div
+            className={`home-collections__intro${
+              isCollectionsVisible ? ' home-collections__intro--visible' : ''
+            }`}
+          >
+            <p className="home-collections__label">OUR COLLECTIONS</p>
+            <h2 className="home-collections__title">OUR 2026 NOVELTIES</h2>
+            <Link
+              className="home-collections__view-all"
+              to="/collections"
+            >
+              Explore our collection of watches
+            </Link>
+
+            {/* Arrows are inside the intro so they're always accessible regardless of scroll position. */}
+            <div className="home-collections__arrows">
+              <button
+                type="button"
+                className="home-collections__arrow"
+                onClick={() => scrollBy(-420)}
+                aria-label="Scroll collections left"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                className="home-collections__arrow"
+                onClick={() => scrollBy(420)}
+                aria-label="Scroll collections right"
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          {/*
+            Cards sit to the right of the intro inside the scroll container.
+            padding-left on this wrapper is what creates State 1:
+            it pushes the first card's left edge to (100vw - card-width),
+            so it starts on the right side of the viewport at scrollLeft=0.
+          */}
+          <div
+            className="home-collections__cards"
+            aria-label="Featured collections carousel"
+            // Drag behavior is intentionally scoped to cards only so intro links remain clickable.
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+            onPointerLeave={handlePointerUp}
+          >
+            {featured.map((collection, index) => (
+              <article
+                key={collection._id}
+                className={`home-collection-card${
+                  isCollectionsVisible ? ' home-collection-card--visible' : ''
+                }`}
+                // Stagger: each card animates 100ms after the previous one.
+                style={{ animationDelay: `${(index + 1) * 0.1}s` }}
+              >
+                <div
+                  className="home-collection-card__media"
+                  style={{
+                    // Primary: JSON coverImage. Fallback: Vite-resolved imported asset.
+                    backgroundImage: `url(${collection.coverImage}), url(${collectionFallbackImage})`,
+                  }}
+                  aria-hidden="true"
+                />
+
+                {/* Bottom gradient keeps text legible over any image content. */}
+                <div className="home-collection-card__shade" aria-hidden="true" />
+
+                <div className="home-collection-card__content">
+                  <h3 className="home-collection-card__name">{collection.name}</h3>
+                  <p className="home-collection-card__description">{collection.description}</p>
+                  <Link
+                    className="home-collection-card__link"
+                    to={`/collections/${collection.slug}`}
+                    onClick={handleCardClick}
+                  >
+                    Explore <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      {/* ── END COLLECTIONS ── */}
+
+      {/* TODO: New arrivals section */}
+      {/* TODO: Heritage section */}
+    </div>
+  )
 }

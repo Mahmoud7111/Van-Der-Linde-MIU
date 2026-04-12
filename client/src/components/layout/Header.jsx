@@ -6,6 +6,8 @@
  *
  * What it does:
  * Renders essential navigation links and shows auth/cart awareness through context.
+ * Uses useScrollDirection to handle both scroll depth and hide/show behavior
+ * through a single scroll listener instead of two.
  *
  * Where it is used:
  * Imported and rendered in Layout.jsx for all routes.
@@ -14,9 +16,11 @@
  * Full header implementation (SearchBar, DarkModeToggle, CurrencySwitcher,
  * MobileMenu, sticky behavior, and responsive interactions) is owned by Dev 5.
  */
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { cn } from '@/utils/cn'
 import {
   FiDollarSign,
   FiGlobe,
@@ -28,12 +32,24 @@ import {
 import './Header.css'
 
 export default function Header() {
+  // Single hook handles both scroll depth (for transparent→solid transition)
+  // and scroll direction (for hide/show behavior). Replaces useScrollPosition
+  // + a separate useEffect listener that were running two scroll handlers simultaneously.
+  const { scrollY, isHidden } = useScrollDirection()
+
+  const location = useLocation()
+
+  // Homepage gets special treatment: header starts transparent over the hero
+  // and becomes solid after the user scrolls 80px past the top.
+  const isHomePage = location.pathname === '/'
+
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
 
   // Reads authenticated user; full header uses this for account menu, logout, and role links.
   const { user } = useAuth()
 
+  // NavLink className helpers keep JSX clean and apply active state via CSS modifier.
   const navLinkClassName = ({ isActive }) =>
     `header__link${isActive ? ' header__link--active' : ''}`
 
@@ -43,12 +59,25 @@ export default function Header() {
   const cartLinkClassName = ({ isActive }) =>
     `header__icon-control header__icon-control--cart${isActive ? ' header__icon-control--active' : ''}`
 
+  // Account destination and label depend on auth state.
   const accountPath = user ? '/profile' : '/login'
   const accountLabel = user ? 'Profile' : 'Login'
 
   return (
-    <header className="header">
+    <header
+      className={cn(
+        'header',
+        // Fixed positioning + transparent background on homepage hero only.
+        isHomePage && 'header--home',
+        // Transparent state clears background/shadow while user is inside the hero area.
+        isHomePage && scrollY < 80 && 'header--transparent',
+        // Hide header when scrolling down; reveal when scrolling up or near the top.
+        // The scrollY > 24 guard prevents hiding the header on tiny accidental scrolls.
+        isHidden && scrollY > 24 && 'header--hidden'
+      )}
+    >
       <div className="header__inner">
+        {/* Left nav — shop-facing links */}
         <nav className="header__left header__nav" aria-label="Shop links">
           <NavLink className={navLinkClassName} to="/shop">
             SHOP ALL
@@ -61,6 +90,7 @@ export default function Header() {
           </NavLink>
         </nav>
 
+        {/* Center brand logo — always links back to homepage */}
         <Link className="header__brand" to="/">
           <img
             className="header__logo"
@@ -71,24 +101,27 @@ export default function Header() {
         </Link>
 
         <div className="header__right">
+          {/* Right nav — brand/informational links */}
           <nav className="header__nav header__nav--right" aria-label="Company links">
             <NavLink className={navLinkClassName} to="/services">
               SERVICES
             </NavLink>
             <NavLink className={navLinkClassName} to="/about">
-              ABOUT
+              OUR STORY
             </NavLink>
             <NavLink className={navLinkClassName} to="/contact">
               CONTACT
             </NavLink>
           </nav>
 
+          {/* Icon controls — utility actions separated from nav links by a divider */}
           <div className="header__icons-wrap">
             <span className="header__divider" aria-hidden="true">
               |
             </span>
 
             <div className="header__actions">
+              {/* Cart badge shows live item count from CartContext */}
               <NavLink
                 aria-label={`Cart with ${totalItems} items`}
                 className={cartLinkClassName}
@@ -100,10 +133,12 @@ export default function Header() {
                 </span>
               </NavLink>
 
+              {/* Account link destination switches based on auth state */}
               <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
                 <FiUser aria-hidden="true" />
               </NavLink>
 
+              {/* Language, wishlist, theme, currency — wired up by Dev 5 in full implementation */}
               <button type="button" className="header__icon-control" aria-label="Language selector">
                 <FiGlobe aria-hidden="true" />
               </button>

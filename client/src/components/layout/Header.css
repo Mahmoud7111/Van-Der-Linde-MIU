@@ -11,7 +11,57 @@
 	);
 	backdrop-filter: blur(10px);
 	box-shadow: 0 14px 28px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
+	transition:
+		transform var(--transition-normal),
+		background var(--transition-normal),
+		box-shadow var(--transition-normal);
 	animation: fadeIn 0.45s ease both;
+}
+
+.header--hidden {
+	transform: translateY(-100%);
+}
+
+.header--home {
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 100%;
+}
+
+.header--transparent {
+	background: transparent;
+	box-shadow: none;
+	border-bottom-color: transparent;
+	backdrop-filter: none;
+}
+
+.header--transparent .header__link {
+	color: color-mix(in srgb, var(--color-white) 92%, var(--color-gold) 8%);
+}
+
+.header--transparent .header__divider {
+	color: color-mix(in srgb, var(--color-white) 72%, transparent 28%);
+}
+
+.header--transparent .header__icon-control {
+	background: color-mix(in srgb, var(--color-white) 10%, transparent 90%);
+	border-color: color-mix(in srgb, var(--color-white) 40%, transparent 60%);
+	color: var(--color-white);
+}
+
+.header--transparent .header__icon-control--cart {
+	background: color-mix(in srgb, var(--color-white) 14%, transparent 86%);
+}
+
+.header--transparent .header__logo {
+	filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--color-dark) 45%, transparent 55%));
+}
+
+.header.header--transparent::after {
+	display: none;
+	height: 0;
+	opacity: 0;
 }
 
 .header::after {
