@@ -21,6 +21,14 @@ import { motion as Motion, useInView } from 'framer-motion'
 import heroVideo from '@/assets/videos/hero.mp4'
 import collectionFallbackImage from '@/assets/images/notFound1.svg'
 import heritageImage from '@/assets/images/Photos/Heritage.avif'
+import watchCartierTankMust from '@/assets/images/Watches/Cartier Tank Must.png'
+import watchDeVilleTresor from '@/assets/images/Watches/De Ville Tresor.png'
+import watchRolexLadyDatejust from '@/assets/images/Watches/Rolex Lady Datejust.png'
+import watchPatekNautilusWhiteGold from '@/assets/images/Watches/Patek Philippe Nautilus White Gold.png'
+import watchSaxonia from '@/assets/images/Watches/Saxonia.png'
+import watchAPRoyalOakOffshore from '@/assets/images/Watches/Audemars Piguet Royal Oak Offshore.png'
+import watchSantosDeCartier from '@/assets/images/Watches/Santos de Cartier.png'
+import watchTankLouisCartier from '@/assets/images/Watches/Tank Louis Cartier.png'
 import watchModel from '@/assets/3D Models/watch.glb'
 import collections from '@/data/collections.json'
 import testimonials from '@/data/testimonials.json'
@@ -31,6 +39,7 @@ export default function HomePage() {
   const collectionsSectionRef = useRef(null)
   const configuratorSectionRef = useRef(null)
   const genderSectionRef = useRef(null)
+  const quizSectionRef = useRef(null)
   const heritageSectionRef = useRef(null)
   const reviewsSectionRef = useRef(null)
 
@@ -56,6 +65,7 @@ export default function HomePage() {
   const featured = collections.slice(0, 4)
   const watchInitialOrbit = '315deg 25deg auto'
   const isGenderInView = useInView(genderSectionRef, { once: true, margin: '-100px' })
+  const isQuizInView = useInView(quizSectionRef, { once: true, margin: '-100px' })
   const isHeritageInView = useInView(heritageSectionRef, { once: true, margin: '-120px' })
   const isReviewsInView = useInView(reviewsSectionRef, { once: true, margin: '-120px' })
 
@@ -86,6 +96,17 @@ export default function HomePage() {
       transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
     },
   }
+
+  const quizWatches = [
+    { src: watchCartierTankMust, name: 'Cartier Tank Must' },
+    { src: watchRolexLadyDatejust, name: 'Rolex Lady Datejust' },
+    { src: watchDeVilleTresor, name: 'De Ville Tresor' },
+    { src: watchAPRoyalOakOffshore, name: 'Audemars Piguet Royal Oak Offshore' },
+    { src: watchPatekNautilusWhiteGold, name: 'Patek Philippe Nautilus White Gold' },
+    { src: watchSaxonia, name: 'Saxonia' },
+    { src: watchSantosDeCartier, name: 'Santos de Cartier' },
+    { src: watchTankLouisCartier, name: 'Tank Louis Cartier' },
+  ]
 
   const totalReviewPages = Math.max(1, Math.ceil(testimonials.length / reviewsPerPage))
   const clampedReviewPage = Math.min(activeReviewPage, totalReviewPages - 1)
@@ -499,6 +520,57 @@ export default function HomePage() {
             </Link>
           </div>
         </Motion.article>
+      </section>
+
+      {/* ── WATCH QUIZ ─────────────────────────────────────────────────── */}
+      <section
+        ref={quizSectionRef}
+        className="home-quiz"
+        aria-label="Find your watch quiz"
+      >
+        <div className="home-quiz__inner">
+          <Motion.div
+            className="home-quiz__header"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isQuizInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+          >
+            <p className="home-quiz__eyebrow">Personal Selector</p>
+            <h2 className="home-quiz__title">Find Your Watch</h2>
+            <p className="home-quiz__subtitle">
+              Need help narrowing down the best watches for your style? Take our quick quiz
+              and discover your perfect match.
+            </p>
+
+            <Link className="home-quiz__cta" to="/quiz">
+              Find Your Watch
+            </Link>
+          </Motion.div>
+
+          <Motion.div
+            className="home-quiz__rail"
+            initial={{ opacity: 0, y: 26 }}
+            animate={isQuizInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: 'easeOut' }}
+          >
+            {quizWatches.map((watch, index) => (
+              <Motion.figure
+                key={watch.name}
+                className="home-quiz__item"
+                initial={{ opacity: 0, y: 14 }}
+                animate={isQuizInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+                transition={{ duration: 0.45, delay: index * 0.07, ease: 'easeOut' }}
+              >
+                <img
+                  className="home-quiz__watch"
+                  src={watch.src}
+                  alt={watch.name}
+                  loading="lazy"
+                />
+              </Motion.figure>
+            ))}
+          </Motion.div>
+        </div>
       </section>
 
       {/* ── OUR HERITAGE (ABOUT) ───────────────────────────────────────── */}
