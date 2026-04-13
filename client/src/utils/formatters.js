@@ -104,3 +104,29 @@ export const slugify = (str) => {
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
 }
+
+/**
+ * Convert a numeric rating value into a visual star string.
+ * Used by: Home favorites/reviews and reusable star-rating displays.
+ */
+export const formatStars = (ratingValue = 0, maxStars = 5) => {
+  const safeMax = Math.max(1, Number(maxStars) || 5)
+  const roundedRating = Math.round(Number(ratingValue) || 0)
+
+  return Array.from({ length: safeMax }, (_, starIndex) =>
+    starIndex < roundedRating ? '★' : '☆'
+  ).join(' ')
+}
+
+/**
+ * Build two-letter initials from a full display name.
+ * Used by: Review avatars and compact identity chips.
+ */
+export const getInitials = (name = '') =>
+  String(name)
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((chunk) => chunk.charAt(0))
+    .join('')
+    .toUpperCase() || 'NA'

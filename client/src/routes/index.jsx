@@ -19,6 +19,7 @@ import Layout from '@/components/layout/Layout'
 import PrivateRoute from '@/routes/PrivateRoute'
 import AdminRoute from '@/routes/AdminRoute'
 import { watchService } from '@/services/watchService'
+import { collectionService } from '@/services/collectionService'
 import { orderService } from '@/services/orderService'
 import ErrorPage from '@/pages/info/ErrorPage.jsx'  // ← regular import, not lazy because it is used as the root errorElement and must be available immediately when an error occurs.
 
@@ -76,11 +77,18 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
 
     children: [
-      // Home route preloads featured watches before rendering homepage content.
+      // Home route preloads watches and collections before rendering homepage content.
       {
         index: true,
         element: <HomePage />,
-        loader: () => watchService.getAll(),
+        loader: async () => {
+          const [watches, collections] = await Promise.all([
+            watchService.getAll(),
+            collectionService.getAll(),
+          ])
+
+          return { watches, collections }
+        },
       },
 
       // Shop routes with data loaders to prefetch catalog data based on URL params.
