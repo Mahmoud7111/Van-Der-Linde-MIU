@@ -1,5 +1,24 @@
-export default function UseMediaQuery() {
-  return null;
+import { useCallback, useSyncExternalStore } from 'react'
+
+export default function useMediaQuery(query) {
+  const subscribe = useCallback(
+    (onStoreChange) => {
+      if (typeof window === 'undefined') return () => {}
+
+      const mediaQueryList = window.matchMedia(query)
+      mediaQueryList.addEventListener('change', onStoreChange)
+
+      return () => mediaQueryList.removeEventListener('change', onStoreChange)
+    },
+    [query]
+  )
+
+  const getSnapshot = useCallback(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia(query).matches
+  }, [query])
+
+  return useSyncExternalStore(subscribe, getSnapshot, () => false)
 }
 
 
