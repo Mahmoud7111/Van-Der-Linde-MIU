@@ -16,10 +16,14 @@
  * IntersectionObserver ref and scroll ref don't overwrite each other.
  */
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLoaderData } from 'react-router-dom'
 import { AnimatePresence, motion as Motion, useInView } from 'framer-motion'
+import StarRating from '@/components/common/StarRating'
+import useMediaQuery from '@/hooks/useMediaQuery'
+import { getInitials } from '@/utils/formatters'
+import { wrapIndex } from '@/utils/carousel'
+import { resolveCollectionCoverImage, resolveFavoriteWatchImage } from '@/utils/watchImageResolver'
 import heroVideo from '@/assets/videos/hero.mp4'
-import collectionFallbackImage from '@/assets/images/notFound1.svg'
 import marqueeCrown from '@/assets/images/Marquee/crown.png'
 import marqueeHorse from '@/assets/images/Marquee/horse.png'
 import marqueeSwissMade from '@/assets/images/Marquee/SwissMade.png'
@@ -33,9 +37,9 @@ import watchSaxonia from '@/assets/images/Watches/Saxonia.png'
 import watchAPRoyalOakOffshore from '@/assets/images/Watches/Audemars Piguet Royal Oak Offshore.png'
 import watchSantosDeCartier from '@/assets/images/Watches/Santos de Cartier.png'
 import watchTankLouisCartier from '@/assets/images/Watches/Tank Louis Cartier.png'
+import genderHimImage from '@/assets/Models/Dutch Van Der Linde1.png'
+import genderHerImage from '@/assets/Models/photo.jpg'
 import watchModel from '@/assets/3D Models/watch.glb'
-import collections from '@/data/collections.json'
-import products from '@/data/products.json'
 import testimonials from '@/data/testimonials.json'
 import '@/pages/home/HomePage.css'
 
@@ -54,55 +58,56 @@ import '@/pages/home/HomePage.css'
 
 /*
   ============================================================================
-  STATIC ASSET RESOLUTION HELPERS
+  SHARED HELPER MODULES
   ============================================================================
 
-  products.json stores image paths as plain strings. Vite needs static imports
-  or known globs to bundle assets correctly, so the helpers below normalize the
-  paths and resolve each watch image to a runtime-safe URL.
+  Local duplicates were moved to shared files:
+  - watch image resolution   → utils/watchImageResolver.js
+  - carousel index wrapping  → utils/carousel.js
+  - initials / star strings  → utils/formatters.js
+  - star display UI          → components/common/StarRating.jsx
 */
 
-const watchImageAssets = import.meta.glob('/src/assets/images/Watches/*.{png,jpg,jpeg,webp,avif}', {
-  eager: true,
-  import: 'default',
-})
+// Shared constants keep behavior knobs centralized and remove magic values.
+const MOBILE_REVIEWS_MEDIA_QUERY = '(max-width: 768px)'
+const FAVORITE_SWITCH_COOLDOWN_MS = 1050
+const FAVORITE_SLOT_TRANSITION = { duration: 0.95, ease: [0.22, 1, 0.36, 1] }
 
-// Build a fallback lookup by filename (without extension) for tolerant matching.
-const watchImageByBaseName = Object.entries(watchImageAssets).reduce((lookup, [assetPath, assetUrl]) => {
-  const fileName = assetPath.split('/').pop() ?? ''
-  const baseName = fileName.toLowerCase().replace(/\.[^.]+$/, '')
-  lookup[baseName] = assetUrl
-  return lookup
-}, {})
+// Product visuals shown in the quiz teaser rail.
+const QUIZ_WATCHES = [
+  { src: watchCartierTankMust, name: 'Cartier Tank Must' },
+  { src: watchRolexLadyDatejust, name: 'Rolex Lady Datejust' },
+  { src: watchDeVilleTresor, name: 'De Ville Tresor' },
+  { src: watchAPRoyalOakOffshore, name: 'Audemars Piguet Royal Oak Offshore' },
+  { src: watchPatekNautilusWhiteGold, name: 'Patek Philippe Nautilus White Gold' },
+  { src: watchSaxonia, name: 'Saxonia' },
+  { src: watchSantosDeCartier, name: 'Santos de Cartier' },
+  { src: watchTankLouisCartier, name: 'Tank Louis Cartier' },
+]
 
-// Resolves a generic product image string to a guaranteed displayable URL.
-const resolveProductImage = (imagePath) => {
-  if (typeof imagePath !== 'string' || !imagePath.trim()) {
-    return collectionFallbackImage
-  }
-
-  const normalizedPath = imagePath.trim().replace(/^@\//, '/src/')
-  if (watchImageAssets[normalizedPath]) {
-    return watchImageAssets[normalizedPath]
-  }
-
-  const fileName = normalizedPath.split('/').pop() ?? ''
-  const baseName = fileName.toLowerCase().replace(/\.[^.]+$/, '')
-  return watchImageByBaseName[baseName] ?? collectionFallbackImage
-}
-
-// Product-specific overrides for assets that need cleaner alternatives in UI.
-const favoriteImageOverrides = {
-  // This source asset contains decorative horizontal trails in the file itself,
-  // which makes the watch appear cropped/small inside the favorites slots.
-  'watch-004': watchRolexLadyDatejust,
-}
-
-// Favorites resolver uses overrides first, then falls back to generic resolver.
-const resolveFavoriteImage = (product) => {
-  if (!product) return collectionFallbackImage
-  return favoriteImageOverrides[product._id] ?? resolveProductImage(product.images?.[0])
-}
+// Marquee cards duplicate to form a continuous horizontal loop.
+const TRUST_STRIP_ITEMS = [
+  {
+    icon: marqueeCrown,
+    title: 'Customer Service',
+    subtitle: 'For any question please contact customer service@gmail.com',
+  },
+  {
+    icon: marqueeHorse,
+    title: 'Complimentary Delivery',
+    subtitle: 'on all orders',
+  },
+  {
+    icon: marqueeSwissMade,
+    title: 'Swiss Made',
+    subtitle: 'guaranteed authenticity',
+  },
+  {
+    icon: marqueeKey,
+    title: 'Secure Payment',
+    subtitle: 'for all payments',
+  },
+]
 
 export default function HomePage() {
   // ============================================================================
@@ -157,25 +162,27 @@ export default function HomePage() {
   const [activeReviewPage, setActiveReviewPage] = useState(0)
 
   // Number of testimonial cards per page (responsive).
-  const [reviewsPerPage, setReviewsPerPage] = useState(() =>
-    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches ? 1 : 3
-  )
+  const isMobileReviews = useMediaQuery(MOBILE_REVIEWS_MEDIA_QUERY)
+  const reviewsPerPage = isMobileReviews ? 1 : 3
 
   // ============================================================================
   // DERIVED DATA + VIEWPORT FLAGS
   // ============================================================================
 
+  // Route loader provides both lists through service-layer data access.
+  const homeData = useLoaderData()
+  const homeWatches = Array.isArray(homeData?.watches) ? homeData.watches : []
+  const homeCollections = Array.isArray(homeData?.collections) ? homeData.collections : []
+
   // Homepage sections use curated subsets for performance and visual focus.
-  const featured = collections.slice(0, 4)
-  const favoriteProducts = products.slice(0, 6)
+  const featured = homeCollections.slice(0, 4)
+  const favoriteProducts = homeWatches.slice(0, 6)
 
   // Favorites slider behavior knobs:
   // - count: number of products that participate in carousel logic.
   // - cooldown: lockout window between navigation actions.
   // - slot transition: shared easing/duration used by all three watch slots.
   const favoriteCount = favoriteProducts.length
-  const favoriteSwitchCooldownMs = 1050
-  const favoriteSlotTransition = { duration: 0.95, ease: [0.22, 1, 0.36, 1] }
 
   // Preferred starting camera orbit for the 3D model showcase.
   const watchInitialOrbit = '315deg 25deg auto'
@@ -191,16 +198,10 @@ export default function HomePage() {
   // FAVORITES CAROUSEL INDEXING + NAVIGATION HELPERS
   // ============================================================================
 
-  // Circular index helper so the favorites slider loops seamlessly.
-  const wrapFavoriteIndex = (index) => {
-    if (!favoriteCount) return 0
-    return (index + favoriteCount) % favoriteCount
-  }
-
   // Derive neighbor indices from the active center index.
-  const clampedFavoriteIndex = wrapFavoriteIndex(activeFavoriteIndex)
-  const previousFavoriteIndex = wrapFavoriteIndex(clampedFavoriteIndex - 1)
-  const nextFavoriteIndex = wrapFavoriteIndex(clampedFavoriteIndex + 1)
+  const clampedFavoriteIndex = wrapIndex(activeFavoriteIndex, favoriteCount)
+  const previousFavoriteIndex = wrapIndex(clampedFavoriteIndex - 1, favoriteCount)
+  const nextFavoriteIndex = wrapIndex(clampedFavoriteIndex + 1, favoriteCount)
 
   // Resolve each visible product for the left / center / right slots.
   const activeFavorite = favoriteProducts[clampedFavoriteIndex] ?? null
@@ -223,7 +224,7 @@ export default function HomePage() {
       isFavoriteTransitioningRef.current = false
       setIsFavoriteTransitioning(false)
       favoriteTransitionTimeoutRef.current = null
-    }, favoriteSwitchCooldownMs)
+    }, FAVORITE_SWITCH_COOLDOWN_MS)
 
     return true
   }
@@ -234,7 +235,7 @@ export default function HomePage() {
 
     // Direction is forwarded to animation variants to choose travel side.
     setFavoriteDirection(direction)
-    setActiveFavoriteIndex((prev) => wrapFavoriteIndex(prev + direction))
+    setActiveFavoriteIndex((prev) => wrapIndex(prev + direction, favoriteCount))
   }
 
   const shiftFavoritesLeft = () => {
@@ -250,7 +251,7 @@ export default function HomePage() {
   const goToFavorite = (index) => {
     if (!favoriteCount) return
 
-    const targetIndex = wrapFavoriteIndex(index)
+    const targetIndex = wrapIndex(index, favoriteCount)
     if (targetIndex === clampedFavoriteIndex) return
     if (!lockFavoriteSwitch()) return
 
@@ -259,12 +260,6 @@ export default function HomePage() {
     setFavoriteDirection(forwardDistance <= favoriteCount / 2 ? 1 : -1)
     setActiveFavoriteIndex(targetIndex)
   }
-
-  // Generates a simple visual star string from a numeric rating.
-  const renderFavoriteStars = (ratingValue = 0) =>
-    Array.from({ length: 5 }, (_, starIndex) =>
-      starIndex < Math.round(Number(ratingValue) || 0) ? '★' : '☆'
-    ).join(' ')
 
   // Three visual slots: previous, active, next.
   const favoriteRailItems = [
@@ -362,44 +357,10 @@ export default function HomePage() {
   }
 
   // ============================================================================
-  // STATIC SECTION DATA (display-only arrays)
+  // STATIC SECTION DATA
   // ============================================================================
 
-  // Product visuals shown in the quiz teaser rail.
-  const quizWatches = [
-    { src: watchCartierTankMust, name: 'Cartier Tank Must' },
-    { src: watchRolexLadyDatejust, name: 'Rolex Lady Datejust' },
-    { src: watchDeVilleTresor, name: 'De Ville Tresor' },
-    { src: watchAPRoyalOakOffshore, name: 'Audemars Piguet Royal Oak Offshore' },
-    { src: watchPatekNautilusWhiteGold, name: 'Patek Philippe Nautilus White Gold' },
-    { src: watchSaxonia, name: 'Saxonia' },
-    { src: watchSantosDeCartier, name: 'Santos de Cartier' },
-    { src: watchTankLouisCartier, name: 'Tank Louis Cartier' },
-  ]
-
-  // Marquee cards duplicate to form a continuous horizontal loop.
-  const trustStripItems = [
-    {
-      icon: marqueeCrown,
-      title: 'Customer Service',
-      subtitle: 'For any question please contact customer service@gmail.com',
-    },
-    {
-      icon: marqueeHorse,
-      title: 'Complimentary Delivery',
-      subtitle: 'on all orders',
-    },
-    {
-      icon: marqueeSwissMade,
-      title: 'Swiss Made',
-      subtitle: 'guaranteed authenticity',
-    },
-    {
-      icon: marqueeKey,
-      title: 'Secure Payment',
-      subtitle: 'for all payments',
-    },
-  ]
+  // Display-only arrays are hoisted at module scope to avoid recreating them on re-renders.
 
   // ============================================================================
   // REVIEWS PAGINATION HELPERS
@@ -415,16 +376,6 @@ export default function HomePage() {
     clampedReviewPage * reviewsPerPage + reviewsPerPage
   )
 
-  // Avatar initials derive from reviewer full names.
-  const getReviewerInitials = (name) =>
-    name
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((chunk) => chunk.charAt(0))
-      .join('')
-      .toUpperCase()
-
   // Carousel-like page controls for testimonial cards.
   const goToPreviousReviewPage = () => {
     // Wrap around to the last page when navigating backward from first page.
@@ -438,7 +389,8 @@ export default function HomePage() {
 
   // Dot-based random access for review pages.
   const goToReviewPage = (pageIndex) => {
-    setActiveReviewPage(pageIndex)
+    const clampedPage = Math.max(0, Math.min(pageIndex, totalReviewPages - 1))
+    setActiveReviewPage(clampedPage)
   }
 
   // ============================================================================
@@ -485,21 +437,6 @@ export default function HomePage() {
     return () => observer.disconnect()
   }, [])
 
-  // Keeps testimonial pagination responsive across viewport changes.
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined
-
-    // Match JS pagination behavior to CSS mobile breakpoint.
-    const query = window.matchMedia('(max-width: 768px)')
-    const updateReviewsPerPage = () => {
-      setReviewsPerPage(query.matches ? 1 : 3)
-    }
-
-    updateReviewsPerPage()
-    query.addEventListener('change', updateReviewsPerPage)
-    return () => query.removeEventListener('change', updateReviewsPerPage)
-  }, [])
-
   // Cleanup pending timers to avoid stale state updates on unmount.
   useEffect(() => {
     // Ensure no pending timeout updates state after unmount.
@@ -520,12 +457,6 @@ export default function HomePage() {
   // ============================================================================
   // EVENT HANDLERS
   // ============================================================================
-
-  // Arrow buttons scroll the inner track by one card-width step.
-  const scrollBy = (offset) => {
-    // Uses native smooth scrolling for parity with wheel/touch behavior.
-    scrollTrackRef.current?.scrollBy({ left: offset, behavior: 'smooth' })
-  }
 
   // ── Pointer drag handlers ──────────────────────────────────────────────────
   // Supports mouse drag on desktop in addition to native touch/wheel scroll.
@@ -633,7 +564,7 @@ export default function HomePage() {
                 className="home-trust__group"
                 aria-hidden={groupIndex === 1}
               >
-                {trustStripItems.map((item) => (
+                {TRUST_STRIP_ITEMS.map((item) => (
                   <article key={`${groupIndex}-${item.title}`} className="home-trust__item">
                     <img
                       className="home-trust__icon"
@@ -704,26 +635,6 @@ export default function HomePage() {
             >
               Explore our collections
             </Link>
-
-            {/* Arrows are inside the intro so they're always accessible regardless of scroll position. */}
-            <div className="home-collections__arrows">
-              <button
-                type="button"
-                className="home-collections__arrow"
-                onClick={() => scrollBy(-420)}
-                aria-label="Scroll collections left"
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                className="home-collections__arrow"
-                onClick={() => scrollBy(420)}
-                aria-label="Scroll collections right"
-              >
-                →
-              </button>
-            </div>
           </div>
 
           {/*
@@ -755,8 +666,8 @@ export default function HomePage() {
                 <div
                   className="home-collection-card__media"
                   style={{
-                    // Primary: JSON coverImage. Fallback: Vite-resolved imported asset.
-                    backgroundImage: `url(${collection.coverImage}), url(${collectionFallbackImage})`,
+                    // Resolve JSON coverImage string into a Vite-safe URL with fallback.
+                    backgroundImage: `url(${resolveCollectionCoverImage(collection.coverImage)})`,
                   }}
                   aria-hidden="true"
                 />
@@ -827,8 +738,8 @@ export default function HomePage() {
                     initial={false}
                     animate={slot}
                     transition={{
-                      layout: favoriteSlotTransition,
-                      ...favoriteSlotTransition,
+                      layout: FAVORITE_SLOT_TRANSITION,
+                      ...FAVORITE_SLOT_TRANSITION,
                     }}
                   >
                     {slot === 'center' ? (
@@ -840,7 +751,7 @@ export default function HomePage() {
                       >
                         <img
                           className="home-favorites__watch-image"
-                          src={resolveFavoriteImage(product)}
+                          src={resolveFavoriteWatchImage(product)}
                           alt={product.name}
                           loading="lazy"
                         />
@@ -856,7 +767,7 @@ export default function HomePage() {
                       >
                         <img
                           className="home-favorites__watch-image"
-                          src={resolveFavoriteImage(product)}
+                          src={resolveFavoriteWatchImage(product)}
                           alt=""
                           loading="lazy"
                           aria-hidden="true"
@@ -896,9 +807,11 @@ export default function HomePage() {
                       className="home-favorites__rating"
                       aria-label={`${Number(activeFavorite.rating || 0).toFixed(1)} out of 5 stars`}
                     >
-                      <span className="home-favorites__stars" aria-hidden="true">
-                        {renderFavoriteStars(activeFavorite.rating)}
-                      </span>
+                      <StarRating
+                        rating={activeFavorite.rating}
+                        className="home-favorites__stars"
+                        decorative
+                      />
                       <span className="home-favorites__reviews">
                         {Number(activeFavorite.rating || 0).toFixed(1)} ({activeFavorite.numReviews || 0})
                       </span>
@@ -942,6 +855,7 @@ export default function HomePage() {
           />
           <Motion.div
             className="home-gender__image"
+            style={{ backgroundImage: `url(${genderHimImage})` }}
             variants={genderImageHoverVariants}
             transition={{ duration: 0.7, ease: 'easeInOut' }}
           />
@@ -973,6 +887,7 @@ export default function HomePage() {
           />
           <Motion.div
             className="home-gender__image"
+            style={{ backgroundImage: `url(${genderHerImage})` }}
             variants={genderImageHoverVariants}
             transition={{ duration: 0.7, ease: 'easeInOut' }}
           />
@@ -1022,7 +937,7 @@ export default function HomePage() {
             transition={{ duration: 0.7, delay: 0.12, ease: 'easeOut' }}
           >
             {/* Repeated watch visuals for quiz theme continuity */}
-            {quizWatches.map((watch, index) => (
+            {QUIZ_WATCHES.map((watch, index) => (
               <Motion.figure
                 key={watch.name}
                 className="home-quiz__item"
@@ -1135,7 +1050,7 @@ export default function HomePage() {
               >
                 <div className="home-review-card__top">
                   <div className="home-review-card__avatar" aria-hidden="true">
-                    {getReviewerInitials(testimonial.name)}
+                    {getInitials(testimonial.name)}
                   </div>
 
                   <div className="home-review-card__meta">
@@ -1144,11 +1059,11 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <p className="home-review-card__stars" aria-label={`${testimonial.rating} out of 5 stars`}>
-                  {Array.from({ length: 5 }, (_, starIndex) =>
-                    starIndex < testimonial.rating ? '★' : '☆'
-                  ).join(' ')}
-                </p>
+                <StarRating
+                  rating={testimonial.rating}
+                  className="home-review-card__stars"
+                  ariaLabel={`${testimonial.rating} out of 5 stars`}
+                />
 
                 <p className="home-review-card__quote">&quot;{testimonial.quote}&quot;</p>
               </Motion.article>
