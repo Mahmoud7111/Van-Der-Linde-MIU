@@ -47,6 +47,7 @@ const WishlistPage = lazy(() => import('@/pages/account/WishlistPage.jsx'))
 
 const AboutPage = lazy(() => import('@/pages/info/AboutPage.jsx'))
 const CollectionsPage = lazy(() => import('@/pages/info/CollectionsPage.jsx'))
+const ServicesPage = lazy(() => import('@/pages/info/ServicesPage.jsx'))
 const ContactPage = lazy(() => import('@/pages/info/ContactPage.jsx'))
 const FaqPage = lazy(() => import('@/pages/info/FaqPage.jsx'))
 const GiftingPage = lazy(() => import('@/pages/info/GiftingPage.jsx'))
@@ -177,6 +178,7 @@ export const router = createBrowserRouter([
 
       // Informational and marketing pages.
       { path: 'collections', element: <CollectionsPage /> },
+      { path: 'services', element: <ServicesPage /> },
       { path: 'about', element: <AboutPage /> },
       { path: 'faq', element: <FaqPage /> },
       { path: 'contact', element: <ContactPage /> },

@@ -138,14 +138,15 @@ export default function Header() {
                 <FiUser aria-hidden="true" />
               </NavLink>
 
+              <NavLink aria-label="Wishlist" className={iconLinkClassName} to="/wishlist">
+                <FiHeart aria-hidden="true" />
+              </NavLink>
+
+
               {/* Language, wishlist, theme, currency — wired up by Dev 5 in full implementation */}
               <button type="button" className="header__icon-control" aria-label="Language selector">
                 <FiGlobe aria-hidden="true" />
               </button>
-
-              <NavLink aria-label="Wishlist" className={iconLinkClassName} to="/wishlist">
-                <FiHeart aria-hidden="true" />
-              </NavLink>
 
               <button type="button" className="header__icon-control" aria-label="Dark mode toggle">
                 <FiMoon aria-hidden="true" />
