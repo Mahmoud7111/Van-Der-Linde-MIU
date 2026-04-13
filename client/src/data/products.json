@@ -8,7 +8,7 @@
     "rating": 4.9,
     "numReviews": 124,
     "stock": 8,
-    "images": ["/images/products/sovereign-tourbillon.jpg"],
+    "images": ["@/assets/images/Watches/Tank Louis Cartier.png"],
     "description": "A flagship gold-accent mechanical piece with skeleton dial craftsmanship and premium sapphire durability for formal occasions."
   },
   {
@@ -20,7 +20,7 @@
     "rating": 4.8,
     "numReviews": 93,
     "stock": 11,
-    "images": ["/images/products/nocturne-chronograph.jpg"],
+    "images": ["@/assets/images/Watches/Cartier Tank Must.png"],
     "description": "A deep black chronograph with brass details, tachymeter bezel, and precision movement engineered for executive styling."
   },
   {
@@ -32,7 +32,7 @@
     "rating": 4.6,
     "numReviews": 157,
     "stock": 26,
-    "images": ["/images/products/velocity-pro.jpg"],
+    "images": ["@/assets/images/Watches/Santos de Cartier.png"],
     "description": "A sport-focused model with shock resistance, water protection, and high-contrast lume for active lifestyles."
   },
   {
@@ -44,7 +44,7 @@
     "rating": 4.7,
     "numReviews": 81,
     "stock": 19,
-    "images": ["/images/products/heritage-slim.jpg"],
+    "images": ["@/assets/images/Watches/Rolex GMT-Master II.png"],
     "description": "A timeless minimalist case with Roman markers and refined leather strap inspired by mid-century watchmaking."
   },
   {
@@ -56,7 +56,7 @@
     "rating": 4.5,
     "numReviews": 64,
     "stock": 14,
-    "images": ["/images/products/imperial-date.jpg"],
+    "images": ["@/assets/images/Watches/Jacob & Co Astronomia Triple Axis Tourbillon.png"],
     "description": "Classic dress aesthetics with date aperture, polished case architecture, and balanced proportions for daily elegance."
   },
   {
@@ -68,7 +68,7 @@
     "rating": 4.4,
     "numReviews": 219,
     "stock": 42,
-    "images": ["/images/products/pulse-connected.jpg"],
+    "images": ["@/assets/images/Watches/De Ville Tresor.png"],
     "description": "A smart hybrid watch with health tracking, message sync, and multi-day battery presented in premium materials."
   }
 ]

@@ -34,6 +34,14 @@
   box-sizing: border-box;
 }
 
+/* Global plus-style cursor across the site. */
+html,
+body,
+#root,
+* {
+  cursor: crosshair !important; /*important! is used to override the default cursor styles of some browsers */
+}
+
 /*
   Margin/padding reset for common block elements:
   Prevents browser defaults from creating inconsistent spacing across pages.
