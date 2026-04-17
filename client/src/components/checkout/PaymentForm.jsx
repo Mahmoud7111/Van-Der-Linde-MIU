@@ -34,7 +34,10 @@ export default function PaymentForm({
       </header>
 
       <fieldset className="payment-form__method-group" disabled={isProcessing}>
-        <legend className="payment-form__method-legend sr-only" style={{ display: 'none' }}>Payment Method</legend>
+        <legend className="payment-form__method-legend sr-only">
+          Payment Method
+        </legend>
+
         <div className="payment-form__method-options">
           <label className="payment-form__method-label">
             <input
