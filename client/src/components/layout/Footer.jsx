@@ -13,7 +13,7 @@ export default function Footer() {
           <small className="footer__copy">&copy; {year} All rights reserved.</small>
         </div>
 
-        <div className="footer__right">
+        <div className="footer__right"> 
           <small className="footer__meta">Since 1875</small>
 
           <nav className="footer__nav" aria-label="Footer links">

@@ -103,40 +103,10 @@
 }
 
 .home-hero__cta {
-  /* Shared visual language with other rounded gold-outline CTAs on the page. */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  /* Hero keeps only page-specific reveal timing; visual style comes from Button.css. */
   margin-top: var(--space-sm);
-  padding: var(--space-sm) var(--space-xl);
-  border: 1px solid var(--color-gold);
-  border-radius: var(--radius-full);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-gold);
-  background: transparent;
-  cursor: pointer;
   opacity: 0;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal),
-    transform var(--transition-fast);
   animation: fadeIn var(--transition-slow) 0.9s forwards;
-}
-
-.home-hero__cta:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  transform: translateY(-1px);
-}
-
-.home-hero__cta:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: var(--space-xs);
 }
 
 @media (max-width: 768px) {
@@ -792,25 +762,9 @@
 }
 
 .home-favorites__nav {
-  /* Uses the same circular control motif as collections/reviews arrows. */
+  /* Keeps only stage layering and placement hooks for shared button variants. */
   position: relative;
-  width: 2.6rem;
-  height: 2.6rem;
-  border: 1px solid color-mix(in srgb, var(--color-gold) 42%, transparent 58%);
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--color-white) 88%, transparent 12%);
-  color: var(--color-gold);
-  font-size: 1rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal),
-    transform var(--transition-fast);
 }
 
 .home-favorites__nav--left {
@@ -823,20 +777,6 @@
   grid-column: 3;
   grid-row: 1;
   justify-self: end;
-}
-
-.home-favorites__nav:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  border-color: var(--color-gold);
-  transform: translateY(-1px);
-}
-
-.home-favorites__nav:disabled,
-.home-favorites__nav:disabled:hover {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
 }
 
 .home-favorites__rail {
@@ -868,30 +808,6 @@
 .home-favorites__watch-slot--center {
   /* The active card stays on top so scaled neighbors never overlap it visually. */
   z-index: 4;
-}
-
-.home-favorites__watch-link {
-  /* Works for both side preview buttons and center detail link. */
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: end center;
-  align-self: stretch;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  transition:
-    opacity var(--transition-normal),
-    transform var(--transition-normal);
-}
-
-.home-favorites__watch-link:disabled {
-  pointer-events: none;
-  cursor: default;
-}
-
-.home-favorites__watch-link--center:hover {
-  transform: translateY(-5px) scale(1.04);
 }
 
 .home-favorites__watch-image {
@@ -972,55 +888,6 @@
   align-items: center;
   gap: 0.55rem;
 }
-
-.home-favorites__action {
-  min-width: 170px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.62rem 1.05rem;
-  border: 1px solid color-mix(in srgb, var(--color-gold) 35%, transparent 65%);
-  border-radius: var(--radius-full);
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal),
-    transform var(--transition-fast);
-}
-
-.home-favorites__action:hover {
-  transform: translateX(var(--space-xs));
-}
-
-.home-favorites__action--solid {
-  background: color-mix(in srgb, var(--color-dark) 95%, #000 5%);
-  color: var(--color-white);
-  border-color: color-mix(in srgb, var(--color-dark) 80%, transparent 20%);
-}
-
-.home-favorites__action--solid:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  border-color: var(--color-gold);
-}
-
-.home-favorites__action--ghost {
-  background: transparent;
-  color: color-mix(in srgb, var(--color-dark) 86%, var(--color-gold) 14%);
-  border-color: color-mix(in srgb, var(--color-dark) 35%, transparent 65%);
-}
-
-.home-favorites__action--ghost:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  border-color: var(--color-gold);
-}
-
 [data-theme='dark'] .home-favorites {
   /* Keep surface token parity between light/dark themes for this section shell. */
   background: var(--color-surface);
@@ -1042,32 +909,6 @@
 [data-theme='dark'] .home-favorites__watch-image {
   /* Slightly stronger drop shadow in dark mode preserves silhouette separation. */
   filter: drop-shadow(0 14px 24px color-mix(in srgb, #000 42%, transparent 58%));
-}
-
-[data-theme='dark'] .home-favorites__nav {
-  background: color-mix(in srgb, var(--color-white) 88%, transparent 12%);
-  color: var(--color-gold);
-  border-color: color-mix(in srgb, var(--color-gold) 42%, transparent 58%);
-}
-
-[data-theme='dark'] .home-favorites__nav:disabled,
-[data-theme='dark'] .home-favorites__nav:disabled:hover {
-  background: color-mix(in srgb, var(--color-white) 88%, transparent 12%);
-  color: var(--color-gold);
-  border-color: color-mix(in srgb, var(--color-gold) 42%, transparent 58%);
-}
-
-[data-theme='dark'] .home-favorites__action--solid {
-  /* Keep CTA hierarchy unchanged between themes for muscle-memory consistency. */
-  background: color-mix(in srgb, var(--color-dark) 95%, #000 5%);
-  color: var(--color-white);
-  border-color: color-mix(in srgb, var(--color-dark) 80%, transparent 20%);
-}
-
-[data-theme='dark'] .home-favorites__action--ghost {
-  background: transparent;
-  color: color-mix(in srgb, var(--color-dark) 88%, var(--color-gold) 12%);
-  border-color: color-mix(in srgb, var(--color-dark) 35%, transparent 65%);
 }
 
 @media (max-width: 1024px) {
@@ -1971,51 +1812,6 @@
   gap: var(--space-md);
 }
 
-.home-reviews__arrow {
-  width: 2.3rem;
-  height: 2.3rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--color-gold) 48%, transparent 52%);
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--color-white) 82%, transparent 18%);
-  color: color-mix(in srgb, var(--color-dark) 84%, var(--color-gold) 16%);
-  font-size: 1rem;
-  cursor: pointer;
-  transition:
-    transform var(--transition-normal),
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal);
-}
-
-.home-reviews__arrow:hover {
-  transform: translateY(-1px);
-  background: var(--color-gold);
-  border-color: var(--color-gold);
-  color: var(--color-dark);
-}
-
-.home-reviews__dot {
-  width: 3px;
-  height: 12px;
-  border: 0;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--color-dark) 26%, transparent 74%);
-  cursor: pointer;
-  transition: transform var(--transition-fast), background-color var(--transition-normal);
-}
-
-.home-reviews__dot:hover {
-  transform: scale(1.08);
-}
-
-.home-reviews__dot--active {
-  transform: scale(1.1);
-  background: var(--color-gold);
-}
-
 .home-reviews__dots {
   display: inline-flex;
   align-items: center;
@@ -2051,21 +1847,8 @@
 [data-theme='dark'] .home-review-card__name,
 [data-theme='dark'] .home-review-card__quote,
 [data-theme='dark'] .home-review-card__location,
-[data-theme='dark'] .home-review-card__avatar,
-[data-theme='dark'] .home-reviews__arrow {
+[data-theme='dark'] .home-review-card__avatar {
   color: var(--color-dark);
-}
-
-[data-theme='dark'] .home-reviews__arrow {
-  background: color-mix(in srgb, var(--color-white) 8%, transparent 92%);
-}
-
-[data-theme='dark'] .home-reviews__dot {
-  background: color-mix(in srgb, var(--color-dark) 30%, transparent 70%);
-}
-
-[data-theme='dark'] .home-reviews__dot--active {
-  background: var(--color-gold);
 }
 
 @media (max-width: 1024px) {
