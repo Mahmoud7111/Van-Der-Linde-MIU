@@ -18,6 +18,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLoaderData } from 'react-router-dom'
 import { AnimatePresence, motion as Motion, useInView } from 'framer-motion'
+import Button from '@/components/common/Button'
 import StarRating from '@/components/common/StarRating'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import { getInitials } from '@/utils/formatters'
@@ -534,8 +535,8 @@ export default function HomePage() {
             JS scroll avoids the fixed header covering the section target,
             which would happen with a plain href="#collections" anchor.
           */}
-          <button
-            type="button"
+          <Button
+            variant="home-hero"
             className="home-hero__cta"
             onClick={() =>
               document
@@ -544,7 +545,7 @@ export default function HomePage() {
             }
           >
             Discover More
-          </button>
+          </Button>
         </div>
       </section>
 
@@ -717,15 +718,15 @@ export default function HomePage() {
               transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}
             >
               {/* Previous watch control */}
-              <button
-                type="button"
+              <Button
+                variant="home-favorites-nav"
                 className="home-favorites__nav home-favorites__nav--left"
                 onClick={shiftFavoritesLeft}
                 disabled={isFavoriteTransitioning}
                 aria-label="Show previous watch"
               >
                 ←
-              </button>
+              </Button>
 
               <div className="home-favorites__rail" aria-live="polite">
                 {/* Exactly three slots: previous, active center, next */}
@@ -744,9 +745,10 @@ export default function HomePage() {
                   >
                     {slot === 'center' ? (
                       // Center card links directly to product detail page.
-                      <Link
-                        className="home-favorites__watch-link home-favorites__watch-link--center"
+                      <Button
                         to={`/watch/${product._id}`}
+                        variant="home-watch-link-center"
+                        className="home-favorites__watch-link"
                         aria-label={`View details for ${product.name}`}
                       >
                         <img
@@ -755,11 +757,11 @@ export default function HomePage() {
                           alt={product.name}
                           loading="lazy"
                         />
-                      </Link>
+                      </Button>
                     ) : (
                       // Side cards are promotion buttons that move into center.
-                      <button
-                        type="button"
+                      <Button
+                        variant="home-watch-link"
                         className="home-favorites__watch-link"
                         onClick={() => goToFavorite(index)}
                         disabled={isFavoriteTransitioning}
@@ -772,21 +774,21 @@ export default function HomePage() {
                           loading="lazy"
                           aria-hidden="true"
                         />
-                      </button>
+                      </Button>
                     )}
                   </Motion.div>
                 ))}
               </div>
 
-              <button
-                type="button"
+              <Button
+                variant="home-favorites-nav"
                 className="home-favorites__nav home-favorites__nav--right"
                 onClick={shiftFavoritesRight}
                 disabled={isFavoriteTransitioning}
                 aria-label="Show next watch"
               >
                 →
-              </button>
+              </Button>
 
               {/* Product details panel synchronized with center-card transitions. */}
               <AnimatePresence initial={false} mode="wait" custom={favoriteDirection}>
@@ -820,12 +822,12 @@ export default function HomePage() {
 
                   <div className="home-favorites__actions">
                     {/* Primary and secondary navigation actions */}
-                    <Link className="home-favorites__action home-favorites__action--solid" to="/shop">
+                    <Button to="/shop" variant="home-action-solid" className="home-favorites__action">
                       Shop All
-                    </Link>
-                    <Link className="home-favorites__action home-favorites__action--ghost" to="/gifting">
+                    </Button>
+                    <Button to="/gifting" variant="home-action-ghost" className="home-favorites__action">
                       Buy As A Gift?
-                    </Link>
+                    </Button>
                   </div>
                 </Motion.article>
               </AnimatePresence>
@@ -1072,24 +1074,23 @@ export default function HomePage() {
 
           <div className="home-reviews__controls" aria-label="Reviews navigation">
             {/* Previous page */}
-            <button
-              type="button"
+            <Button
+              variant="home-review-arrow"
               className="home-reviews__arrow"
               onClick={goToPreviousReviewPage}
               aria-label="Show previous reviews"
             >
               ←
-            </button>
+            </Button>
 
             <div className="home-reviews__dots" role="tablist" aria-label="Review pages">
               {/* Dot buttons map 1:1 to available review pages. */}
               {Array.from({ length: totalReviewPages }, (_, pageIndex) => (
-                <button
+                <Button
                   key={`review-dot-${pageIndex}`}
-                  type="button"
-                  className={`home-reviews__dot${
-                    clampedReviewPage === pageIndex ? ' home-reviews__dot--active' : ''
-                  }`}
+                  variant="home-review-dot"
+                  className="home-reviews__dot"
+                  active={clampedReviewPage === pageIndex}
                   onClick={() => goToReviewPage(pageIndex)}
                   aria-label={`Show reviews page ${pageIndex + 1}`}
                   aria-selected={clampedReviewPage === pageIndex}
@@ -1099,14 +1100,14 @@ export default function HomePage() {
             </div>
 
             {/* Next page */}
-            <button
-              type="button"
+            <Button
+              variant="home-review-arrow"
               className="home-reviews__arrow"
               onClick={goToNextReviewPage}
               aria-label="Show next reviews"
             >
               →
-            </button>
+            </Button>
           </div>
         </div>
       </section>

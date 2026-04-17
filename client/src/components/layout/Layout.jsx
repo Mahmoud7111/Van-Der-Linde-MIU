@@ -22,6 +22,7 @@ import { Outlet, useNavigation } from 'react-router-dom'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ScrollToTop from '@/routes/ScrollToTop'
+import PageTransition from '@/components/common/PageTransition'
 
 // Root layout component for all application routes.
 export default function Layout() {
@@ -72,8 +73,11 @@ export default function Layout() {
         */}
          {/* The fallback can be a spinner, skeleton, or simple "Loading..." text. It shows while the lazy-loaded page component is being fetched and rendered for the first time. Once the page component is ready, Suspense will render it in place of the fallback. */}
         <Suspense fallback={<div style={{ padding: 'var(--space-lg)' }}>Loading...</div>}>
-          {/* Outlet is where createBrowserRouter renders matched child routes. */}
-          <Outlet /> {/*//! - current page renders HERE, Outlet is the placeholder for the current route's page component. It will render whatever page component matches the current URL, as defined in routes/index.jsx. Because those page components are lazy-loaded, they will trigger the Suspense fallback until they are ready. */}
+          {/* PageTransition wraps routed content to apply shared route enter animation. */}
+          <PageTransition>
+            {/* Outlet is where createBrowserRouter renders matched child routes. */}
+            <Outlet /> {/*//! - current page renders HERE, Outlet is the placeholder for the current route's page component. It will render whatever page component matches the current URL, as defined in routes/index.jsx. Because those page components are lazy-loaded, they will trigger the Suspense fallback until they are ready. */}
+          </PageTransition>
         </Suspense> 
       </main>
 
