@@ -186,7 +186,7 @@ export default function ResetPasswordPage() {
               </Button>
             </form>
 
-            <div className="auth-vdl-row" style={{ marginTop: '14px' }}>
+            <div className="auth-vdl-row auth-vdl-row--cta">
               <Link to="/login" className="auth-vdl-forgot">
                 Back to Sign In
               </Link>

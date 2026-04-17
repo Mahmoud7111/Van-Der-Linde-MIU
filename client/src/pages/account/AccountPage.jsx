@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext'
 import PageTransition from '@/components/common/PageTransition'
 import Badge from '@/components/common/Badge'
 import Button from '@/components/common/Button'
+import { getInitials } from '@/utils/formatters'
 import './AccountPage.css'
 
 export default function AccountPage() {
@@ -16,14 +17,7 @@ export default function AccountPage() {
     return combined || user?.name || 'Guest User'
   }, [user])
 
-  const initials = useMemo(() => {
-    const source = fullName.split(' ').filter(Boolean)
-    if (!source.length) return 'GU'
-    return source
-      .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase() || '')
-      .join('')
-  }, [fullName])
+  const initials = useMemo(() => getInitials(fullName) || 'GU', [fullName])
 
   const handleLogout = async () => {
     await logout()

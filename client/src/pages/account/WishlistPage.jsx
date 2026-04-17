@@ -5,16 +5,14 @@ import Button from '@/components/common/Button'
 import StarRating from '@/components/common/StarRating'
 import { useWishlist } from '@/context/WishlistContext'
 import { useCart } from '@/context/CartContext'
+import { useCurrency } from '@/context/CurrencyContext'
+import { resolveFavoriteWatchImage } from '@/utils/watchImageResolver'
 import './WishlistPage.css'
-
-function formatPrice(value) {
-  const n = Number(value || 0)
-  return `$${n.toFixed(2)}`
-}
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist } = useWishlist()
   const { dispatch } = useCart()
+  const { formatPrice } = useCurrency()
 
   const handleAddToCart = (item) => {
     dispatch({ type: 'ADD', payload: item })
@@ -56,12 +54,23 @@ export default function WishlistPage() {
               {wishlist.map((item, index) => {
                 const id = item?._id || item?.id || `wishlist-item-${index}`
                 const name = item?.name || item?.title || 'Product'
-                const image = item?.image || item?.thumbnail || item?.images?.[0] || ''
+                const image =
+                  item?.image ||
+                  item?.thumbnail ||
+                  resolveFavoriteWatchImage(item) ||
+                  item?.images?.[0] ||
+                  ''
                 const brand = item?.brand || 'Van Der Linde'
                 const price = item?.price ?? item?.finalPrice ?? item?.salePrice ?? 0
                 const oldPrice = item?.oldPrice ?? item?.compareAtPrice ?? item?.originalPrice
                 const rating = Number(item?.rating ?? 0)
-                const inStock = item?.inStock ?? (item?.stock > 0) ?? true
+                const stockCount = Number(item?.stock)
+                const inStock =
+                  typeof item?.inStock === 'boolean'
+                    ? item.inStock
+                    : Number.isFinite(stockCount)
+                      ? stockCount > 0
+                      : true
                 const href = id ? `/watch/${id}` : '/shop'
 
                 return (

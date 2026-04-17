@@ -1,19 +1,9 @@
 import { Link, useLoaderData } from 'react-router-dom'
 import PageTransition from '@/components/common/PageTransition'
 import Badge from '@/components/common/Badge'
+import { useCurrency } from '@/context/CurrencyContext'
+import { formatDate } from '@/utils/formatters'
 import './OrderHistoryPage.css'
-
-function formatDate(dateString) {
-  if (!dateString) return '-'
-  const d = new Date(dateString)
-  if (Number.isNaN(d.getTime())) return '-'
-  return d.toLocaleDateString()
-}
-
-function formatPrice(value) {
-  const number = Number(value || 0)
-  return `$${number.toFixed(2)}`
-}
 
 function getStatusVariant(status) {
   const s = (status || '').toLowerCase()
@@ -26,6 +16,7 @@ function getStatusVariant(status) {
 
 export default function OrderHistoryPage() {
   const loaderData = useLoaderData()
+  const { formatPrice } = useCurrency()
   const orders = Array.isArray(loaderData)
     ? loaderData
     : Array.isArray(loaderData?.orders)
@@ -78,7 +69,7 @@ export default function OrderHistoryPage() {
                       return (
                         <tr key={id}>
                           <td className="order-history-table__id">#{String(id).slice(-8)}</td>
-                          <td className="order-history-table__date">{formatDate(date)}</td>
+                          <td className="order-history-table__date">{formatDate(date) || '-'}</td>
                           <td>
                             <Badge variant={getStatusVariant(status)} size="sm">
                               {status}

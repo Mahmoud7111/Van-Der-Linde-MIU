@@ -204,6 +204,10 @@
   gap: 10px;
 }
 
+.auth-vdl-row--cta {
+  margin-top: 14px;
+}
+
 .auth-vdl-checkbox {
   display: inline-flex;
   align-items: center;
