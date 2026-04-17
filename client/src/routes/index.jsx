@@ -155,19 +155,17 @@ export const router = createBrowserRouter([
       { path: 'register', element: <RegisterPage /> },
       { path: 'forgot-password', element: <ForgotPasswordPage /> },
       { path: 'reset-password', element: <ResetPasswordPage /> },
+      { path: 'account/reset-password', element: <ResetPasswordPage /> },
 
-      // Account routes requiring authentication; loaders prefetch user order data before render.
+      // Account landing page is public so header user icon always opens it.
       {
-        path: 'profile',
-        element: (
-          <PrivateRoute>
-            <AccountPage />
-          </PrivateRoute>
-        ),
-        loader: () => orderService.getMyOrders(), // Account page shows recent orders, so we preload them here. In a real app, we might have a separate endpoint for just the recent orders summary to optimize this loader.
+        path: 'account',
+        element: <AccountPage />,
       },
+
+      // Account detail routes requiring authentication; loaders prefetch user order data before render.
       {
-        path: 'orders',
+        path: 'account/orders',
         element: (
           <PrivateRoute>
             <OrderHistoryPage />
@@ -176,7 +174,7 @@ export const router = createBrowserRouter([
         loader: () => orderService.getMyOrders(), // Order history page needs the full order list to display order history, so we preload them here. In a real app, we might have pagination or a separate endpoint for order history summaries to optimize this loader.
       },
       {
-        path: 'wishlist',
+        path: 'account/wishlist',
         element: (
           <PrivateRoute>
             <WishlistPage />
@@ -190,6 +188,7 @@ export const router = createBrowserRouter([
       { path: 'about', element: <AboutPage /> },
       { path: 'faq', element: <FaqPage /> },
       { path: 'contact', element: <ContactPage /> },
+      { path: 'wishlist', element: <WishlistPage /> },
       { path: 'quiz', element: <WatchQuizPage /> },
       { path: 'configurator', element: <ConfiguratorPage /> },
       { path: 'gifting', element: <GiftingPage /> },

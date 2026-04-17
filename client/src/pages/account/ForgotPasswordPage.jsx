@@ -1,17 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
 import toast from 'react-hot-toast'
 
+import { forgotPasswordSchema } from '@/utils/validators'
+import { authService } from '@/services/authService'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import authHeroImage from '@/assets/Models/Dutch Van Der Linde1.png'
 import './AuthPage.css'
-
-const forgotPasswordSchema = yup.object({
-  email: yup.string().email('Please enter a valid email').required('Email is required'),
-})
 
 export default function ForgotPasswordPage() {
   const {
@@ -29,10 +26,7 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async ({ email }) => {
     try {
-      // TODO: replace with your real service/context method when available
-      // await authService.forgotPassword(email.trim())
-
-      await new Promise((resolve) => setTimeout(resolve, 700))
+      await authService.forgotPassword({ email: email.trim() })
       toast.success('If this email exists, a reset link has been sent.')
       reset()
     } catch (error) {

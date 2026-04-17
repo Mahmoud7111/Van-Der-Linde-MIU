@@ -27,10 +27,27 @@ export const loginSchema = yup.object({
 
 // Used by RegisterPage form with react-hook-form + yupResolver.
 export const registerSchema = yup.object({
-  // Full name is required for account profile and order shipping ownership.
-  name: yup.string().min(2, 'Name must be at least 2 characters').required('Name is required'),
+  // First name is required for profile identity.
+  firstName: yup
+    .string()
+    .min(2, 'First name must be at least 2 characters')
+    .required('First name is required'),
+  // Last name is required for profile identity.
+  lastName: yup
+    .string()
+    .min(2, 'Last name must be at least 2 characters')
+    .required('Last name is required'),
   // Email validation prevents malformed addresses before request submission.
   email: yup.string().email('Please enter a valid email').required('Email is required'),
+  // Phone is optional but must be valid when provided.
+  phone: yup
+    .string()
+    .nullable()
+    .transform((value) => (value ? value.trim() : ''))
+    .test('phone-format', 'Please enter a valid phone number', (value) => {
+      if (!value) return true
+      return /^[+\d\s\-()]{7,20}$/.test(value)
+    }),
   // Password rule mirrors login expectations and backend validation.
   password: yup
     .string()
@@ -41,6 +58,17 @@ export const registerSchema = yup.object({
     .string()
     .oneOf([yup.ref('password')], 'Passwords must match')
     .required('Please confirm your password'),
+  // Optional demographic fields.
+  dateOfBirth: yup.string().nullable(),
+  gender: yup
+    .string()
+    .oneOf(['', 'male', 'female', 'prefer_not_to_say'], 'Please select a valid option')
+    .nullable(),
+  interests: yup.array().of(yup.string()).default([]),
+  // Terms agreement is required before account creation.
+  agree: yup
+    .boolean()
+    .oneOf([true], 'You must agree to the Terms & Conditions and Privacy Policy'),
 })
 
 
@@ -94,4 +122,22 @@ export const contactSchema = yup.object({
     .string()
     .min(20, 'Message must be at least 20 characters')
     .required('Message is required'),
+})
+
+// Used by ForgotPasswordPage with react-hook-form + yupResolver.
+export const forgotPasswordSchema = yup.object({
+  email: yup.string().email('Please enter a valid email').required('Email is required'),
+})
+
+// Used by ResetPasswordPage with react-hook-form + yupResolver.
+export const resetPasswordSchema = yup.object({
+  resetToken: yup.string().trim().required('Reset token is required'),
+  password: yup
+    .string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password')], 'Passwords must match')
+    .required('Please confirm your password'),
 })
