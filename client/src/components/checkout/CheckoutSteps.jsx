@@ -78,9 +78,10 @@ export default function CheckoutSteps({
               {/* Connector line between steps (don't render after the last step) */}
               {index < steps.length - 1 && (
                 <div 
-                  className={cn('checkout-steps__connector', {
-                    'checkout-steps__connector--filled': step.id < currentStep
-                  })}
+                  className={cn(
+                    'checkout-steps__connector',
+                    step.id < currentStep && 'checkout-steps__connector--filled'
+                  )}
                   aria-hidden="true"
                 />
               )}
