@@ -1,3 +1,4 @@
-export default function Modal() {
-  return <div>Modal - coming soon</div>;
+export default function Modal({ children, isOpen }) {
+  if (!isOpen) return null
+  return <div>{children}</div>
 }
