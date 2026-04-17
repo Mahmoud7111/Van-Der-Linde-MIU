@@ -38,18 +38,28 @@ export const WishlistProvider = ({ children }) => {
     localStorage.setItem('wishlist', JSON.stringify(list))
   }
 
+  // Read canonical identifier across backend and mock shapes.
+  const getItemId = (item) => item?._id || item?.id
+
   // Add selected watch object to wishlist and persist immediately.
   const addToWishlist = (watch) => {
+    const watchId = getItemId(watch)
+
+    // Skip duplicates so wishlist count/cards remain stable.
+    if (watchId && wishlist.some((item) => getItemId(item) === watchId)) {
+      return
+    }
+
     save([...wishlist, watch])
   }
 
   // Remove item by Mongo-style `_id` and persist updated list.
   const removeFromWishlist = (id) => {
-    save(wishlist.filter((item) => item._id !== id))
+    save(wishlist.filter((item) => getItemId(item) !== id))
   }
 
   // Check helper used by ProductCard to decide filled vs outlined heart icon state.
-  const isWishlisted = (id) => wishlist.some((item) => item._id === id)
+  const isWishlisted = (id) => wishlist.some((item) => getItemId(item) === id)
 
   return (
     // Provide list data and helper methods to all descendants.

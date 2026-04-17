@@ -44,7 +44,7 @@ export default function OrderHistoryPage() {
           {orders.length === 0 ? (
             <div className="order-history-page__empty">
               <p>You have no orders yet.</p>
-              <Link to="/products" className="order-history-page__back">
+              <Link to="/shop" className="order-history-page__back">
                 Start Shopping
               </Link>
             </div>

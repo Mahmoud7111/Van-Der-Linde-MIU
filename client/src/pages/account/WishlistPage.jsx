@@ -1,9 +1,10 @@
-import { Link, useLoaderData } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FiHeart, FiShoppingBag, FiTrash2 } from 'react-icons/fi'
-import { useMemo } from 'react'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import StarRating from '@/components/common/StarRating'
+import { useWishlist } from '@/context/WishlistContext'
+import { useCart } from '@/context/CartContext'
 import './WishlistPage.css'
 
 function formatPrice(value) {
@@ -11,23 +12,16 @@ function formatPrice(value) {
   return `$${n.toFixed(2)}`
 }
 
-function normalizeWishlist(data) {
-  if (Array.isArray(data)) return data
-  if (Array.isArray(data?.items)) return data.items
-  if (Array.isArray(data?.wishlist)) return data.wishlist
-  return []
-}
-
 export default function WishlistPage() {
-  const loaderData = useLoaderData()
-  const wishlist = useMemo(() => normalizeWishlist(loaderData), [loaderData])
+  const { wishlist, removeFromWishlist } = useWishlist()
+  const { dispatch } = useCart()
 
   const handleAddToCart = (item) => {
-    console.log('Add to cart:', item)
+    dispatch({ type: 'ADD', payload: item })
   }
 
   const handleRemove = (item) => {
-    console.log('Remove from wishlist:', item)
+    removeFromWishlist(item?._id || item?.id)
   }
 
   return (
@@ -53,7 +47,7 @@ export default function WishlistPage() {
               </div>
               <p>Your wishlist is empty.</p>
               <span>Save the pieces you love and find them quickly here.</span>
-              <Link to="/products" className="wishlist-page__back">
+              <Link to="/shop" className="wishlist-page__back">
                 Explore Products
               </Link>
             </div>
@@ -68,7 +62,7 @@ export default function WishlistPage() {
                 const oldPrice = item?.oldPrice ?? item?.compareAtPrice ?? item?.originalPrice
                 const rating = Number(item?.rating ?? 0)
                 const inStock = item?.inStock ?? (item?.stock > 0) ?? true
-                const href = item?.slug ? `/products/${item.slug}` : `/products/${id}`
+                const href = id ? `/watch/${id}` : '/shop'
 
                 return (
                   <article className="wishlist-card" key={id}>
