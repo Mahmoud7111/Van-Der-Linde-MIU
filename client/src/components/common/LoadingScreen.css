@@ -1,0 +1,119 @@
+.loading-screen {
+	position: fixed;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	background: linear-gradient(
+		160deg,
+		color-mix(in srgb, var(--color-surface) 92%, var(--color-dark) 8%) 0%,
+		color-mix(in srgb, var(--color-surface) 88%, var(--color-gold) 12%) 50%,
+		color-mix(in srgb, var(--color-surface) 94%, var(--color-dark) 6%) 100%
+	);
+	pointer-events: none;
+	opacity: 1;
+	transition: opacity var(--transition-normal);
+	z-index: var(--z-toast);
+}
+
+.loading-screen--exit {
+	opacity: 0;
+}
+
+.loading-screen__watch {
+	position: relative;
+	width: clamp(96px, 12vw, 140px);
+	height: clamp(96px, 12vw, 140px);
+}
+
+.loading-screen__glow {
+	position: absolute;
+	inset: -14px;
+	border-radius: var(--radius-full);
+	background: radial-gradient(
+		circle,
+		color-mix(in srgb, var(--color-gold) 35%, transparent 65%) 0%,
+		transparent 70%
+	);
+	filter: blur(10px);
+	opacity: 0.55;
+}
+
+.loading-screen__face {
+	position: absolute;
+	inset: 0;
+	border-radius: var(--radius-full);
+	border: 1px solid color-mix(in srgb, var(--color-gold) 38%, transparent 62%);
+	background:
+		radial-gradient(
+			circle,
+			color-mix(in srgb, var(--color-gold) 12%, transparent 88%) 0%,
+			transparent 62%
+		),
+		conic-gradient(
+			from -90deg,
+			color-mix(in srgb, var(--color-gold) 28%, transparent 72%) 0deg 6deg,
+			transparent 6deg 30deg
+		);
+	box-shadow:
+		inset 0 0 14px color-mix(in srgb, var(--color-dark) 12%, transparent 88%),
+		0 16px 30px color-mix(in srgb, var(--color-dark) 16%, transparent 84%);
+}
+
+.loading-screen__hand {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	height: 2px;
+	transform-origin: 0% 50%;
+	border-radius: var(--radius-full);
+	background: linear-gradient(
+		90deg,
+		var(--color-gold),
+		color-mix(in srgb, var(--color-gold) 40%, transparent 60%)
+	);
+	box-shadow: 0 6px 16px color-mix(in srgb, var(--color-dark) 18%, transparent 82%);
+}
+
+.loading-screen__hand--minute {
+	width: 48px;
+	animation: loading-spin 6s linear infinite;
+}
+
+.loading-screen__hand--hour {
+	width: 32px;
+	opacity: 0.8;
+	animation: loading-spin 12s linear infinite;
+}
+
+.loading-screen__pivot {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 7px;
+	height: 7px;
+	border-radius: var(--radius-full);
+	transform: translate(-50%, -50%);
+	background: var(--color-gold);
+	box-shadow: 0 0 12px color-mix(in srgb, var(--color-gold) 60%, transparent 40%);
+}
+
+@keyframes loading-spin {
+	from {
+		transform: translateY(-50%) rotate(0deg);
+	}
+
+	to {
+		transform: translateY(-50%) rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.loading-screen {
+		transition: none;
+	}
+
+	.loading-screen__hand--minute,
+	.loading-screen__hand--hour {
+		animation: none;
+	}
+}
