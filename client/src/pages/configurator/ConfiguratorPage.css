@@ -1,0 +1,467 @@
+/*
+  File: ConfiguratorPage.css
+
+  What this file is:
+  Scoped styles for the 3D watch configurator page.
+
+  What it does:
+  - Two-column layout: watch preview left, config panels right.
+  - Panel tabs for case / dial / strap sections.
+  - Swatch grid for option selection.
+  - Animated price + summary block.
+
+  Where it is used:
+  Imported by ConfiguratorPage.jsx only.
+*/
+
+/* ── PAGE SHELL ──────────────────────────────────────────────────────────── */
+
+.cfg-page {
+  min-height: 100vh;
+  background: var(--color-surface);
+  padding-bottom: var(--space-2xl);
+}
+
+/* ── HEADER ──────────────────────────────────────────────────────────────── */
+
+.cfg-header {
+  text-align: center;
+  padding:
+    clamp(var(--space-xl), 8vh, calc(var(--space-2xl) + var(--space-sm)))
+    var(--space-md)
+    clamp(var(--space-lg), 4vh, var(--space-xl));
+  border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface) 96%, var(--color-dark) 4%) 0%,
+    var(--color-surface) 100%
+  );
+}
+
+.cfg-header__eyebrow {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.cfg-header__title {
+  margin: var(--space-xs) 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  color: var(--color-dark);
+}
+
+.cfg-header__subtitle {
+  margin: var(--space-sm) auto 0;
+  max-width: 52ch;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+/* ── MAIN LAYOUT ─────────────────────────────────────────────────────────── */
+
+.cfg-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(var(--space-lg), 4vw, var(--space-2xl));
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(var(--space-xl), 6vh, var(--space-2xl)) clamp(var(--space-md), 4vw, var(--space-xl));
+  align-items: start;
+}
+
+/* ── WATCH PREVIEW ───────────────────────────────────────────────────────── */
+
+.cfg-preview {
+  position: sticky;
+  top: calc(98px + var(--space-lg)); /* clears the sticky header height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.cfg-preview__stage {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 220 / 380;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Subtle radial glow behind the watch */
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 50%,
+    color-mix(in srgb, var(--color-gold) 8%, transparent 92%) 0%,
+    transparent 70%
+  );
+}
+
+.cfg-preview__watch {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cfg-preview__watch svg {
+  width: 100%;
+  height: auto;
+  drop-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.cfg-preview__price-wrap {
+  text-align: center;
+}
+
+.cfg-preview__price {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--color-dark);
+}
+
+.cfg-preview__price-note {
+  margin: var(--space-xs) 0 0;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ── CONFIG PANELS ───────────────────────────────────────────────────────── */
+
+.cfg-panels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ── TABS ── */
+
+.cfg-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  gap: 0;
+}
+
+.cfg-tab {
+  position: relative;
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-normal);
+}
+
+.cfg-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-normal);
+}
+
+.cfg-tab--active {
+  color: var(--color-dark);
+}
+
+.cfg-tab--active::after {
+  transform: scaleX(1);
+}
+
+.cfg-tab:hover:not(.cfg-tab--active) {
+  color: color-mix(in srgb, var(--color-dark) 70%, var(--color-muted) 30%);
+}
+
+.cfg-tab:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: -2px;
+}
+
+/* ── PANEL ── */
+
+.cfg-panel-content {
+  /* Prevents layout shift while AnimatePresence swaps panels. */
+  min-height: 220px;
+  position: relative;
+}
+
+.cfg-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.cfg-panel__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-dark);
+}
+
+.cfg-panel__desc {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+  max-width: 46ch;
+}
+
+/* ── SWATCHES ── */
+
+.cfg-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.cfg-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent 20%);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+  width: 80px;
+  transition:
+    border-color var(--transition-normal),
+    transform var(--transition-fast),
+    box-shadow var(--transition-normal);
+}
+
+.cfg-swatch:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+}
+
+.cfg-swatch--selected {
+  border-color: var(--color-gold);
+  box-shadow:
+    0 0 0 1px var(--color-gold),
+    0 6px 16px color-mix(in srgb, var(--color-gold) 18%, transparent 82%);
+  transform: translateY(-2px);
+}
+
+.cfg-swatch:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.cfg-swatch__color {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  display: block;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.cfg-swatch__label {
+  font-family: var(--font-body);
+  font-size: 0.67rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-dark);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ── SELECTION DETAIL ── */
+
+.cfg-selection-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-gold) 6%, var(--color-surface) 94%);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 22%, transparent 78%);
+}
+
+.cfg-selection-detail__name {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.cfg-selection-detail__add {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-gold);
+  letter-spacing: 0.04em;
+}
+
+/* ── SUMMARY ── */
+
+.cfg-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-dark) 8%, transparent 92%);
+  margin-top: var(--space-sm);
+}
+
+.cfg-summary__lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.cfg-summary__line {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.cfg-summary__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-dark);
+  margin-top: var(--space-xs);
+}
+
+.cfg-summary__cta {
+  width: 100%;
+  justify-content: center;
+}
+
+.cfg-summary__note {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+/* ── DARK MODE ───────────────────────────────────────────────────────────── */
+
+[data-theme='dark'] .cfg-page {
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .cfg-header {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
+    var(--color-surface) 100%
+  );
+}
+
+[data-theme='dark'] .cfg-header__title {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .cfg-preview__price {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .cfg-tab--active {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .cfg-panel__title {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .cfg-swatch {
+  background: color-mix(in srgb, var(--color-white) 10%, transparent 90%);
+  border-color: color-mix(in srgb, var(--color-border) 50%, transparent 50%);
+}
+
+[data-theme='dark'] .cfg-swatch__label {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .cfg-selection-detail {
+  background: color-mix(in srgb, var(--color-gold) 8%, var(--color-surface) 92%);
+}
+
+[data-theme='dark'] .cfg-selection-detail__name {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .cfg-summary {
+  background: color-mix(in srgb, var(--color-white) 6%, transparent 94%);
+  border-color: color-mix(in srgb, var(--color-border) 60%, transparent 40%);
+}
+
+[data-theme='dark'] .cfg-summary__total {
+  color: var(--color-dark);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .cfg-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cfg-preview {
+    position: relative;
+    top: auto;
+    /* On mobile the watch preview sits above the panels naturally. */
+    max-width: 240px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .cfg-swatches {
+    gap: var(--space-xs);
+  }
+
+  .cfg-swatch {
+    width: 68px;
+  }
+
+  .cfg-swatch__color {
+    width: 40px;
+    height: 40px;
+  }
+}

@@ -1071,6 +1071,7 @@ export default function HomePage() {
             {/*
               Add this in index.html:
               <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+              we use the model-viewer web component for easy 3D rendering without a heavy custom Three.js setup.
             */}
             <div className="home-configurator__model-wrap">
               {/* model-viewer web component handles interactive 3D rendering */}
