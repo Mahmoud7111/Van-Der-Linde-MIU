@@ -1,366 +1,3 @@
-/* ---------- Shared Auth + Account Theme ---------- */
-.auth-split,
-.auth-split * {
-  font-family: inherit;
-}
-
-.auth-split {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  background: var(--color-surface);
-}
-
-/* ---------- Left Hero ---------- */
-.auth-hero {
-  position: relative;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.auth-hero__overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(10, 16, 24, 0.5);
-}
-
-.auth-hero__content {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  padding-top: 72px; /* text slightly lower */
-  color: var(--color-white);
-  text-align: center;
-}
-
-.auth-hero__text-wrap {
-  width: min(100%, 520px);
-  opacity: 0.78; /* lower text opacity on image */
-}
-
-.auth-hero__quote {
-  margin: 0;
-  font-size: clamp(24px, 2.25vw, 40px);
-  line-height: 1.18;
-  letter-spacing: 0.01em;
-  font-weight: 500;
-  color: var(--color-white);
-}
-
-.auth-hero__author {
-  margin: 16px 0 0;
-  font-size: clamp(10px, 0.8vw, 13px);
-  letter-spacing: 0.22em;
-  font-weight: 700;
-  color: var(--color-gold);
-  text-transform: uppercase;
-}
-
-.auth-hero__brand {
-  margin-top: 42px;
-}
-
-.auth-hero__brand-name {
-  margin: 0;
-  font-size: clamp(28px, 2vw, 36px);
-  letter-spacing: 0.18em;
-  font-weight: 600;
-  color: var(--color-white);
-  text-transform: uppercase;
-}
-
-.auth-hero__brand-sub {
-  margin: 8px 0 0;
-  font-size: clamp(9px, 0.7vw, 12px);
-  letter-spacing: 0.2em;
-  font-weight: 600;
-  color: color-mix(in srgb, var(--color-muted) 70%, var(--color-white) 30%);
-  text-transform: uppercase;
-}
-
-/* ---------- Right Auth Panel ---------- */
-.auth-panel {
-  background: var(--color-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 44px 34px;
-}
-
-.auth-panel__inner {
-  width: min(100%, 600px);
-}
-
-.auth-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: 30px;
-}
-
-.auth-tab {
-  text-align: center;
-  text-decoration: none;
-  padding: 12px 10px 14px;
-  font-size: 13px;
-  letter-spacing: 0.11em;
-  color: var(--color-muted);
-  border-bottom: 2px solid transparent;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.auth-tab:hover {
-  color: color-mix(in srgb, var(--color-dark) 65%, var(--color-muted) 35%);
-}
-
-.auth-tab--active {
-  color: var(--color-dark);
-  border-bottom-color: var(--color-gold);
-}
-
-.auth-vdl-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.auth-vdl-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.auth-vdl-label {
-  font-size: 11px;
-  letter-spacing: 0.13em;
-  color: color-mix(in srgb, var(--color-dark) 60%, var(--color-muted) 40%);
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.auth-vdl-input {
-  height: 42px;
-  border: 1px solid var(--color-border);
-  background: var(--color-white);
-  padding: 0 12px;
-  font-size: 13px;
-  color: var(--color-dark);
-  outline: none;
-}
-
-.auth-vdl-input::placeholder {
-  color: var(--color-muted);
-}
-
-.auth-vdl-input:focus {
-  border-color: var(--color-gold);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 22%, transparent 78%);
-  background: color-mix(in srgb, var(--color-white) 80%, var(--color-surface) 20%);
-}
-
-.auth-vdl-input--error {
-  border-color: var(--color-error);
-}
-
-.auth-vdl-error {
-  margin: 0;
-  color: var(--color-error);
-  font-size: 12px;
-}
-
-.auth-vdl-password-wrap {
-  position: relative;
-}
-
-.auth-vdl-input--password {
-  padding-right: 42px;
-}
-
-.auth-vdl-eye {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 0;
-  background: transparent;
-  font-size: 14px;
-  cursor: pointer;
-  color: var(--color-muted);
-}
-
-/* Row + checkboxes */
-.auth-vdl-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 2px;
-  gap: 10px;
-}
-
-.auth-vdl-checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: color-mix(in srgb, var(--color-dark) 58%, var(--color-muted) 42%);
-  font-size: 12px;
-}
-
-.auth-vdl-checkbox input {
-  width: 13px;
-  height: 13px;
-  accent-color: var(--color-dark);
-}
-
-.auth-vdl-forgot {
-  color: var(--color-gold);
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.auth-vdl-forgot:hover {
-  text-decoration: underline;
-}
-
-/* Primary button style */
-.auth-vdl-submit {
-  width: 100%;
-  min-height: 42px;
-  border: none !important;
-  border-radius: 0 !important;
-  background: var(--color-gold) !important;
-  color: var(--color-dark) !important;
-  letter-spacing: 0.11em;
-  font-size: 12px !important;
-  font-weight: 800 !important;
-  text-transform: uppercase;
-  margin-top: 6px;
-}
-
-/* Divider + socials */
-.auth-vdl-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 22px 0 16px;
-  color: var(--color-muted);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.auth-vdl-divider::before,
-.auth-vdl-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--color-border);
-}
-
-.auth-vdl-socials {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.auth-vdl-social {
-  height: 36px;
-  border: 1px solid var(--color-border);
-  background: transparent;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: color-mix(in srgb, var(--color-dark) 72%, var(--color-muted) 28%);
-  cursor: pointer;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-.auth-vdl-social:hover {
-  border-color: var(--color-gold-light);
-  background: color-mix(in srgb, var(--color-surface) 70%, var(--color-white) 30%);
-  color: var(--color-dark);
-}
-
-/* Benefits */
-.auth-vdl-benefits {
-  margin-top: 24px;
-  border-top: 1px solid var(--color-border);
-  padding-top: 14px;
-}
-
-.auth-vdl-benefits__title {
-  margin: 0 0 12px;
-  letter-spacing: 0.11em;
-  font-size: 10px;
-  color: var(--color-muted);
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.auth-vdl-benefits ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  columns: 2;
-  column-gap: 20px;
-}
-
-.auth-vdl-benefits li {
-  break-inside: avoid;
-  position: relative;
-  padding-left: 14px;
-  margin: 0 0 8px;
-  color: color-mix(in srgb, var(--color-dark) 52%, var(--color-muted) 48%);
-  font-size: 11px;
-  line-height: 1.35;
-}
-
-.auth-vdl-benefits li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: var(--color-gold);
-  font-weight: 700;
-}
-
-/* Register extras */
-.auth-vdl-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.auth-vdl-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--color-muted) 50%),
-    linear-gradient(135deg, var(--color-muted) 50%, transparent 50%);
-  background-position:
-    calc(100% - 18px) calc(50% - 3px),
-    calc(100% - 12px) calc(50% - 3px);
-  background-size: 6px 6px, 6px 6px;
-  background-repeat: no-repeat;
-  padding-right: 34px;
-}
-
-.auth-vdl-interests {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-}
-
-/* ---------- Account pages ---------- */
 .account-page {
   min-height: 100vh;
   background: var(--color-surface);
@@ -470,6 +107,21 @@
   gap: 10px;
 }
 
+.account-card--guest {
+  margin-top: 16px;
+}
+
+.account-card__guest-copy {
+  margin: 0 0 14px;
+  color: color-mix(in srgb, var(--color-dark) 58%, var(--color-muted) 42%);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.account-actions--guest {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .account-link-btn {
   display: inline-flex;
   align-items: center;
@@ -494,40 +146,17 @@
   margin-top: 14px;
 }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 1200px) {
-  .auth-split {
+@media (max-width: 900px) {
+  .account-page__grid {
     grid-template-columns: 1fr;
   }
 
-  .auth-hero {
-    min-height: 45vh;
-  }
-
-  .auth-panel {
-    min-height: 55vh;
-  }
-}
-
-@media (max-width: 900px) {
-  .account-page__grid {
+  .account-actions--guest {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 700px) {
-  .auth-panel {
-    padding: 22px 14px;
-  }
-
-  .auth-vdl-grid-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .auth-vdl-benefits ul {
-    columns: 1;
-  }
-
   .account-page__header {
     flex-direction: column;
     align-items: flex-start;
