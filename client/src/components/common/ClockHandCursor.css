@@ -5,11 +5,17 @@
   z-index: var(--z-cursor);
 }
 
+.clock-cursor__center {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 .clock-cursor__pivot,
 .clock-cursor__face,
 .clock-cursor__hand,
 .clock-cursor__glow {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   transform: translate(-50%, -50%);
