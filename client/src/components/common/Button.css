@@ -158,6 +158,7 @@
 .btn--home-watch-link[aria-disabled='true'],
 .btn--home-watch-link-center:disabled,
 .btn--home-watch-link-center[aria-disabled='true'] {
+  opacity: 1;
   pointer-events: none;
   cursor: default;
 }

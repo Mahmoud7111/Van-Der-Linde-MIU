@@ -805,9 +805,21 @@
   will-change: transform, opacity;
 }
 
+.home-favorites__watch-slot--left {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 .home-favorites__watch-slot--center {
   /* The active card stays on top so scaled neighbors never overlap it visually. */
+  grid-column: 2;
+  grid-row: 1;
   z-index: 4;
+}
+
+.home-favorites__watch-slot--right {
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .home-favorites__watch-image {
