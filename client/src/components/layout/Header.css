@@ -9,6 +9,7 @@
 		color-mix(in srgb, var(--color-surface) 87%, var(--color-gold) 13%) 46%,
 		color-mix(in srgb, var(--color-surface) 95%, var(--color-dark) 5%) 100%
 	);
+	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
 	box-shadow: 0 14px 28px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
 	transition:
@@ -33,6 +34,7 @@
 	background: transparent;
 	box-shadow: none;
 	border-bottom-color: transparent;
+	-webkit-backdrop-filter: none;
 	backdrop-filter: none;
 }
 
@@ -48,6 +50,12 @@
 	background: color-mix(in srgb, var(--color-white) 10%, transparent 90%);
 	border-color: color-mix(in srgb, var(--color-white) 40%, transparent 60%);
 	color: var(--color-white);
+}
+
+.header--transparent .header__admin-link {
+	background: color-mix(in srgb, var(--color-white) 12%, transparent 88%);
+	border-color: color-mix(in srgb, var(--color-white) 45%, transparent 55%);
+	color: color-mix(in srgb, var(--color-white) 92%, var(--color-gold) 8%);
 }
 
 .header--transparent .header__icon-control--cart {
@@ -141,11 +149,44 @@
 	flex-wrap: nowrap;
 }
 
+.header__admin-link {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.3rem 0.85rem;
+	border-radius: var(--radius-full);
+	border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent 55%);
+	background: color-mix(in srgb, var(--color-white) 85%, var(--color-gold) 15%);
+	color: var(--color-dark);
+	font-size: 0.65rem;
+	font-weight: 600;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	transition:
+		transform var(--transition-fast),
+		box-shadow var(--transition-fast),
+		border-color var(--transition-normal),
+		background-color var(--transition-normal),
+		color var(--transition-normal);
+}
+
+.header__admin-link:hover,
+.header__admin-link:focus-visible,
+.header__admin-link--active {
+	transform: translateY(-1px);
+	border-color: var(--color-gold);
+	box-shadow: 0 10px 16px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
+	color: var(--color-dark);
+}
+
 .header__divider {
 	font-size: 0.95rem;
 	line-height: 1;
 	color: color-mix(in srgb, var(--color-dark) 55%, var(--color-muted) 45%);
 	margin-right: var(--space-xs);
+	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -339,6 +380,12 @@
 [data-theme='dark'] .header__icon-control {
 	background: color-mix(in srgb, var(--color-white) 78%, var(--color-surface) 22%);
 	border-color: color-mix(in srgb, var(--color-gold) 58%, transparent 42%);
+}
+
+[data-theme='dark'] .header__admin-link {
+	background: color-mix(in srgb, var(--color-surface) 70%, var(--color-gold) 30%);
+	border-color: color-mix(in srgb, var(--color-gold) 60%, transparent 40%);
+	color: var(--color-dark);
 }
 
 [data-theme='dark'] .header__divider {

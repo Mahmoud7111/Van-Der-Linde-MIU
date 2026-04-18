@@ -56,6 +56,9 @@ export default function Header() {
   const iconLinkClassName = ({ isActive }) =>
     `header__icon-control${isActive ? ' header__icon-control--active' : ''}`
 
+  const adminLinkClassName = ({ isActive }) =>
+    `header__admin-link${isActive ? ' header__admin-link--active' : ''}`
+
   const cartLinkClassName = ({ isActive }) =>
     `header__icon-control header__icon-control--cart${isActive ? ' header__icon-control--active' : ''}`
 
@@ -112,13 +115,13 @@ export default function Header() {
             <NavLink className={navLinkClassName} to="/contact">
               CONTACT
             </NavLink>
-            <NavLink className={navLinkClassName} to="/admin">
-              ADMIN DASHBOARD
-            </NavLink>
           </nav>
 
           {/* Icon controls — utility actions separated from nav links by a divider */}
           <div className="header__icons-wrap">
+            <NavLink className={adminLinkClassName} to="/admin">
+              Admin Console
+            </NavLink>
             <span className="header__divider" aria-hidden="true">
               |
             </span>
