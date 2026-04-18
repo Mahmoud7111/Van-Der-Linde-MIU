@@ -48,6 +48,7 @@ const WishlistPage = lazy(() => import('@/pages/account/WishlistPage.jsx'))
 
 const AboutPage = lazy(() => import('@/pages/info/AboutPage.jsx'))
 const CollectionsPage = lazy(() => import('@/pages/info/CollectionsPage.jsx'))
+const CollectionDetailPage = lazy(() => import('@/pages/info/CollectionDetailPage.jsx'))
 const ServicesPage = lazy(() => import('@/pages/info/ServicesPage.jsx'))
 const ContactPage = lazy(() => import('@/pages/info/ContactPage.jsx'))
 const FaqPage = lazy(() => import('@/pages/info/FaqPage.jsx'))
@@ -191,6 +192,17 @@ export const router = createBrowserRouter([
 
       // Informational and marketing pages.
       { path: 'collections', element: <CollectionsPage /> },
+      {
+        path: 'collections/:slug',
+        element: <CollectionDetailPage />,
+        loader: async ({ params }) => {
+          const [collection, watches] = await Promise.all([
+            collectionService.getBySlug(params.slug),
+            watchService.getAll(),
+          ])
+          return { collection, watches }
+        },
+      },
       { path: 'services', element: <ServicesPage /> },
       { path: 'about', element: <AboutPage /> },
       { path: 'faq', element: <FaqPage /> },
