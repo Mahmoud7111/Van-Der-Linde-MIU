@@ -1,0 +1,62 @@
+.clock-cursor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-cursor);
+}
+
+.clock-cursor__pivot,
+.clock-cursor__hand,
+.clock-cursor__glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.clock-cursor__pivot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-gold);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-gold) 60%, transparent 40%);
+}
+
+.clock-cursor__hand {
+  height: 2px;
+  transform-origin: left center;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    90deg,
+    var(--color-gold),
+    color-mix(in srgb, var(--color-gold) 40%, transparent 60%)
+  );
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-dark) 18%, transparent 82%);
+}
+
+.clock-cursor__hand--minute {
+  width: 46px;
+}
+
+.clock-cursor__hand--hour {
+  width: 30px;
+}
+
+.clock-cursor__glow {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-gold) 45%, transparent 55%) 0%,
+    transparent 70%
+  );
+  filter: blur(8px);
+  opacity: 0.5;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .clock-cursor {
+    display: none;
+  }
+}
