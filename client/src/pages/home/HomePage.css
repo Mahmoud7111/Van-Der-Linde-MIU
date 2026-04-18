@@ -1040,27 +1040,22 @@
   inset: 0;
   z-index: 0;
   background-size: cover;
-  background-position: center;
+  background-position: center 22%;
+  background-repeat: no-repeat;
   transform: scale(1);
   will-change: transform;
 }
 
 .home-gender__panel--him .home-gender__image {
-  /* Replace with real background-image in production */
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-dark) 90%, #000 10%),
-    color-mix(in srgb, var(--color-dark) 70%, var(--color-muted) 30%)
-  );
+  /* Preserve image source from JSX and tune focal crop per panel. */
+  background-color: color-mix(in srgb, var(--color-dark) 86%, #000 14%);
+  background-position: 58% 20%;
 }
 
 .home-gender__panel--her .home-gender__image {
-  /* Replace with real background-image in production */
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-muted) 40%, var(--color-surface) 60%),
-    color-mix(in srgb, var(--color-gold) 15%, var(--color-surface) 85%)
-  );
+  /* Preserve image source from JSX and tune focal crop per panel. */
+  background-color: color-mix(in srgb, var(--color-surface) 85%, var(--color-gold) 15%);
+  background-position: 50% 18%;
 }
 
 .home-gender__overlay {
@@ -1167,16 +1162,78 @@
   );
 }
 
+@media (max-width: 1024px) {
+  /* Tablet keeps side-by-side layout while relaxing crop and tightening type scale. */
+  .home-gender {
+    min-height: clamp(700px, 92vh, 920px);
+    height: clamp(700px, 92vh, 920px);
+  }
+
+  .home-gender__content {
+    padding: clamp(1.4rem, 3.5vw, 2.4rem);
+  }
+
+  .home-gender__title {
+    font-size: clamp(1.9rem, 4.8vw, 3rem);
+    letter-spacing: 0.14em;
+  }
+
+  .home-gender__subtitle {
+    margin-bottom: 1.25rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.17em;
+  }
+
+  .home-gender__panel--him .home-gender__image {
+    background-position: 56% 16%;
+  }
+
+  .home-gender__panel--her .home-gender__image {
+    background-position: 50% 14%;
+  }
+}
+
 @media (max-width: 768px) {
   /* Gender split stacks vertically on mobile to avoid squeezed panel typography. */
   .home-gender {
     flex-direction: column;
     height: auto;
+    min-height: auto;
   }
 
   .home-gender__panel {
     width: 100%;
-    height: clamp(420px, 65vh, 600px);
+    min-height: clamp(340px, 55svh, 460px);
+    height: clamp(360px, 60svh, 520px);
+  }
+
+  .home-gender__content {
+    padding: clamp(1.1rem, 5vw, 1.8rem);
+  }
+
+  .home-gender__title {
+    font-size: clamp(1.7rem, 9.2vw, 2.4rem);
+    letter-spacing: 0.12em;
+  }
+
+  .home-gender__subtitle {
+    margin: 0 0 1rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .home-gender__cta {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+  }
+
+  .home-gender__panel--him .home-gender__image {
+    background-position: 50% 14%;
+  }
+
+  .home-gender__panel--her .home-gender__image {
+    background-position: 50% 12%;
   }
 
   .home-gender__divider {
@@ -1625,6 +1682,14 @@
       color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
       color-mix(in srgb, var(--color-surface) 90%, #000 10%) 100%
     );
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  /* Tablet keeps two columns but centers the left narrative block vertically. */
+  .home-configurator__left {
+    justify-content: center;
+    padding-bottom: 0;
+  }
 }
 
 @media (max-width: 768px) {
