@@ -1,0 +1,108 @@
+.shop-page {
+  width: 100%;
+  padding: clamp(var(--space-xl), 6vw, var(--space-2xl)) 0;
+}
+
+.shop-page__inner {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 0 clamp(var(--space-md), 4vw, var(--space-xl));
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-lg), 5vw, var(--space-2xl));
+}
+
+.shop-page__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.shop-page__heading {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.shop-page__eyebrow {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-dark) 60%, var(--color-muted) 40%);
+}
+
+.shop-page__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-weight: 500;
+  color: var(--color-dark);
+}
+
+.shop-page__subtitle {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--color-dark) 65%, var(--color-muted) 35%);
+}
+
+.shop-page__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-xs);
+  text-align: right;
+}
+
+.shop-page__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-full);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 35%, transparent 65%);
+  background: color-mix(in srgb, var(--color-gold) 8%, transparent 92%);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-dark);
+}
+
+.shop-page__summary {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--color-dark) 55%, var(--color-muted) 45%);
+}
+
+.shop-page__filters,
+.shop-page__results {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .shop-page__meta {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+@media (max-width: 768px) {
+  .shop-page {
+    padding: clamp(var(--space-lg), 8vw, var(--space-xl)) 0;
+  }
+
+  .shop-page__header {
+    align-items: flex-start;
+  }
+
+  .shop-page__title {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+  }
+}
