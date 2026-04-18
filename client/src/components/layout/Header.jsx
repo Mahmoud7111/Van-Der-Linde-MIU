@@ -24,7 +24,6 @@ import { useState } from 'react'
 import MobileMenu from './MobileMenu'
 import DarkModeToggle from '@/components/features/DarkModeToggle'
 import CurrencySwitcher from '@/components/features/CurrencySwitcher'
-import SearchBar from '@/components/features/SearchBar'
 import { cn } from '@/utils/cn'
 import {
   FiDollarSign,
@@ -104,6 +103,9 @@ export default function Header() {
             <NavLink className={navLinkClassName} to="/gifting">
               GIFTING
             </NavLink>
+            <NavLink className={navLinkClassName} to="/quiz">
+              WATCH QUIZ
+            </NavLink>
           </nav>
         </div>
 
@@ -138,7 +140,6 @@ export default function Header() {
             </span>
 
             <div className="header__actions">
-              <SearchBar />
               {/* Cart badge shows live item count from CartContext */}
               <NavLink
                 aria-label={`Cart with ${totalItems} items`}

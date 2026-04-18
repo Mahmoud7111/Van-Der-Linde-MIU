@@ -17,18 +17,11 @@ export default function Footer() {
           <small className="footer__meta">Since 1875</small>
 
           <nav className="footer__nav" aria-label="Footer links">
-            <Link className="footer__link" to="/faq">
-              FAQ
-            </Link>
-            <Link className="footer__link" to="/privacy">
-              Privacy
-            </Link>
-            <Link className="footer__link" to="/terms">
-              Terms
-            </Link>
-            <Link className="footer__link" to="/contact">
-              Contact
-            </Link>
+            <Link className="footer__link" to="/gift-registry">Gift Registry</Link>
+            <Link className="footer__link" to="/size-guide">Size Guide</Link>
+            <Link className="footer__link" to="/faq">FAQ</Link>
+            <Link className="footer__link" to="/privacy">Privacy</Link>
+            <Link className="footer__link" to="/terms">Terms</Link>
           </nav>
         </div>
       </div>

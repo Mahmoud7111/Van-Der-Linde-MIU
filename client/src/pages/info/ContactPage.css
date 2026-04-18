@@ -135,27 +135,87 @@
 }
 
 [data-theme='dark'] .contact-page__subtitle,
-[data-theme='dark'] .contact-info__item p,
-[data-theme='dark'] .contact-form__success p {
+[data-theme='dark'] .contact-info__item p {
   color: #ffffff !important;
 }
 
-[data-theme='dark'] .contact-info__item h3,
-[data-theme='dark'] .form-group label {
+[data-theme='dark'] .contact-form__success p {
+  color: #000000 !important;
+}
+
+[data-theme='dark'] .contact-form-container {
+  background: var(--color-dark);
+  padding: 3rem;
+  border-radius: var(--radius-md);
+}
+
+[data-theme='dark'] .contact-info__item h3 {
   color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme='dark'] .form-group label,
+[data-theme='dark'] .contact-form label {
+  color: #000000 !important;
+  font-weight: 600;
 }
 
 [data-theme='dark'] .form-group input,
 [data-theme='dark'] .form-group select,
 [data-theme='dark'] .form-group textarea {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #000000 !important;
+  transition: all 0.3s ease;
+}
+
+/* When input is focused or has content (placeholder not shown) */
+[data-theme='dark'] .form-group input:focus,
+[data-theme='dark'] .form-group textarea:focus,
+[data-theme='dark'] .form-group input:not(:placeholder-shown),
+[data-theme='dark'] .form-group textarea:not(:placeholder-shown) {
+  background: #0d1b2a;
   color: #ffffff !important;
+  border-color: var(--color-gold);
+}
+
+/* Force select and its label to stay dark-on-light in dark mode */
+[data-theme='dark'] .form-group select,
+[data-theme='dark'] .form-group select:focus,
+[data-theme='dark'] .form-group select:not([value=""]) {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .form-group label {
+  color: #000000 !important;
 }
 
 [data-theme='dark'] .form-group input::placeholder,
 [data-theme='dark'] .form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: #000000;
+  opacity: 0.6;
+}
+
+[data-theme='dark'] .form-group select option {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+
+/* Fix for autofill background in dark mode */
+[data-theme='dark'] .form-group input:-webkit-autofill,
+[data-theme='dark'] .form-group input:-webkit-autofill:hover,
+[data-theme='dark'] .form-group input:-webkit-autofill:focus,
+[data-theme='dark'] .form-group textarea:-webkit-autofill,
+[data-theme='dark'] .form-group textarea:-webkit-autofill:hover,
+[data-theme='dark'] .form-group textarea:-webkit-autofill:focus,
+[data-theme='dark'] .form-group select:-webkit-autofill,
+[data-theme='dark'] .form-group select:-webkit-autofill:hover,
+[data-theme='dark'] .form-group select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0d1b2a inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Responsive Styles */
@@ -164,7 +224,7 @@
     grid-template-columns: 1fr;
     gap: 4rem;
   }
-  
+
   .contact-page__title {
     font-size: 2.5rem;
   }
@@ -174,7 +234,7 @@
   .contact-page {
     padding-top: 100px;
   }
-  
+
   .contact-page__header {
     margin-bottom: 3rem;
   }

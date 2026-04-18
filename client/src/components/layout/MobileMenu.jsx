@@ -48,6 +48,7 @@ export default function MobileMenu({ isOpen, onClose }) {
             <NavLink className={navLinkClassName} to="/shop" onClick={onClose}>SHOP ALL</NavLink>
             <NavLink className={navLinkClassName} to="/collections" onClick={onClose}>COLLECTIONS</NavLink>
             <NavLink className={navLinkClassName} to="/gifting" onClick={onClose}>GIFTING</NavLink>
+            <NavLink className={navLinkClassName} to="/quiz" onClick={onClose}>WATCH QUIZ</NavLink>
             <div className="mobile-menu__divider" aria-hidden="true" />
             <NavLink className={navLinkClassName} to="/services" onClick={onClose}>SERVICES</NavLink>
             <NavLink className={navLinkClassName} to="/about" onClick={onClose}>OUR STORY</NavLink>

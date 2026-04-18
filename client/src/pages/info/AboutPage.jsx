@@ -118,7 +118,7 @@ export default function AboutPage() {
       {/* Craftsmanship Section */}
       <section className="about-craft">
         <div className="about-craft__content">
-          <Motion.h2 
+          <Motion.h2
             className="about-craft__title"
             initial="hidden"
             whileInView="visible"
@@ -128,7 +128,7 @@ export default function AboutPage() {
             The Art of Watchmaking
           </Motion.h2>
           <div className="about-craft__grid">
-            <Motion.div 
+            <Motion.div
               className="about-craft__card"
               initial="hidden"
               whileInView="visible"
@@ -138,7 +138,7 @@ export default function AboutPage() {
               <h3>Precision Engineering</h3>
               <p>Our movements are crafted to exact tolerances, ensuring unparalleled accuracy and longevity. Each caliber undergoes rigorous testing before it ever reaches your wrist.</p>
             </Motion.div>
-            <Motion.div 
+            <Motion.div
               className="about-craft__card"
               initial="hidden"
               whileInView="visible"
@@ -148,7 +148,7 @@ export default function AboutPage() {
               <h3>Finest Materials</h3>
               <p>From aerospace-grade titanium and 18k gold to scratch-resistant sapphire crystal, we source only the finest materials to ensure your timepiece withstands the test of time.</p>
             </Motion.div>
-            <Motion.div 
+            <Motion.div
               className="about-craft__card"
               initial="hidden"
               whileInView="visible"
@@ -165,7 +165,7 @@ export default function AboutPage() {
       {/* Beginning Section */}
       <section className="about-milestone about-milestone--image-left">
         <div className="about-milestone__inner">
-          <Motion.div 
+          <Motion.div
             className="about-milestone__image-wrapper"
             initial="hidden"
             whileInView="visible"
@@ -174,7 +174,7 @@ export default function AboutPage() {
           >
             <img src={beginningImage} alt="The Beginning of Van Der Linde" className="about-milestone__image" />
           </Motion.div>
-          <Motion.div 
+          <Motion.div
             className="about-milestone__text"
             initial="hidden"
             whileInView="visible"
@@ -192,7 +192,7 @@ export default function AboutPage() {
       {/* Movement Section */}
       <section className="about-milestone about-milestone--image-right">
         <div className="about-milestone__inner">
-          <Motion.div 
+          <Motion.div
             className="about-milestone__text"
             initial="hidden"
             whileInView="visible"
@@ -204,7 +204,7 @@ export default function AboutPage() {
               In the early 20th century, we pioneered one of the first reliable automatic winding mechanisms. This breakthrough allowed our timepieces to be powered by the natural motion of the wearer, eliminating the need for daily winding. It was a fusion of mechanical ingenuity and effortless luxury that redefined what a luxury watch could be.
             </p>
           </Motion.div>
-          <Motion.div 
+          <Motion.div
             className="about-milestone__image-wrapper"
             initial="hidden"
             whileInView="visible"
@@ -219,7 +219,7 @@ export default function AboutPage() {
       {/* Royal Recognition Section */}
       <section className="about-milestone about-milestone--image-left">
         <div className="about-milestone__inner">
-          <Motion.div 
+          <Motion.div
             className="about-milestone__image-wrapper"
             initial="hidden"
             whileInView="visible"
@@ -228,7 +228,7 @@ export default function AboutPage() {
           >
             <img src={recognitionImage} alt="Royal Recognition" className="about-milestone__image" />
           </Motion.div>
-          <Motion.div 
+          <Motion.div
             className="about-milestone__text"
             initial="hidden"
             whileInView="visible"
@@ -244,7 +244,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <Motion.section 
+      <Motion.section
         className="about-cta"
         initial="hidden"
         whileInView="visible"

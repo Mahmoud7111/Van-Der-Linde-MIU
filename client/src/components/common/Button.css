@@ -55,7 +55,30 @@
   transform: translateY(-1px);
 }
 
+/* Outline Variant (Neutral -> Gold in dark mode) */
+.btn--outline {
+  border: 1px solid var(--color-dark);
+  background: transparent;
+  color: var(--color-dark);
+}
+
+.btn--outline:hover {
+  background: var(--color-dark);
+  color: var(--color-surface);
+  transform: translateY(-1px);
+}
+
 /* Dark theme overrides */
 [data-theme='dark'] .btn--primary:hover {
   color: #1a1a1a;
+}
+
+[data-theme='dark'] .btn--outline {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+[data-theme='dark'] .btn--outline:hover {
+  background: var(--color-gold);
+  color: #0d1b2a;
 }

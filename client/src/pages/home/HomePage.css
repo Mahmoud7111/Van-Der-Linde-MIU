@@ -1726,6 +1726,24 @@
       color-mix(in srgb, var(--color-surface) 90%, #000 10%) 100%);
 }
 
+[data-theme='dark'] .home-configurator__label {
+  color: var(--color-gold);
+}
+
+[data-theme='dark'] .home-configurator__title {
+  color: #ffffff;
+  -webkit-text-stroke-color: var(--color-gold);
+}
+
+[data-theme='dark'] .home-configurator__desc {
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+[data-theme='dark'] .home-configurator__cta-row a {
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
 
   /* Mobile converts configurator into a single-column narrative + model stack. */
@@ -2178,9 +2196,12 @@
 }
 
 [data-theme='dark'] .home-heritage__eyebrow,
-[data-theme='dark'] .home-heritage__title,
+[data-theme='dark'] .home-heritage__title {
+  color: var(--color-gold);
+}
+
 [data-theme='dark'] .home-heritage__lead {
-  color: color-mix(in srgb, var(--color-white) 88%, var(--color-gold) 12%);
+  color: #ffffff;
 }
 
 [data-theme='dark'] .home-heritage__cta {

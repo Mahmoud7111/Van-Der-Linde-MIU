@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Root layout for all routed pages.
  *
  * What this file is:
@@ -21,6 +21,7 @@ import { Suspense } from 'react'
 import { Outlet, useNavigation } from 'react-router-dom'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import EmailCaptureModal from '@/components/common/EmailCaptureModal'
 import ScrollToTop from '@/routes/ScrollToTop'
 
 // Root layout component for all application routes.
@@ -79,6 +80,9 @@ export default function Layout() {
 
       {/* Shared footer across all pages. */}
       <Footer />
+
+      {/* Global marketing modals */}
+      <EmailCaptureModal />
     </>
   )
 }
