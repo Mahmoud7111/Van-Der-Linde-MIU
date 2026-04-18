@@ -1,3 +1,59 @@
+import { useLoaderData, useSearchParams } from 'react-router-dom'
+import PageTransition from '@/components/common/PageTransition'
+import ProductFilter from '@/components/product/ProductFilter'
+import ProductGrid from '@/components/product/ProductGrid'
+import './ShopPage.css'
+
 export default function ShopWomenPage() {
-  return <div>ShopWomenPage - coming soon</div>;
+  const data = useLoaderData()
+  const [searchParams] = useSearchParams()
+
+  const watches = Array.isArray(data) ? data : []
+  const search = (searchParams.get('search') || '').trim()
+  const brand = searchParams.get('brand') || 'all'
+  const rating = searchParams.get('rating') || 'all'
+  const minPrice = searchParams.get('minPrice') || ''
+  const maxPrice = searchParams.get('maxPrice') || ''
+  const category = searchParams.get('category') || 'all'
+
+  const activeFilters = [
+    search ? `Search: "${search}"` : null,
+    category !== 'all' ? category : null,
+    brand !== 'all' ? brand : null,
+    rating !== 'all' ? `${rating}+ stars` : null,
+    minPrice || maxPrice ? `Price: ${minPrice || '0'} - ${maxPrice || 'Any'}` : null,
+  ].filter(Boolean)
+
+  const summaryText =
+    activeFilters.length > 0 ? `Filtered by ${activeFilters.join(' | ')}` : "Showing women's watches"
+
+  return (
+    <PageTransition>
+      <section className="shop-page">
+        <div className="shop-page__inner">
+          <header className="shop-page__header">
+            <div className="shop-page__heading">
+              <p className="shop-page__eyebrow">Women&apos;s Collection</p>
+              <h1 className="shop-page__title">Shop Women&apos;s Watches</h1>
+              <p className="shop-page__subtitle">
+                Elegant profiles refined for contemporary sophistication.
+              </p>
+            </div>
+            <div className="shop-page__meta">
+              <span className="shop-page__count">{watches.length} Watches</span>
+              <p className="shop-page__summary">{summaryText}</p>
+            </div>
+          </header>
+
+          <div className="shop-page__filters">
+            <ProductFilter />
+          </div>
+
+          <div className="shop-page__results">
+            <ProductGrid watches={watches} />
+          </div>
+        </div>
+      </section>
+    </PageTransition>
+  )
 }
