@@ -112,6 +112,9 @@ export default function Header() {
             <NavLink className={navLinkClassName} to="/contact">
               CONTACT
             </NavLink>
+            <NavLink className={navLinkClassName} to="/admin">
+              ADMIN DASHBOARD
+            </NavLink>
           </nav>
 
           {/* Icon controls — utility actions separated from nav links by a divider */}
