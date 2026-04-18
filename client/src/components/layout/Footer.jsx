@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './Footer.css'
 
 // Small, simple shared footer.
@@ -17,6 +17,9 @@ export default function Footer() {
           <small className="footer__meta">Since 1875</small>
 
           <nav className="footer__nav" aria-label="Footer links">
+            <Link className="footer__link" to="/faq">
+              FAQ
+            </Link>
             <Link className="footer__link" to="/privacy">
               Privacy
             </Link>

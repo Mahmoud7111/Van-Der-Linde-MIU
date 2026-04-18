@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Application router configuration using createBrowserRouter.
  *
  * What this file is:
@@ -185,7 +185,7 @@ export const router = createBrowserRouter([
       },
 
       // Informational and marketing pages.
-      { path: 'collections', element: <CollectionsPage /> },
+      { path: 'collections', element: <CollectionsPage />, loader: () => collectionService.getAll() },
       { path: 'services', element: <ServicesPage /> },
       { path: 'about', element: <AboutPage /> },
       { path: 'faq', element: <FaqPage /> },

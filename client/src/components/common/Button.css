@@ -1,0 +1,61 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    border-color var(--transition-normal),
+    transform var(--transition-fast);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Primary Variant (Outline Gold -> Solid Gold hover, matching hero CTA) */
+.btn--primary {
+  border: 1px solid var(--color-gold);
+  background: transparent;
+  color: var(--color-gold);
+}
+
+.btn--primary:hover {
+  background: var(--color-gold);
+  color: var(--color-dark);
+  transform: translateY(-1px);
+}
+
+/* Secondary Variant (Solid Gold matching other CTAs) */
+.btn--secondary {
+  border: 1px solid var(--color-gold);
+  background: var(--color-gold);
+  color: var(--color-dark);
+}
+
+.btn--secondary:hover {
+  background: color-mix(in srgb, var(--color-gold) 80%, #000);
+  border-color: color-mix(in srgb, var(--color-gold) 80%, #000);
+  color: var(--color-dark);
+  transform: translateY(-1px);
+}
+
+/* Dark theme overrides */
+[data-theme='dark'] .btn--primary:hover {
+  color: #1a1a1a;
+}

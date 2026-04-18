@@ -1,4 +1,4 @@
-﻿/**
+/**
  * STUB COMPONENT: Header
  *
  * What this file is:
@@ -20,6 +20,11 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
 import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { useState } from 'react'
+import MobileMenu from './MobileMenu'
+import DarkModeToggle from '@/components/features/DarkModeToggle'
+import CurrencySwitcher from '@/components/features/CurrencySwitcher'
+import SearchBar from '@/components/features/SearchBar'
 import { cn } from '@/utils/cn'
 import {
   FiDollarSign,
@@ -28,10 +33,13 @@ import {
   FiMoon,
   FiShoppingCart,
   FiUser,
+  FiMenu
 } from 'react-icons/fi'
 import './Header.css'
 
 export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
   // Single hook handles both scroll depth (for transparent→solid transition)
   // and scroll direction (for hide/show behavior). Replaces useScrollPosition
   // + a separate useEffect listener that were running two scroll handlers simultaneously.
@@ -77,18 +85,27 @@ export default function Header() {
       )}
     >
       <div className="header__inner">
-        {/* Left nav — shop-facing links */}
-        <nav className="header__left header__nav" aria-label="Shop links">
-          <NavLink className={navLinkClassName} to="/shop">
-            SHOP ALL
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/collections">
-            COLLECTIONS
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/gifting">
-            GIFTING
-          </NavLink>
-        </nav>
+        {/* Left container — menu toggle (mobile) + shop-facing links (desktop) */}
+        <div className="header__left">
+          <button 
+            className="header__menu-toggle" 
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open mobile menu"
+          >
+            <FiMenu aria-hidden="true" />
+          </button>
+          <nav className="header__nav header__desktop-nav" aria-label="Shop links">
+            <NavLink className={navLinkClassName} to="/shop">
+              SHOP ALL
+            </NavLink>
+            <NavLink className={navLinkClassName} to="/collections">
+              COLLECTIONS
+            </NavLink>
+            <NavLink className={navLinkClassName} to="/gifting">
+              GIFTING
+            </NavLink>
+          </nav>
+        </div>
 
         {/* Center brand logo — always links back to homepage */}
         <Link className="header__brand" to="/">
@@ -102,7 +119,7 @@ export default function Header() {
 
         <div className="header__right">
           {/* Right nav — brand/informational links */}
-          <nav className="header__nav header__nav--right" aria-label="Company links">
+          <nav className="header__nav header__nav--right header__desktop-nav" aria-label="Company links">
             <NavLink className={navLinkClassName} to="/services">
               SERVICES
             </NavLink>
@@ -121,6 +138,7 @@ export default function Header() {
             </span>
 
             <div className="header__actions">
+              <SearchBar />
               {/* Cart badge shows live item count from CartContext */}
               <NavLink
                 aria-label={`Cart with ${totalItems} items`}
@@ -148,17 +166,14 @@ export default function Header() {
                 <FiGlobe aria-hidden="true" />
               </button>
 
-              <button type="button" className="header__icon-control" aria-label="Dark mode toggle">
-                <FiMoon aria-hidden="true" />
-              </button>
+              <DarkModeToggle className="header__icon-control" />
 
-              <button type="button" className="header__icon-control" aria-label="Currency switcher">
-                <FiDollarSign aria-hidden="true" />
-              </button>
+              <CurrencySwitcher className="header__icon-control" />
             </div>
           </div>
         </div>
       </div>
+      <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
     </header>
   )
 }
