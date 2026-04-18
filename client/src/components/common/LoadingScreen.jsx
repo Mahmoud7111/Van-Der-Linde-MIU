@@ -39,7 +39,6 @@ export default function LoadingScreen({ isVisible = true }) {
         </div>
         <div className="loading-screen__brand">
           <img className="loading-screen__logo" src="/Logo2.png" alt="" />
-          <p className="loading-screen__name">Van Der Linde</p>
         </div>
       </div>
     </div>

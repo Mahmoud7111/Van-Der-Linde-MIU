@@ -118,14 +118,6 @@
 	opacity: 0.95;
 }
 
-.loading-screen__name {
-	font-family: var(--font-display);
-	font-size: clamp(1rem, 2.2vw, 1.35rem);
-	letter-spacing: 0.24em;
-	text-transform: uppercase;
-	color: color-mix(in srgb, var(--color-dark) 75%, var(--color-gold) 25%);
-}
-
 @keyframes loading-spin {
 	from {
 		transform: translateY(-50%) rotate(0deg);
