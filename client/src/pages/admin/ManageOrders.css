@@ -598,6 +598,55 @@
   background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);
 }
 
+/* ========== MODAL ========== */
+.order-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.order-details-modal > div {
+  background-color: var(--color-surface);
+  padding: var(--space-lg);
+  border-radius: var(--border-radius-lg);
+  max-width: 600px;
+  width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.order-details-modal h2 {
+  margin-bottom: var(--space-md);
+}
+
+.order-details-modal p {
+  margin-bottom: var(--space-sm);
+}
+
+.order-details-modal ul {
+  margin-bottom: var(--space-md);
+}
+
+.order-details-modal button {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.order-details-modal button:hover {
+  background-color: var(--color-primary-hover);
+}
+
 [data-theme="dark"] .manage-orders__tr:hover {
   background-color: color-mix(in srgb, var(--color-surface) 50%, transparent);
 }
