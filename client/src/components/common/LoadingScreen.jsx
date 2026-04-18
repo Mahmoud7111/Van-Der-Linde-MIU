@@ -29,12 +29,18 @@ export default function LoadingScreen({ isVisible = true }) {
 
   return (
     <div className={`loading-screen${isExiting ? ' loading-screen--exit' : ''}`} aria-hidden="true">
-      <div className="loading-screen__watch" aria-hidden="true">
-        <div className="loading-screen__glow" />
-        <div className="loading-screen__face" />
-        <div className="loading-screen__hand loading-screen__hand--hour" />
-        <div className="loading-screen__hand loading-screen__hand--minute" />
-        <div className="loading-screen__pivot" />
+      <div className="loading-screen__content" aria-hidden="true">
+        <div className="loading-screen__watch">
+          <div className="loading-screen__glow" />
+          <div className="loading-screen__face" />
+          <div className="loading-screen__hand loading-screen__hand--hour" />
+          <div className="loading-screen__hand loading-screen__hand--minute" />
+          <div className="loading-screen__pivot" />
+        </div>
+        <div className="loading-screen__brand">
+          <img className="loading-screen__logo" src="/Logo2.png" alt="" />
+          <p className="loading-screen__name">Van Der Linde</p>
+        </div>
       </div>
     </div>
   )
