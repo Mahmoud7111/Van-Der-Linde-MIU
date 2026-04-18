@@ -23,6 +23,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ScrollToTop from '@/routes/ScrollToTop'
 import PageTransition from '@/components/common/PageTransition'
+import ClockHandCursor from '@/components/common/ClockHandCursor'
 
 // Root layout component for all application routes.
 export default function Layout() {
@@ -36,6 +37,8 @@ export default function Layout() {
     <>
       {/* Render once globally; no visible UI, only scroll reset side effect. */}
       <ScrollToTop />
+
+      <ClockHandCursor />
 
       {/* Shared top navigation across all pages. */}
       <Header />
