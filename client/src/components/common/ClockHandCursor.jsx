@@ -66,53 +66,62 @@ export default function ClockHandCursor() {
   return (
     <div className="clock-cursor" aria-hidden="true">
       <motion.div
-        className="clock-cursor__center"
-        animate={{ x: pos.x, y: pos.y }}
-        transition={{ type: 'spring', damping: 24, stiffness: 320, mass: 0.6 }}
-      >
-        <motion.div
-          className="clock-cursor__glow"
-          animate={{
-            scale: isHovering ? 1.3 : 1,
-            opacity: isClicking ? 0.35 : isHovering ? 0.7 : 0.45,
-          }}
-          transition={{ type: 'spring', damping: 30, stiffness: 200, mass: 0.8 }}
-        />
-        <motion.div
-          className="clock-cursor__face"
-          animate={{
-            scale: isHovering ? 1.08 : 1,
-            opacity: isClicking ? 0.35 : isHovering ? 0.8 : 0.6,
-          }}
-          transition={{ type: 'spring', damping: 28, stiffness: 240, mass: 0.7 }}
-        />
-        <motion.div
-          className="clock-cursor__hand clock-cursor__hand--minute"
-          animate={{
-            rotate: angleDeg,
-            scaleX: isHovering ? 1.15 : 1,
-            scaleY: isHovering ? 1.1 : 1,
-          }}
-          transition={{ type: 'spring', damping: 22, stiffness: 260, mass: 0.6 }}
-        />
-        <motion.div
-          className="clock-cursor__hand clock-cursor__hand--hour"
-          animate={{
-            rotate: hourDeg,
-            scaleX: isHovering ? 1.1 : 1,
-            scaleY: isHovering ? 1.05 : 1,
-          }}
-          transition={{ type: 'spring', damping: 26, stiffness: 220, mass: 0.7 }}
-        />
-        <motion.div
-          className="clock-cursor__pivot"
-          animate={{
-            scale: isClicking ? 0.8 : 1,
-            opacity: isHovering ? 0.95 : 0.7,
-          }}
-          transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.5 }}
-        />
-      </motion.div>
+        className="clock-cursor__glow"
+        style={{ translateX: '-50%', translateY: '-50%' }}
+        animate={{
+          x: pos.x,
+          y: pos.y,
+          scale: isHovering ? 1.3 : 1,
+          opacity: isClicking ? 0.35 : isHovering ? 0.7 : 0.45,
+        }}
+        transition={{ type: 'spring', damping: 30, stiffness: 200, mass: 0.8 }}
+      />
+      <motion.div
+        className="clock-cursor__face"
+        style={{ translateX: '-50%', translateY: '-50%' }}
+        animate={{
+          x: pos.x,
+          y: pos.y,
+          scale: isHovering ? 1.08 : 1,
+          opacity: isClicking ? 0.35 : isHovering ? 0.8 : 0.6,
+        }}
+        transition={{ type: 'spring', damping: 28, stiffness: 240, mass: 0.7 }}
+      />
+      <motion.div
+        className="clock-cursor__hand clock-cursor__hand--minute"
+        style={{ translateX: '-50%', translateY: '-50%' }}
+        animate={{
+          x: pos.x,
+          y: pos.y,
+          rotate: angleDeg,
+          scaleX: isHovering ? 1.15 : 1,
+          scaleY: isHovering ? 1.1 : 1,
+        }}
+        transition={{ type: 'spring', damping: 22, stiffness: 260, mass: 0.6 }}
+      />
+      <motion.div
+        className="clock-cursor__hand clock-cursor__hand--hour"
+        style={{ translateX: '-50%', translateY: '-50%' }}
+        animate={{
+          x: pos.x,
+          y: pos.y,
+          rotate: hourDeg,
+          scaleX: isHovering ? 1.1 : 1,
+          scaleY: isHovering ? 1.05 : 1,
+        }}
+        transition={{ type: 'spring', damping: 26, stiffness: 220, mass: 0.7 }}
+      />
+      <motion.div
+        className="clock-cursor__pivot"
+        style={{ translateX: '-50%', translateY: '-50%' }}
+        animate={{
+          x: pos.x,
+          y: pos.y,
+          scale: isClicking ? 0.8 : 1,
+          opacity: isHovering ? 0.95 : 0.7,
+        }}
+        transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.5 }}
+      />
     </div>
   )
 }
