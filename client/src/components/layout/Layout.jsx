@@ -2,7 +2,7 @@
  * Root layout for all routed pages.
  *
  * What this file is:
- * The top-level shell rendered by createBrowserRouter for the `/` route.
+ * The top-level shell rendered by createBrowserRouter for the / route.
  *
  * What it does:
  * - Renders shared chrome (Header + Footer).
@@ -11,21 +11,24 @@
  * - Renders route children inside Outlet wrapped in Suspense for lazy-loaded pages.
  *
  * Where it is used:
- * Referenced as the root `element` in routes/index.jsx.
+ * Referenced as the root element in routes/index.jsx.
  * 
  * ! Without Layout, you'd need Header + Footer in every page
  * 
  * ! routes/index.jsx tells the router: put all pages inside Layout
  */
-import { Suspense } from 'react'
-import { Outlet, useNavigation } from 'react-router-dom'
+import { Suspense, useState } from 'react'
+import { Outlet, useNavigation, useNavigate } from 'react-router-dom'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import CartOffcanvas from '@/components/cart/CartOffcanvas'
 import ScrollToTop from '@/routes/ScrollToTop'
 import PageTransition from '@/components/common/PageTransition'
 
 // Root layout component for all application routes.
 export default function Layout() {
+  const [isCartOpen, setIsCartOpen] = useState(false)
+
   // Router navigation state tells us when loaders or route transitions are in progress.
   const navigation = useNavigation()
 
@@ -38,7 +41,10 @@ export default function Layout() {
       <ScrollToTop />
 
       {/* Shared top navigation across all pages. */}
-      <Header />
+      <Header onCartClick={() => setIsCartOpen(true)} isCartOpen={isCartOpen} />
+
+      {/* Global cart drawer accessible from the header cart action. */}
+      <CartOffcanvas isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
       {/* Route transition bar provides immediate feedback while loaders are resolving. */}
       {isLoading && (   //! The Style Might Be Changed Later, but for now it's a simple fixed bar at the top of the page that animates while loading. */}
@@ -59,7 +65,7 @@ export default function Layout() {
 
       {/*
         Main content area expands to fill vertical space.
-        `flex: 1` keeps footer pushed to the bottom on short pages.
+        flex: 1 keeps footer pushed to the bottom on short pages.
       */}
       <main style={{ flex: 1 }}>
         {/*

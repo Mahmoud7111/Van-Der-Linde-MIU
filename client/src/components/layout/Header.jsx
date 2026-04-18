@@ -31,7 +31,7 @@ import {
 } from 'react-icons/fi'
 import './Header.css'
 
-export default function Header() {
+export default function Header({ onCartClick, isCartOpen = false }) {
   // Single hook handles both scroll depth (for transparent→solid transition)
   // and scroll direction (for hide/show behavior). Replaces useScrollPosition
   // + a separate useEffect listener that were running two scroll handlers simultaneously.
@@ -55,9 +55,6 @@ export default function Header() {
 
   const iconLinkClassName = ({ isActive }) =>
     `header__icon-control${isActive ? ' header__icon-control--active' : ''}`
-
-  const cartLinkClassName = ({ isActive }) =>
-    `header__icon-control header__icon-control--cart${isActive ? ' header__icon-control--active' : ''}`
 
   // Account destination and label depend on auth state.
   const accountPath = user ? '/profile' : '/login'
@@ -122,16 +119,21 @@ export default function Header() {
 
             <div className="header__actions">
               {/* Cart badge shows live item count from CartContext */}
-              <NavLink
+              <button
+                type="button"
                 aria-label={`Cart with ${totalItems} items`}
-                className={cartLinkClassName}
-                to="/cart"
+                className={cn(
+                  'header__icon-control',
+                  'header__icon-control--cart',
+                  isCartOpen && 'header__icon-control--active'
+                )}
+                onClick={onCartClick}
               >
                 <FiShoppingCart aria-hidden="true" />
                 <span className="header__pill" aria-hidden="true">
                   {totalItems}
                 </span>
-              </NavLink>
+              </button>
 
               {/* Account link destination switches based on auth state */}
               <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
