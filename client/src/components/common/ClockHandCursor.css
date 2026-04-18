@@ -5,11 +5,17 @@
   z-index: var(--z-cursor);
 }
 
+.clock-cursor__center {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 .clock-cursor__pivot,
 .clock-cursor__face,
 .clock-cursor__hand,
 .clock-cursor__glow {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
 }
@@ -31,6 +37,7 @@
       transparent 6deg 30deg
     );
   box-shadow: inset 0 0 10px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+  transform: translate(-50%, -50%);
 }
 
 .clock-cursor__pivot {
@@ -39,12 +46,14 @@
   border-radius: var(--radius-full);
   background: var(--color-gold);
   box-shadow: 0 0 12px color-mix(in srgb, var(--color-gold) 60%, transparent 40%);
+  transform: translate(-50%, -50%);
 }
 
 .clock-cursor__hand {
   height: 2px;
   transform-origin: left center;
   border-radius: var(--radius-full);
+  transform: translateY(-50%);
   background: linear-gradient(
     90deg,
     var(--color-gold),
@@ -72,6 +81,7 @@
   );
   filter: blur(8px);
   opacity: 0.5;
+  transform: translate(-50%, -50%);
 }
 
 @media (pointer: coarse), (prefers-reduced-motion: reduce) {
