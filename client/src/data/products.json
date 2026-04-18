@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "_id": "watch-001",
     "name": "Van Der Linde Sovereign Tourbillon",
@@ -183,32 +183,6 @@
   },
   {
     "_id": "watch-015",
-    "name": "Van Der Linde Must Prestige",
-    "brand": "Van Der Linde",
-    "gender": "women",
-    "price": 1250,
-    "category": "classic",
-    "rating": 4.6,
-    "numReviews": 110,
-    "stock": 17,
-    "images": ["@/assets/images/Watches/Cartier Tank Must.png"],
-    "description": "A rectangular icon with polished edges and minimal dial balance for refined daily wear."
-  },
-  {
-    "_id": "watch-016",
-    "name": "Van Der Linde Astronomia Eclipse",
-    "brand": "Van Der Linde Noir",
-    "gender": "men",
-    "price": 5600,
-    "category": "luxury",
-    "rating": 4.9,
-    "numReviews": 47,
-    "stock": 3,
-    "images": ["@/assets/images/Watches/Jacob & Co Astronomia Triple Axis Tourbillon.png"],
-    "description": "A spectacular mechanical display that celebrates celestial movement with layered tourbillon motion."
-  },
-  {
-    "_id": "watch-017",
     "name": "Van Der Linde Opera Grand",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -221,7 +195,7 @@
     "description": "A dramatic dial composition with grand complication detailing and a luxurious evening profile."
   },
   {
-    "_id": "watch-018",
+    "_id": "watch-016",
     "name": "Van Der Linde Aquanaut Rose",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -234,7 +208,7 @@
     "description": "A modern sport-lux silhouette with warm rose accents and a contemporary composite strap."
   },
   {
-    "_id": "watch-019",
+    "_id": "watch-017",
     "name": "Van Der Linde Grand Complication",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -247,7 +221,7 @@
     "description": "A high-complication masterpiece with sculpted casework and layered sub-dial orchestration."
   },
   {
-    "_id": "watch-020",
+    "_id": "watch-018",
     "name": "Van Der Linde Golden Ellipse",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -260,7 +234,7 @@
     "description": "A vintage-inspired oval silhouette with restrained elegance and precious metal warmth."
   },
   {
-    "_id": "watch-021",
+    "_id": "watch-019",
     "name": "Van Der Linde Perpetual Inline",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -273,7 +247,7 @@
     "description": "A precise calendar complication with clean inline indicators and understated prestige."
   },
   {
-    "_id": "watch-022",
+    "_id": "watch-020",
     "name": "Van Der Linde Nautilus White Gold",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -286,7 +260,7 @@
     "description": "An iconic rounded case with integrated bracelet architecture and luminous white gold finishing."
   },
   {
-    "_id": "watch-023",
+    "_id": "watch-021",
     "name": "Van Der Linde Aqua Terra",
     "brand": "Van Der Linde Sport",
     "gender": "men",
@@ -299,7 +273,7 @@
     "description": "A versatile sport companion with maritime styling and robust daily water resistance."
   },
   {
-    "_id": "watch-024",
+    "_id": "watch-022",
     "name": "Van Der Linde Moonwatch Steel",
     "brand": "Van Der Linde Sport",
     "gender": "men",
@@ -312,7 +286,7 @@
     "description": "A heritage chronograph rebuilt in brushed steel with precision timing for everyday explorers."
   },
   {
-    "_id": "watch-025",
+    "_id": "watch-023",
     "name": "Van Der Linde Moonwatch Verde",
     "brand": "Van Der Linde Sport",
     "gender": "men",
@@ -325,7 +299,7 @@
     "description": "A distinctive green dial with robust chronograph mechanics and a confident, modern profile."
   },
   {
-    "_id": "watch-026",
+    "_id": "watch-024",
     "name": "Van Der Linde Pulse Nova",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -338,7 +312,7 @@
     "description": "A modern smart watch with refined casing, fitness insights, and a clean minimalist interface."
   },
   {
-    "_id": "watch-027",
+    "_id": "watch-025",
     "name": "Van Der Linde Daytona Noir",
     "brand": "Van Der Linde Noir",
     "gender": "men",
@@ -351,7 +325,7 @@
     "description": "A race-ready chronograph with dark detailing and confident performance on the wrist."
   },
   {
-    "_id": "watch-028",
+    "_id": "watch-026",
     "name": "Van Der Linde Datejust 40",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -364,7 +338,7 @@
     "description": "A timeless daily classic with clean indices and versatile styling for modern professionals."
   },
   {
-    "_id": "watch-029",
+    "_id": "watch-027",
     "name": "Van Der Linde Submariner",
     "brand": "Van Der Linde Sport",
     "gender": "men",
@@ -377,7 +351,7 @@
     "description": "A rugged diver profile with a unidirectional bezel and luminous markers for clarity at depth."
   },
   {
-    "_id": "watch-030",
+    "_id": "watch-028",
     "name": "Van Der Linde Sync Edge",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -390,7 +364,7 @@
     "description": "A lightweight smart companion built for daily tracking, notifications, and long-lasting battery life."
   },
   {
-    "_id": "watch-031",
+    "_id": "watch-029",
     "name": "Van Der Linde Traditionnelle Chronograph",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -403,7 +377,7 @@
     "description": "A refined chronograph with tourbillon craftsmanship and a polished heritage silhouette."
   },
   {
-    "_id": "watch-032",
+    "_id": "watch-030",
     "name": "Van Der Linde Historiques 222",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -416,7 +390,7 @@
     "description": "A retro-inspired luxury piece with a sculpted bracelet and a clean, geometric dial."
   },
   {
-    "_id": "watch-033",
+    "_id": "watch-031",
     "name": "Van Der Linde SuperOcean Pro",
     "brand": "Van Der Linde Sport",
     "gender": "men",
@@ -429,7 +403,7 @@
     "description": "A dive-ready profile with bold markers and a confident bezel for ocean-ready performance."
   },
   {
-    "_id": "watch-034",
+    "_id": "watch-032",
     "name": "Van Der Linde Saxonia Dress",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -442,7 +416,7 @@
     "description": "A clean dress watch with understated dial geometry and polished case detailing."
   },
   {
-    "_id": "watch-035",
+    "_id": "watch-033",
     "name": "Van Der Linde Skeleton Cartier",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -455,7 +429,7 @@
     "description": "Openworked craftsmanship with crisp Roman structure and a sculpted steel case."
   },
   {
-    "_id": "watch-036",
+    "_id": "watch-034",
     "name": "Van Der Linde Millenary Classic",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -468,7 +442,7 @@
     "description": "An oval case profile with balanced indices and refined finishing for daily elegance."
   },
   {
-    "_id": "watch-037",
+    "_id": "watch-035",
     "name": "Van Der Linde Lange 1 Heritage",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -481,20 +455,7 @@
     "description": "A heritage layout with asymmetrical balance and an elevated case profile."
   },
   {
-    "_id": "watch-038",
-    "name": "Van Der Linde Opera Signature",
-    "brand": "Van Der Linde Noir",
-    "gender": "men",
-    "price": 3400,
-    "category": "luxury",
-    "rating": 4.7,
-    "numReviews": 60,
-    "stock": 7,
-    "images": ["@/assets/images/Watches/Jacob Opera.png"],
-    "description": "A bold luxury statement with ornate dial depth and evening-ready refinement."
-  },
-  {
-    "_id": "watch-039",
+    "_id": "watch-036",
     "name": "Van Der Linde Epic X Shadow",
     "brand": "Van Der Linde Noir",
     "gender": "men",
@@ -507,7 +468,7 @@
     "description": "A performance-focused case with industrial detailing and a durable strap design."
   },
   {
-    "_id": "watch-040",
+    "_id": "watch-037",
     "name": "Van Der Linde Code 1159",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -520,7 +481,7 @@
     "description": "A sculpted case design with layered geometry and refined dial depth."
   },
   {
-    "_id": "watch-041",
+    "_id": "watch-038",
     "name": "Van Der Linde Cactus Openworked",
     "brand": "Van Der Linde Noir",
     "gender": "men",
@@ -533,7 +494,7 @@
     "description": "A daring openworked silhouette with bold dial architecture and premium finishing."
   },
   {
-    "_id": "watch-042",
+    "_id": "watch-039",
     "name": "Van Der Linde Overseas Classic",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -546,7 +507,7 @@
     "description": "A travel-ready luxury piece with a refined case and versatile bracelet."
   },
   {
-    "_id": "watch-043",
+    "_id": "watch-040",
     "name": "Van Der Linde Constellation",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -559,7 +520,7 @@
     "description": "A polished classic with a slim profile and refined metal accents."
   },
   {
-    "_id": "watch-044",
+    "_id": "watch-041",
     "name": "Van Der Linde Model S",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -572,7 +533,7 @@
     "description": "A modern smart watch built for daily tracking with a clean, minimal interface."
   },
   {
-    "_id": "watch-045",
+    "_id": "watch-042",
     "name": "Van Der Linde 1908 Heritage",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -585,7 +546,7 @@
     "description": "A heritage dress piece with balanced proportions and a timeless dial."
   },
   {
-    "_id": "watch-046",
+    "_id": "watch-043",
     "name": "Van Der Linde RM 035 Americas",
     "brand": "Van Der Linde Noir",
     "gender": "men",
@@ -598,7 +559,7 @@
     "description": "A high-impact luxury design with a performance-grade case and bold presence."
   },
   {
-    "_id": "watch-047",
+    "_id": "watch-044",
     "name": "Van Der Linde RM 011 White Ghost",
     "brand": "Van Der Linde Noir",
     "gender": "men",
@@ -611,7 +572,7 @@
     "description": "A striking monochrome case with technical detailing and premium finishing."
   },
   {
-    "_id": "watch-048",
+    "_id": "watch-045",
     "name": "Van Der Linde RM 056 Sapphire",
     "brand": "Van Der Linde Noir",
     "gender": "men",
@@ -624,7 +585,7 @@
     "description": "A transparent sapphire case with a complex movement showcase."
   },
   {
-    "_id": "watch-049",
+    "_id": "watch-046",
     "name": "Van Der Linde RM 027 Ultra",
     "brand": "Van Der Linde Noir",
     "gender": "men",
@@ -637,7 +598,7 @@
     "description": "An ultra-light performance watch engineered for high motion and durability."
   },
   {
-    "_id": "watch-050",
+    "_id": "watch-047",
     "name": "Van Der Linde Patrimony Rose",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -650,7 +611,7 @@
     "description": "A refined rose-gold profile with subtle markers and elegant finishing."
   },
   {
-    "_id": "watch-051",
+    "_id": "watch-048",
     "name": "Van Der Linde Lady Datejust",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -663,7 +624,7 @@
     "description": "A graceful everyday classic with refined proportions and luminous indices."
   },
   {
-    "_id": "watch-052",
+    "_id": "watch-049",
     "name": "Van Der Linde Sky-Dweller",
     "brand": "Van Der Linde Sport",
     "gender": "men",
@@ -676,7 +637,7 @@
     "description": "A dual-time luxury piece with an elevated case and commanding dial layout."
   },
   {
-    "_id": "watch-053",
+    "_id": "watch-050",
     "name": "Van Der Linde GMT Master",
     "brand": "Van Der Linde Sport",
     "gender": "men",
@@ -689,7 +650,7 @@
     "description": "A travel-ready sport watch with a bold bezel and sharp dual-time display."
   },
   {
-    "_id": "watch-054",
+    "_id": "watch-051",
     "name": "Van Der Linde Pulse Aero",
     "brand": "Van Der Linde",
     "gender": "women",
@@ -702,7 +663,7 @@
     "description": "A lightweight smart companion designed for daily activity and wellness tracking."
   },
   {
-    "_id": "watch-055",
+    "_id": "watch-052",
     "name": "Van Der Linde Pulse Slate",
     "brand": "Van Der Linde",
     "gender": "men",
@@ -713,304 +674,5 @@
     "stock": 34,
     "images": ["@/assets/images/Watches/front_3.png"],
     "description": "A smart watch with a modern face, premium casing, and extended battery life."
-  },
-  {
-    "_id": "watch-056",
-    "name": "Van Der Linde Submariner 126613LB",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1850,
-    "category": "sport",
-    "rating": 4.6,
-    "numReviews": 92,
-    "stock": 9,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A blue-dial diver with gold accents and a robust, water-ready build."
-  },
-  {
-    "_id": "watch-057",
-    "name": "Van Der Linde Submariner 126613LB Blue",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1890,
-    "category": "sport",
-    "rating": 4.6,
-    "numReviews": 85,
-    "stock": 9,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A polished diver profile with crisp indices and a strong maritime silhouette."
-  },
-  {
-    "_id": "watch-058",
-    "name": "Van Der Linde Submariner 126613LB Gold",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1950,
-    "category": "sport",
-    "rating": 4.7,
-    "numReviews": 77,
-    "stock": 8,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A gold-accented diver with a bold bezel and high-contrast dial."
-  },
-  {
-    "_id": "watch-059",
-    "name": "Van Der Linde Submariner 126613LB Steel",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1780,
-    "category": "sport",
-    "rating": 4.5,
-    "numReviews": 81,
-    "stock": 11,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A steel-forward diver with a clean profile and reliable water-ready performance."
-  },
-  {
-    "_id": "watch-060",
-    "name": "Van Der Linde Submariner 126613LB Luxe",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 2050,
-    "category": "sport",
-    "rating": 4.7,
-    "numReviews": 69,
-    "stock": 7,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A luxury diver blend with elevated polishing and a confident blue dial."
-  },
-  {
-    "_id": "watch-061",
-    "name": "Van Der Linde Submariner 126613LB Elite",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 2100,
-    "category": "sport",
-    "rating": 4.8,
-    "numReviews": 63,
-    "stock": 6,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "An elite diver finish with sharpened indices and a bright bezel."
-  },
-  {
-    "_id": "watch-062",
-    "name": "Van Der Linde Submariner 126613LB Sapphire",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 2150,
-    "category": "sport",
-    "rating": 4.7,
-    "numReviews": 55,
-    "stock": 6,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A sapphire-gloss diver aesthetic with high-visibility markers."
-  },
-  {
-    "_id": "watch-063",
-    "name": "Van Der Linde Submariner 126613LB Horizon",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 2000,
-    "category": "sport",
-    "rating": 4.6,
-    "numReviews": 60,
-    "stock": 8,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A horizon-blue diver with strong lume and balanced proportions."
-  },
-  {
-    "_id": "watch-064",
-    "name": "Van Der Linde Submariner 126613LB Reference",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 2200,
-    "category": "sport",
-    "rating": 4.8,
-    "numReviews": 48,
-    "stock": 5,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A reference build with elevated finishing and a deep blue dial."
-  },
-  {
-    "_id": "watch-065",
-    "name": "Van Der Linde Submariner 116613LB",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 2100,
-    "category": "sport",
-    "rating": 4.7,
-    "numReviews": 52,
-    "stock": 6,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A yellow-gold accented diver with strong lume and a crisp bezel."
-  },
-  {
-    "_id": "watch-066",
-    "name": "Van Der Linde Day-Date Olive I",
-    "brand": "Van Der Linde",
-    "gender": "women",
-    "price": 4300,
-    "category": "luxury",
-    "rating": 4.7,
-    "numReviews": 66,
-    "stock": 5,
-    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
-    "description": "A rose-gold luxury piece with an olive dial and elegant bracelet finishing."
-  },
-  {
-    "_id": "watch-067",
-    "name": "Van Der Linde Day-Date Olive II",
-    "brand": "Van Der Linde",
-    "gender": "men",
-    "price": 4400,
-    "category": "luxury",
-    "rating": 4.7,
-    "numReviews": 62,
-    "stock": 5,
-    "images": ["@/assets/images/Watches/Rolex 1908.png"],
-    "description": "A bold day-date configuration with refined rose-gold accents."
-  },
-  {
-    "_id": "watch-068",
-    "name": "Van Der Linde Day-Date Olive III",
-    "brand": "Van Der Linde",
-    "gender": "women",
-    "price": 4450,
-    "category": "luxury",
-    "rating": 4.8,
-    "numReviews": 57,
-    "stock": 4,
-    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
-    "description": "An elevated day-date profile with a rich olive dial and polished casework."
-  },
-  {
-    "_id": "watch-069",
-    "name": "Van Der Linde Day-Date Olive IV",
-    "brand": "Van Der Linde",
-    "gender": "men",
-    "price": 4550,
-    "category": "luxury",
-    "rating": 4.8,
-    "numReviews": 53,
-    "stock": 4,
-    "images": ["@/assets/images/Watches/Rolex 1908.png"],
-    "description": "A premium day-date with a deep green dial and luxurious finishing."
-  },
-  {
-    "_id": "watch-070",
-    "name": "Van Der Linde Day-Date Olive V",
-    "brand": "Van Der Linde",
-    "gender": "women",
-    "price": 4650,
-    "category": "luxury",
-    "rating": 4.8,
-    "numReviews": 49,
-    "stock": 3,
-    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
-    "description": "A refined day-date with rose-gold shine and a smooth bracelet profile."
-  },
-  {
-    "_id": "watch-071",
-    "name": "Van Der Linde Day-Date Olive VI",
-    "brand": "Van Der Linde",
-    "gender": "men",
-    "price": 4700,
-    "category": "luxury",
-    "rating": 4.9,
-    "numReviews": 45,
-    "stock": 3,
-    "images": ["@/assets/images/Watches/Rolex 1908.png"],
-    "description": "A collector-grade day-date with premium finishing and a rich dial tone."
-  },
-  {
-    "_id": "watch-072",
-    "name": "Van Der Linde Day-Date Olive Edition",
-    "brand": "Van Der Linde",
-    "gender": "women",
-    "price": 4800,
-    "category": "luxury",
-    "rating": 4.9,
-    "numReviews": 41,
-    "stock": 3,
-    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
-    "description": "A special-edition day-date with a polished rose-gold finish and rich olive dial."
-  },
-  {
-    "_id": "watch-073",
-    "name": "Van Der Linde Seamaster Classic",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1200,
-    "category": "sport",
-    "rating": 4.5,
-    "numReviews": 118,
-    "stock": 18,
-    "images": ["@/assets/images/Watches/Omega Seamaster Aqua Terra.png"],
-    "description": "A sleek sport classic with maritime styling and strong daily durability."
-  },
-  {
-    "_id": "watch-074",
-    "name": "Van Der Linde Moonwatch Steel Heritage",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1600,
-    "category": "sport",
-    "rating": 4.6,
-    "numReviews": 104,
-    "stock": 14,
-    "images": ["@/assets/images/Watches/Omega Speedmaster Moonwatch Steel-On-Steel.png"],
-    "description": "A steel chronograph inspired by space-era heritage and modern precision."
-  },
-  {
-    "_id": "watch-075",
-    "name": "Van Der Linde Moonwatch Verde Edition",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1680,
-    "category": "sport",
-    "rating": 4.6,
-    "numReviews": 98,
-    "stock": 12,
-    "images": ["@/assets/images/Watches/Omega Speedmaster Moonwatch Professional-Green.png"],
-    "description": "A green-dial chronograph with bold lume and refined finishing."
-  },
-  {
-    "_id": "watch-076",
-    "name": "Van Der Linde Submariner Classic",
-    "brand": "Van Der Linde Sport",
-    "gender": "men",
-    "price": 1550,
-    "category": "sport",
-    "rating": 4.5,
-    "numReviews": 130,
-    "stock": 20,
-    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
-    "description": "A timeless diver profile with a rugged bezel and clean dial layout."
-  },
-  {
-    "_id": "watch-077",
-    "name": "Van Der Linde Daytona Chrono",
-    "brand": "Van Der Linde Noir",
-    "gender": "men",
-    "price": 2400,
-    "category": "sport",
-    "rating": 4.7,
-    "numReviews": 92,
-    "stock": 9,
-    "images": ["@/assets/images/Watches/Rolex Cosmograph Daytona.png"],
-    "description": "A track-inspired chronograph with dark detailing and confident wrist presence."
-  },
-  {
-    "_id": "watch-078",
-    "name": "Van Der Linde Datejust Signature",
-    "brand": "Van Der Linde",
-    "gender": "women",
-    "price": 1480,
-    "category": "classic",
-    "rating": 4.5,
-    "numReviews": 108,
-    "stock": 17,
-    "images": ["@/assets/images/Watches/Rolex Date-Just 40.png"],
-    "description": "A refined classic with a balanced dial and versatile everyday elegance."
   }
 ]
