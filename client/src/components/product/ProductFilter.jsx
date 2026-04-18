@@ -21,11 +21,12 @@ const RATING_OPTIONS = [
   { value: '3.5', label: '3.5+ stars' },
 ]
 
-export default function ProductFilter() {
+export default function ProductFilter({ defaultGender }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const category = searchParams.get('category') || 'all'
   const brand = searchParams.get('brand') || 'all'
-  const gender = searchParams.get('gender') || 'all'
+  const genderParam = searchParams.get('gender')
+  const gender = genderParam || defaultGender || 'all'
   const rating = searchParams.get('rating') || 'all'
   const sort = searchParams.get('sort') || 'default'
   const minPrice = searchParams.get('minPrice') || ''
@@ -55,6 +56,18 @@ export default function ProductFilter() {
     },
     [setSearchParams],
   )
+
+  useEffect(() => {
+    if (!defaultGender) {
+      return
+    }
+
+    if (genderParam && genderParam !== 'all') {
+      return
+    }
+
+    updateParam('gender', defaultGender)
+  }, [defaultGender, genderParam, updateParam])
 
   useEffect(() => {
     const normalizedSearch = searchInput.trim()

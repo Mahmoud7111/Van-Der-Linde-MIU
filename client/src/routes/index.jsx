@@ -66,6 +66,21 @@ const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard.jsx'))
 const ManageProducts = lazy(() => import('@/pages/admin/ManageProducts.jsx'))
 const ManageOrders = lazy(() => import('@/pages/admin/ManageOrders.jsx'))
 
+const getShopFilters = (request, defaultGender = 'all') => {
+  const url = new URL(request.url)
+
+  return {
+    category: url.searchParams.get('category') || 'all',
+    search: url.searchParams.get('search') || '',
+    brand: url.searchParams.get('brand') || 'all',
+    gender: url.searchParams.get('gender') || defaultGender,
+    rating: url.searchParams.get('rating') || 'all',
+    minPrice: url.searchParams.get('minPrice') || '',
+    maxPrice: url.searchParams.get('maxPrice') || '',
+    sort: url.searchParams.get('sort') || 'default',
+  }
+}
+
 // Exported router consumed by RouterProvider in main.jsx.
 export const router = createBrowserRouter([
   {
@@ -96,33 +111,18 @@ export const router = createBrowserRouter([
         path: 'shop',                   //<- the URL
         element: <ShopPage />,         //<- the page component rendered at that URL
         loader: ({ request }) => {    // <- data to fetch BEFORE rendering
-          // Read query string directly from loader request URL.
-          const url = new URL(request.url)
-
-          // Build filter object expected by watchService.
-          const filters = {
-            category: url.searchParams.get('category') || 'all',
-            search: url.searchParams.get('search') || '',
-            brand: url.searchParams.get('brand') || 'all',
-            gender: url.searchParams.get('gender') || 'all',
-            rating: url.searchParams.get('rating') || 'all',
-            minPrice: url.searchParams.get('minPrice') || '',
-            maxPrice: url.searchParams.get('maxPrice') || '',
-            sort: url.searchParams.get('sort') || 'default',
-          }
-
-          return watchService.getAll(filters)
+          return watchService.getAll(getShopFilters(request))
         },
       },
       {
         path: 'shop/men',
         element: <ShopMenPage />,
-        loader: () => watchService.getAll({ gender: 'men' }),
+        loader: ({ request }) => watchService.getAll(getShopFilters(request, 'men')),
       },
       {
         path: 'shop/women',
         element: <ShopWomenPage />,
-        loader: () => watchService.getAll({ gender: 'women' }),
+        loader: ({ request }) => watchService.getAll(getShopFilters(request, 'women')),
       },
       {
         path: 'watch/:id',

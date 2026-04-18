@@ -11,10 +11,12 @@ export default function ShopWomenPage() {
   const watches = Array.isArray(data) ? data : []
   const search = (searchParams.get('search') || '').trim()
   const brand = searchParams.get('brand') || 'all'
+  const gender = searchParams.get('gender') || 'women'
   const rating = searchParams.get('rating') || 'all'
   const minPrice = searchParams.get('minPrice') || ''
   const maxPrice = searchParams.get('maxPrice') || ''
   const category = searchParams.get('category') || 'all'
+  const genderLabel = gender === 'men' ? 'Men' : gender === 'women' ? 'Women' : null
 
   const activeFilters = [
     search ? `Search: "${search}"` : null,
@@ -24,8 +26,16 @@ export default function ShopWomenPage() {
     minPrice || maxPrice ? `Price: ${minPrice || '0'} - ${maxPrice || 'Any'}` : null,
   ].filter(Boolean)
 
+  if (activeFilters.length > 0 && genderLabel) {
+    activeFilters.push(genderLabel)
+  }
+
   const summaryText =
-    activeFilters.length > 0 ? `Filtered by ${activeFilters.join(' | ')}` : "Showing women's watches"
+    activeFilters.length > 0
+      ? `Filtered by ${activeFilters.join(' | ')}`
+      : gender === 'men'
+        ? "Showing men's watches"
+        : "Showing women's watches"
 
   return (
     <PageTransition>
@@ -46,7 +56,7 @@ export default function ShopWomenPage() {
           </header>
 
           <div className="shop-page__filters">
-            <ProductFilter />
+            <ProductFilter defaultGender="women" />
           </div>
 
           <div className="shop-page__results">
