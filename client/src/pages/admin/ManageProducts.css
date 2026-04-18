@@ -54,6 +54,20 @@
   gap: var(--space-sm);
 }
 
+.admin-products__status-message {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.admin-products__status-message--success {
+  color: var(--color-success);
+}
+
+.admin-products__status-message--error {
+  color: var(--color-error);
+}
+
 .admin-products__section {
   display: flex;
   flex-direction: column;
@@ -145,6 +159,40 @@
   box-shadow: 0 12px 24px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
 }
 
+.admin-products__form {
+  padding: clamp(var(--space-md), 2.2vw, var(--space-lg));
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 18%, transparent 82%);
+  background: color-mix(in srgb, var(--color-white) 96%, transparent 4%);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.admin-products__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.admin-products__field--full {
+  grid-column: 1 / -1;
+}
+
+.admin-products__input--area {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.admin-products__form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+
 .admin-products__field {
   display: flex;
   flex-direction: column;
@@ -201,6 +249,14 @@
   border: 1px solid color-mix(in srgb, var(--color-gold) 20%, transparent 80%);
   background: color-mix(in srgb, var(--color-white) 94%, transparent 6%);
   box-shadow: 0 12px 24px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+}
+
+.admin-products__empty {
+  padding: var(--space-lg);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--color-dark) 65%, var(--color-muted) 35%);
 }
 
 .admin-products__table {
@@ -324,6 +380,7 @@
 
 [data-theme='dark'] .admin-products__summary-card,
 [data-theme='dark'] .admin-products__filters,
+[data-theme='dark'] .admin-products__form,
 [data-theme='dark'] .admin-products__table-wrapper {
   border-color: color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
   background: color-mix(in srgb, var(--color-white) 6%, transparent 94%);
@@ -352,6 +409,10 @@
 
   .admin-products__filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-products__form-grid {
+    grid-template-columns: 1fr;
   }
 }
 

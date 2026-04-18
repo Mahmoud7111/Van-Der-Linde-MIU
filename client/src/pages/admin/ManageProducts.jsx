@@ -1,14 +1,29 @@
 import { useLoaderData } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import StarRating from '@/components/common/StarRating'
 import { useCurrency } from '@/context/CurrencyContext'
+import { watchService } from '@/services/watchService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { CATEGORIES } from '@/utils/constants'
 import './ManageProducts.css'
 
 const LOW_STOCK_THRESHOLD = 5
+const FORM_DEFAULTS = {
+  name: '',
+  brand: 'Van Der Linde',
+  category: 'luxury',
+  gender: 'men',
+  price: '',
+  stock: '',
+  image: '',
+  description: '',
+}
+const GENDER_OPTIONS = [
+  { value: 'men', label: 'Men' },
+  { value: 'women', label: 'Women' },
+]
 
 const getCategoryLabel = (value) => {
   if (!value) return 'Uncategorized'
@@ -24,16 +39,28 @@ export default function ManageProducts() {
   const data = useLoaderData()
   const { formatPrice } = useCurrency()
   const watches = Array.isArray(data) ? data : []
+  const [catalog, setCatalog] = useState(watches)
+  const [formValues, setFormValues] = useState(FORM_DEFAULTS)
+  const [formMode, setFormMode] = useState('create')
+  const [editingId, setEditingId] = useState(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
+  const [formStatus, setFormStatus] = useState(null)
 
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
 
+  useEffect(() => {
+    setCatalog(watches)
+  }, [watches])
+
   const summary = useMemo(() => {
     let inStockCount = 0
     let lowStockCount = 0
 
-    watches.forEach((watch) => {
+    catalog.forEach((watch) => {
       const stockValue = getStockValue(watch)
       const isAvailable = stockValue === null || stockValue > 0
       const isLowStock = stockValue !== null && stockValue > 0 && stockValue <= LOW_STOCK_THRESHOLD
@@ -43,16 +70,16 @@ export default function ManageProducts() {
     })
 
     return {
-      total: watches.length,
+      total: catalog.length,
       inStock: inStockCount,
       lowStock: lowStockCount,
     }
-  }, [watches])
+  }, [catalog])
 
   const filteredWatches = useMemo(() => {
     const query = search.trim().toLowerCase()
 
-    return watches.filter((watch) => {
+    return catalog.filter((watch) => {
       const name = watch?.name?.toLowerCase() ?? ''
       const brand = watch?.brand?.toLowerCase() ?? ''
       const category = watch?.category ?? ''
@@ -74,10 +101,138 @@ export default function ManageProducts() {
 
       return matchQuery && matchCategory && matchStock
     })
-  }, [watches, search, categoryFilter, stockFilter])
+  }, [catalog, search, categoryFilter, stockFilter])
 
-  const handleNoop = (event) => {
+  const openCreateForm = () => {
+    setFormMode('create')
+    setEditingId(null)
+    setFormValues(FORM_DEFAULTS)
+    setIsFormOpen(true)
+    setFormStatus(null)
+  }
+
+  const openEditForm = (watch) => {
+    setFormMode('edit')
+    setEditingId(watch?._id ?? null)
+    setFormValues({
+      name: watch?.name ?? '',
+      brand: watch?.brand ?? 'Van Der Linde',
+      category: watch?.category ?? 'luxury',
+      gender: watch?.gender ?? 'men',
+      price: watch?.price ?? '',
+      stock: watch?.stock ?? '',
+      image: watch?.images?.[0] ?? watch?.image ?? '',
+      description: watch?.description ?? '',
+    })
+    setIsFormOpen(true)
+    setFormStatus(null)
+  }
+
+  const handleFormChange = (event) => {
+    const { name, value } = event.target
+    setFormValues((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleFormCancel = () => {
+    setIsFormOpen(false)
+    setEditingId(null)
+    setFormMode('create')
+    setFormStatus(null)
+  }
+
+  const handleFormSubmit = async (event) => {
     event.preventDefault()
+    if (isSaving) return
+
+    const name = formValues.name.trim()
+    const priceValue = Number(formValues.price)
+    const stockValue =
+      formValues.stock === '' || formValues.stock === null ? null : Number(formValues.stock)
+
+    if (!name) {
+      setFormStatus({ type: 'error', message: 'Watch name is required.' })
+      return
+    }
+
+    if (!Number.isFinite(priceValue) || priceValue <= 0) {
+      setFormStatus({ type: 'error', message: 'Enter a valid price to continue.' })
+      return
+    }
+
+    setIsSaving(true)
+    setFormStatus(null)
+
+    const baseWatch = editingId ? catalog.find((item) => item._id === editingId) : null
+    const imageValue = formValues.image.trim()
+
+    const payload = {
+      name,
+      brand: formValues.brand.trim() || 'Van Der Linde',
+      category: formValues.category,
+      gender: formValues.gender,
+      price: priceValue,
+      stock: Number.isFinite(stockValue) ? stockValue : null,
+      images: imageValue ? [imageValue] : baseWatch?.images ?? [],
+      description: formValues.description.trim(),
+      rating: baseWatch?.rating ?? 0,
+      numReviews: baseWatch?.numReviews ?? 0,
+    }
+
+    try {
+      if (formMode === 'edit' && editingId) {
+        const updated = await watchService.update(editingId, payload)
+        setCatalog((prev) =>
+          prev.map((item) =>
+            item._id === editingId ? { ...item, ...payload, ...updated, _id: editingId } : item
+          )
+        )
+        setFormStatus({ type: 'success', message: 'Watch updated successfully.' })
+      } else {
+        const created = await watchService.create(payload)
+        const newWatch = { ...payload, ...created }
+        setCatalog((prev) => [newWatch, ...prev])
+        setFormStatus({ type: 'success', message: 'New watch added to the catalog.' })
+        setFormValues(FORM_DEFAULTS)
+      }
+      setIsFormOpen(false)
+      setEditingId(null)
+      setFormMode('create')
+    } catch (error) {
+      setFormStatus({ type: 'error', message: 'Unable to save this watch right now.' })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleDelete = async (watch) => {
+    if (!watch?._id || deletingId) return
+    const confirmDelete = window.confirm('Remove this watch from the catalog?')
+    if (!confirmDelete) return
+
+    setDeletingId(watch._id)
+    setFormStatus(null)
+
+    try {
+      await watchService.remove(watch._id)
+      setCatalog((prev) => prev.filter((item) => item._id !== watch._id))
+      setFormStatus({ type: 'success', message: 'Watch removed from the catalog.' })
+    } catch (error) {
+      setFormStatus({ type: 'error', message: 'Unable to remove that watch right now.' })
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  const handleExport = () => {
+    const payload = JSON.stringify(catalog, null, 2)
+    const blob = new Blob([payload], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'van-der-linde-catalog.json'
+    link.click()
+    URL.revokeObjectURL(url)
+    setFormStatus({ type: 'success', message: 'Catalog export ready.' })
   }
 
   return (
@@ -93,14 +248,176 @@ export default function ManageProducts() {
               </p>
             </div>
             <div className="admin-products__header-actions">
-              <Button variant="primary" onClick={handleNoop}>
+              <Button variant="primary" onClick={openCreateForm}>
                 Add new watch
               </Button>
-              <Button variant="secondary" onClick={handleNoop}>
+              <Button variant="secondary" onClick={handleExport}>
                 Export catalog
               </Button>
             </div>
+            {formStatus && (
+              <p className={`admin-products__status-message admin-products__status-message--${formStatus.type}`}>
+                {formStatus.message}
+              </p>
+            )}
           </header>
+
+          {isFormOpen && (
+            <section className="admin-products__section" aria-labelledby="admin-products-editor">
+              <div className="admin-products__section-header">
+                <div>
+                  <p className="admin-products__section-eyebrow">Catalog editor</p>
+                  <h2 id="admin-products-editor" className="admin-products__section-title">
+                    {formMode === 'edit' ? 'Edit watch' : 'Add new watch'}
+                  </h2>
+                </div>
+                <p className="admin-products__section-subtitle">
+                  Update the essential fields to keep the catalog precise and consistent.
+                </p>
+              </div>
+
+              <form className="admin-products__form" onSubmit={handleFormSubmit}>
+                <div className="admin-products__form-grid">
+                  <div className="admin-products__field">
+                    <label className="admin-products__label" htmlFor="watch-name">
+                      Watch name
+                    </label>
+                    <input
+                      id="watch-name"
+                      name="name"
+                      className="admin-products__input"
+                      value={formValues.name}
+                      onChange={handleFormChange}
+                      placeholder="Van Der Linde Signature"
+                    />
+                  </div>
+
+                  <div className="admin-products__field">
+                    <label className="admin-products__label" htmlFor="watch-brand">
+                      Brand
+                    </label>
+                    <input
+                      id="watch-brand"
+                      name="brand"
+                      className="admin-products__input"
+                      value={formValues.brand}
+                      onChange={handleFormChange}
+                      placeholder="Van Der Linde"
+                    />
+                  </div>
+
+                  <div className="admin-products__field">
+                    <label className="admin-products__label" htmlFor="watch-category">
+                      Category
+                    </label>
+                    <select
+                      id="watch-category"
+                      name="category"
+                      className="admin-products__select"
+                      value={formValues.category}
+                      onChange={handleFormChange}
+                    >
+                      {CATEGORIES.filter((option) => option.value !== 'all').map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="admin-products__field">
+                    <label className="admin-products__label" htmlFor="watch-gender">
+                      Gender
+                    </label>
+                    <select
+                      id="watch-gender"
+                      name="gender"
+                      className="admin-products__select"
+                      value={formValues.gender}
+                      onChange={handleFormChange}
+                    >
+                      {GENDER_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="admin-products__field">
+                    <label className="admin-products__label" htmlFor="watch-price">
+                      Price
+                    </label>
+                    <input
+                      id="watch-price"
+                      name="price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      className="admin-products__input"
+                      value={formValues.price}
+                      onChange={handleFormChange}
+                      placeholder="0.00"
+                    />
+                  </div>
+
+                  <div className="admin-products__field">
+                    <label className="admin-products__label" htmlFor="watch-stock">
+                      Stock
+                    </label>
+                    <input
+                      id="watch-stock"
+                      name="stock"
+                      type="number"
+                      min="0"
+                      className="admin-products__input"
+                      value={formValues.stock}
+                      onChange={handleFormChange}
+                      placeholder="0"
+                    />
+                  </div>
+
+                  <div className="admin-products__field admin-products__field--full">
+                    <label className="admin-products__label" htmlFor="watch-image">
+                      Image URL
+                    </label>
+                    <input
+                      id="watch-image"
+                      name="image"
+                      className="admin-products__input"
+                      value={formValues.image}
+                      onChange={handleFormChange}
+                      placeholder="@/assets/images/Watches/..."
+                    />
+                  </div>
+
+                  <div className="admin-products__field admin-products__field--full">
+                    <label className="admin-products__label" htmlFor="watch-description">
+                      Description
+                    </label>
+                    <textarea
+                      id="watch-description"
+                      name="description"
+                      rows="3"
+                      className="admin-products__input admin-products__input--area"
+                      value={formValues.description}
+                      onChange={handleFormChange}
+                      placeholder="Highlight the defining traits of this reference."
+                    />
+                  </div>
+                </div>
+
+                <div className="admin-products__form-actions">
+                  <Button variant="primary" type="submit" disabled={isSaving}>
+                    {isSaving ? 'Saving...' : formMode === 'edit' ? 'Save changes' : 'Add watch'}
+                  </Button>
+                  <Button variant="ghost" type="button" onClick={handleFormCancel}>
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </section>
+          )}
 
           <section className="admin-products__section" aria-labelledby="admin-products-summary">
             <div className="admin-products__section-header">
@@ -207,6 +524,13 @@ export default function ManageProducts() {
                   </tr>
                 </thead>
                 <tbody>
+                  {filteredWatches.length === 0 && (
+                    <tr>
+                      <td className="admin-products__empty" colSpan={5}>
+                        No watches match the current filters.
+                      </td>
+                    </tr>
+                  )}
                   {filteredWatches.map((watch) => {
                     const stockValue = getStockValue(watch)
                     const isOutOfStock = stockValue !== null && stockValue <= 0
@@ -255,11 +579,16 @@ export default function ManageProducts() {
                         </td>
                         <td className="admin-products__cell">
                           <div className="admin-products__actions">
-                            <Button variant="secondary" size="sm" onClick={handleNoop}>
+                            <Button variant="secondary" size="sm" onClick={() => openEditForm(watch)}>
                               Edit
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={handleNoop}>
-                              Archive
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(watch)}
+                              disabled={deletingId === watch._id}
+                            >
+                              {deletingId === watch._id ? 'Removing...' : 'Remove'}
                             </Button>
                           </div>
                         </td>

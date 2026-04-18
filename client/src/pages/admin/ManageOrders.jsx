@@ -1,8 +1,9 @@
 import { useLoaderData } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import { useCurrency } from '@/context/CurrencyContext'
+import { orderService } from '@/services/orderService'
 import { formatDate } from '@/utils/formatters'
 import { ORDER_STATUS } from '@/utils/constants'
 import './ManageOrders.css'
@@ -53,15 +54,23 @@ export default function ManageOrders() {
   const data = useLoaderData()
   const orders = Array.isArray(data) ? data : []
   const { formatPrice } = useCurrency()
+  const [orderList, setOrderList] = useState(orders)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [statusMessage, setStatusMessage] = useState(null)
+  const [isUpdating, setIsUpdating] = useState(false)
+
+  useEffect(() => {
+    setOrderList(orders)
+  }, [orders])
 
   const summary = useMemo(() => {
     let pending = 0
     let delivered = 0
     let revenue = 0
 
-    orders.forEach((order) => {
+    orderList.forEach((order) => {
       const status = String(order?.status ?? '').toLowerCase()
       if (status === ORDER_STATUS.PENDING) pending += 1
       if (status === ORDER_STATUS.DELIVERED) delivered += 1
@@ -69,17 +78,17 @@ export default function ManageOrders() {
     })
 
     return {
-      total: orders.length,
+      total: orderList.length,
       pending,
       delivered,
       revenue,
     }
-  }, [orders])
+  }, [orderList])
 
   const filteredOrders = useMemo(() => {
     const query = search.trim().toLowerCase()
 
-    return orders.filter((order) => {
+    return orderList.filter((order) => {
       const id = String(order?._id ?? '').toLowerCase()
       const name = getCustomerName(order).toLowerCase()
       const email = getCustomerEmail(order).toLowerCase()
@@ -90,10 +99,70 @@ export default function ManageOrders() {
 
       return matchQuery && matchStatus
     })
-  }, [orders, search, statusFilter])
+  }, [orderList, search, statusFilter])
 
-  const handleNoop = (event) => {
-    event.preventDefault()
+  const statusFlow = [
+    ORDER_STATUS.PENDING,
+    ORDER_STATUS.CONFIRMED,
+    ORDER_STATUS.SHIPPED,
+    ORDER_STATUS.DELIVERED,
+  ]
+
+  const getNextStatus = (status) => {
+    const current = String(status ?? '').toLowerCase()
+    const index = statusFlow.indexOf(current)
+    if (index === -1 || index === statusFlow.length - 1) {
+      return ORDER_STATUS.DELIVERED
+    }
+    return statusFlow[index + 1]
+  }
+
+  const handleViewOrder = (order) => {
+    setSelectedOrder(order)
+  }
+
+  const handleUpdateStatus = async (order, overrideStatus) => {
+    if (!order?._id || isUpdating) return
+    const nextStatus = overrideStatus ?? getNextStatus(order.status)
+
+    setIsUpdating(true)
+    setStatusMessage(null)
+
+    try {
+      await orderService.updateStatus(order._id, nextStatus)
+      setOrderList((prev) =>
+        prev.map((item) => (item._id === order._id ? { ...item, status: nextStatus } : item))
+      )
+      setStatusMessage({
+        type: 'success',
+        message: `Order ${order._id} updated to ${getStatusLabel(nextStatus)}.`,
+      })
+    } catch (error) {
+      setStatusMessage({ type: 'error', message: 'Unable to update order status right now.' })
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  const handleCreateShipment = () => {
+    if (!selectedOrder) {
+      setStatusMessage({ type: 'error', message: 'Select an order to create a shipment.' })
+      return
+    }
+
+    handleUpdateStatus(selectedOrder, ORDER_STATUS.SHIPPED)
+  }
+
+  const handleExportLedger = () => {
+    const payload = JSON.stringify(filteredOrders, null, 2)
+    const blob = new Blob([payload], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'van-der-linde-orders.json'
+    link.click()
+    URL.revokeObjectURL(url)
+    setStatusMessage({ type: 'success', message: 'Order ledger exported.' })
   }
 
   return (
@@ -109,13 +178,18 @@ export default function ManageOrders() {
               </p>
             </div>
             <div className="admin-orders__header-actions">
-              <Button variant="primary" onClick={handleNoop}>
+              <Button variant="primary" onClick={handleCreateShipment}>
                 Create shipment
               </Button>
-              <Button variant="secondary" onClick={handleNoop}>
+              <Button variant="secondary" onClick={handleExportLedger}>
                 Export ledger
               </Button>
             </div>
+            {statusMessage && (
+              <p className={`admin-orders__status-message admin-orders__status-message--${statusMessage.type}`}>
+                {statusMessage.message}
+              </p>
+            )}
           </header>
 
           <section className="admin-orders__section" aria-labelledby="admin-orders-summary">
@@ -167,6 +241,26 @@ export default function ManageOrders() {
               </p>
             </div>
 
+            {selectedOrder && (
+              <div className="admin-orders__detail">
+                <div>
+                  <p className="admin-orders__detail-eyebrow">Selected order</p>
+                  <h3 className="admin-orders__detail-title">{selectedOrder._id}</h3>
+                  <p className="admin-orders__detail-meta">
+                    {getCustomerName(selectedOrder)} · {getOrderDate(selectedOrder)}
+                  </p>
+                </div>
+                <div className="admin-orders__detail-actions">
+                  <Button variant="secondary" size="sm" onClick={() => handleUpdateStatus(selectedOrder)}>
+                    Advance status
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => setSelectedOrder(null)}>
+                    Clear selection
+                  </Button>
+                </div>
+              </div>
+            )}
+
             <div className="admin-orders__filters" role="search">
               <div className="admin-orders__field admin-orders__field--search">
                 <label className="admin-orders__label" htmlFor="order-search">
@@ -213,6 +307,13 @@ export default function ManageOrders() {
                   </tr>
                 </thead>
                 <tbody>
+                  {filteredOrders.length === 0 && (
+                    <tr>
+                      <td className="admin-orders__empty" colSpan={6}>
+                        No orders match the current filters.
+                      </td>
+                    </tr>
+                  )}
                   {filteredOrders.map((order, index) => {
                     const status = String(order?.status ?? '').toLowerCase()
                     const itemCount = getItemCount(order)
@@ -246,11 +347,16 @@ export default function ManageOrders() {
                         </td>
                         <td className="admin-orders__cell">
                           <div className="admin-orders__actions">
-                            <Button variant="secondary" size="sm" onClick={handleNoop}>
+                            <Button variant="secondary" size="sm" onClick={() => handleViewOrder(order)}>
                               View
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={handleNoop}>
-                              Update
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleUpdateStatus(order)}
+                              disabled={isUpdating}
+                            >
+                              {isUpdating ? 'Updating...' : 'Update'}
                             </Button>
                           </div>
                         </td>

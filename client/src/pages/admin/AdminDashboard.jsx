@@ -97,7 +97,7 @@ export default function AdminDashboard() {
           <header className="admin-dashboard__header">
             <p className="admin-dashboard__eyebrow">Admin Console</p>
             <div className="admin-dashboard__heading">
-              <h1 className="admin-dashboard__title">Aurum Control Room</h1>
+              <h1 className="admin-dashboard__title">VAN DER LINDE Control Room</h1>
               <p className="admin-dashboard__subtitle">
                 Orchestrate the collection, fulfillment, and concierge touchpoints from one refined view.
               </p>

@@ -54,6 +54,20 @@
   gap: var(--space-sm);
 }
 
+.admin-orders__status-message {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.admin-orders__status-message--success {
+  color: var(--color-success);
+}
+
+.admin-orders__status-message--error {
+  color: var(--color-error);
+}
+
 .admin-orders__section {
   display: flex;
   flex-direction: column;
@@ -91,6 +105,47 @@
   font-family: var(--font-body);
   font-size: 0.92rem;
   color: color-mix(in srgb, var(--color-dark) 65%, var(--color-muted) 35%);
+}
+
+.admin-orders__detail {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  align-items: center;
+  padding: clamp(var(--space-md), 2vw, var(--space-lg));
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 22%, transparent 78%);
+  background: color-mix(in srgb, var(--color-white) 92%, transparent 8%);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+}
+
+.admin-orders__detail-eyebrow {
+  margin: 0 0 var(--space-xs);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-dark) 58%, var(--color-muted) 42%);
+}
+
+.admin-orders__detail-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-dark);
+}
+
+.admin-orders__detail-meta {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--color-dark) 70%, var(--color-muted) 30%);
+}
+
+.admin-orders__detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
 }
 
 .admin-orders__summary {
@@ -201,6 +256,14 @@
   border: 1px solid color-mix(in srgb, var(--color-gold) 20%, transparent 80%);
   background: color-mix(in srgb, var(--color-white) 94%, transparent 6%);
   box-shadow: 0 12px 24px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+}
+
+.admin-orders__empty {
+  padding: var(--space-lg);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--color-dark) 65%, var(--color-muted) 35%);
 }
 
 .admin-orders__table {
@@ -316,6 +379,7 @@
 
 [data-theme='dark'] .admin-orders__summary-card,
 [data-theme='dark'] .admin-orders__filters,
+[data-theme='dark'] .admin-orders__detail,
 [data-theme='dark'] .admin-orders__table-wrapper {
   border-color: color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
   background: color-mix(in srgb, var(--color-white) 6%, transparent 94%);
@@ -354,6 +418,11 @@
   }
 
   .admin-orders__section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-orders__detail {
     flex-direction: column;
     align-items: flex-start;
   }
