@@ -34,6 +34,34 @@ const mock = {
       result = result.filter((item) => item.name.toLowerCase().includes(normalizedSearch))
     }
 
+    // Filter by brand when a specific brand is selected.
+    if (filters.brand && filters.brand !== 'all') {
+      result = result.filter((item) => item.brand === filters.brand)
+    }
+
+    // Filter by gender when selected.
+    if (filters.gender && filters.gender !== 'all') {
+      result = result.filter((item) => item.gender === filters.gender)
+    }
+
+    // Filter by minimum rating threshold.
+    if (filters.rating && filters.rating !== 'all') {
+      const minRating = Number.parseFloat(filters.rating)
+      if (!Number.isNaN(minRating)) {
+        result = result.filter((item) => Number(item.rating) >= minRating)
+      }
+    }
+
+    // Filter by price range when provided.
+    const minPrice = Number.parseFloat(filters.minPrice)
+    const maxPrice = Number.parseFloat(filters.maxPrice)
+    if (!Number.isNaN(minPrice)) {
+      result = result.filter((item) => Number(item.price) >= minPrice)
+    }
+    if (!Number.isNaN(maxPrice)) {
+      result = result.filter((item) => Number(item.price) <= maxPrice)
+    }
+
     // Apply sorting based on selected option from shop controls.
     if (filters.sort === 'price-asc') {
       result.sort((a, b) => a.price - b.price)

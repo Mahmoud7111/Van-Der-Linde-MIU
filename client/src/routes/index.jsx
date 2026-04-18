@@ -103,6 +103,11 @@ export const router = createBrowserRouter([
           const filters = {
             category: url.searchParams.get('category') || 'all',
             search: url.searchParams.get('search') || '',
+            brand: url.searchParams.get('brand') || 'all',
+            gender: url.searchParams.get('gender') || 'all',
+            rating: url.searchParams.get('rating') || 'all',
+            minPrice: url.searchParams.get('minPrice') || '',
+            maxPrice: url.searchParams.get('maxPrice') || '',
             sort: url.searchParams.get('sort') || 'default',
           }
 
