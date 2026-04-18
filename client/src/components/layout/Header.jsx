@@ -56,9 +56,6 @@ export default function Header() {
   const iconLinkClassName = ({ isActive }) =>
     `header__icon-control${isActive ? ' header__icon-control--active' : ''}`
 
-  const adminLinkClassName = ({ isActive }) =>
-    `header__admin-link${isActive ? ' header__admin-link--active' : ''}`
-
   const cartLinkClassName = ({ isActive }) =>
     `header__icon-control header__icon-control--cart${isActive ? ' header__icon-control--active' : ''}`
 
@@ -119,9 +116,6 @@ export default function Header() {
 
           {/* Icon controls — utility actions separated from nav links by a divider */}
           <div className="header__icons-wrap">
-            <NavLink className={adminLinkClassName} to="/admin">
-              Admin Console
-            </NavLink>
             <span className="header__divider" aria-hidden="true">
               |
             </span>
@@ -142,6 +136,24 @@ export default function Header() {
               {/* Account link destination switches based on auth state */}
               <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
                 <FiUser aria-hidden="true" />
+              </NavLink>
+
+              <NavLink
+                aria-label="Admin dashboard"
+                className="header__icon-control header__icon-control--admin"
+                to="/admin"
+              >
+                <svg
+                  className="header__admin-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M3 18h18" />
+                  <path d="M4 18l2-9 6 6 6-8 2 11" />
+                  <circle cx="6" cy="7" r="1.4" />
+                  <circle cx="12" cy="11" r="1.2" />
+                  <circle cx="18" cy="5" r="1.4" />
+                </svg>
               </NavLink>
 
               <NavLink aria-label="Wishlist" className={iconLinkClassName} to="/wishlist">

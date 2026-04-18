@@ -52,12 +52,6 @@
 	color: var(--color-white);
 }
 
-.header--transparent .header__admin-link {
-	background: color-mix(in srgb, var(--color-white) 12%, transparent 88%);
-	border-color: color-mix(in srgb, var(--color-white) 45%, transparent 55%);
-	color: color-mix(in srgb, var(--color-white) 92%, var(--color-gold) 8%);
-}
-
 .header--transparent .header__icon-control--cart {
 	background: color-mix(in srgb, var(--color-white) 14%, transparent 86%);
 }
@@ -149,38 +143,6 @@
 	flex-wrap: nowrap;
 }
 
-.header__admin-link {
-	position: relative;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0.3rem 0.85rem;
-	border-radius: var(--radius-full);
-	border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent 55%);
-	background: color-mix(in srgb, var(--color-white) 85%, var(--color-gold) 15%);
-	color: var(--color-dark);
-	font-size: 0.65rem;
-	font-weight: 600;
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-	white-space: nowrap;
-	transition:
-		transform var(--transition-fast),
-		box-shadow var(--transition-fast),
-		border-color var(--transition-normal),
-		background-color var(--transition-normal),
-		color var(--transition-normal);
-}
-
-.header__admin-link:hover,
-.header__admin-link:focus-visible,
-.header__admin-link--active {
-	transform: translateY(-1px);
-	border-color: var(--color-gold);
-	box-shadow: 0 10px 16px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
-	color: var(--color-dark);
-}
-
 .header__divider {
 	font-size: 0.95rem;
 	line-height: 1;
@@ -254,6 +216,17 @@
 
 .header__icon-control svg {
 	font-size: 1rem;
+}
+
+.header__admin-icon {
+	width: 1.15rem;
+	height: 1.15rem;
+	display: block;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
 }
 
 .header__icon-control--cart {
@@ -382,11 +355,6 @@
 	border-color: color-mix(in srgb, var(--color-gold) 58%, transparent 42%);
 }
 
-[data-theme='dark'] .header__admin-link {
-	background: color-mix(in srgb, var(--color-surface) 70%, var(--color-gold) 30%);
-	border-color: color-mix(in srgb, var(--color-gold) 60%, transparent 40%);
-	color: var(--color-dark);
-}
 
 [data-theme='dark'] .header__divider {
 	color: color-mix(in srgb, var(--color-muted) 70%, var(--color-dark) 30%);
