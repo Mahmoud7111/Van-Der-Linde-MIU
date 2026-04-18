@@ -66,6 +66,16 @@ export default function ClockHandCursor() {
   return (
     <div className="clock-cursor" aria-hidden="true">
       <motion.div
+        className="clock-cursor__face"
+        animate={{
+          x: pos.x,
+          y: pos.y,
+          scale: isHovering ? 1.08 : 1,
+          opacity: isClicking ? 0.35 : isHovering ? 0.8 : 0.6,
+        }}
+        transition={{ type: 'spring', damping: 28, stiffness: 240, mass: 0.7 }}
+      />
+      <motion.div
         className="clock-cursor__pivot"
         animate={{
           x: pos.x,
