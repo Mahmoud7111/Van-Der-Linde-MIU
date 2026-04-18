@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { motion } from 'motion/react'
+import { motion } from 'framer-motion'
 import './ClockHandCursor.css'
 
 export default function ClockHandCursor() {
