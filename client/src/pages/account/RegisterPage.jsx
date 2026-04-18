@@ -230,7 +230,6 @@ export default function RegisterPage() {
                     <option value="">Select</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
-                    <option value="prefer_not_to_say">Prefer not to say</option>
                   </select>
                   {errors.gender && <p className="auth-vdl-error">{errors.gender.message}</p>}
                 </div>
