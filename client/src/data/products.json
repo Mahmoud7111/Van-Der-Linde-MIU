@@ -724,7 +724,7 @@
     "rating": 4.6,
     "numReviews": 92,
     "stock": 9,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (1).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A blue-dial diver with gold accents and a robust, water-ready build."
   },
   {
@@ -737,7 +737,7 @@
     "rating": 4.6,
     "numReviews": 85,
     "stock": 9,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (2).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A polished diver profile with crisp indices and a strong maritime silhouette."
   },
   {
@@ -750,7 +750,7 @@
     "rating": 4.7,
     "numReviews": 77,
     "stock": 8,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (3).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A gold-accented diver with a bold bezel and high-contrast dial."
   },
   {
@@ -763,7 +763,7 @@
     "rating": 4.5,
     "numReviews": 81,
     "stock": 11,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (4).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A steel-forward diver with a clean profile and reliable water-ready performance."
   },
   {
@@ -776,7 +776,7 @@
     "rating": 4.7,
     "numReviews": 69,
     "stock": 7,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (5).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A luxury diver blend with elevated polishing and a confident blue dial."
   },
   {
@@ -789,7 +789,7 @@
     "rating": 4.8,
     "numReviews": 63,
     "stock": 6,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (6).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "An elite diver finish with sharpened indices and a bright bezel."
   },
   {
@@ -802,7 +802,7 @@
     "rating": 4.7,
     "numReviews": 55,
     "stock": 6,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (7).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A sapphire-gloss diver aesthetic with high-visibility markers."
   },
   {
@@ -815,7 +815,7 @@
     "rating": 4.6,
     "numReviews": 60,
     "stock": 8,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-126613lb (8).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A horizon-blue diver with strong lume and balanced proportions."
   },
   {
@@ -828,7 +828,7 @@
     "rating": 4.8,
     "numReviews": 48,
     "stock": 5,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/m126613lb-0002_v01.avif"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A reference build with elevated finishing and a deep blue dial."
   },
   {
@@ -841,7 +841,7 @@
     "rating": 4.7,
     "numReviews": 52,
     "stock": 6,
-    "images": ["@/assets/images/Watches/Rolex Submariner Date 126613LB/Rolex-Submariner-date-40-yellow-gold-steel-blue-dial-116613lb.avif"],
+    "images": ["@/assets/images/Watches/Rolex Submariner.png"],
     "description": "A yellow-gold accented diver with strong lume and a crisp bezel."
   },
   {
@@ -854,7 +854,7 @@
     "rating": 4.7,
     "numReviews": 66,
     "stock": 5,
-    "images": ["@/assets/images/Watches/Rolex Day-Date 228235 Rose Gold Olive Green Dial/rolex-day-date-40-rose-gold-olive-green-dial-228235 (1).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
     "description": "A rose-gold luxury piece with an olive dial and elegant bracelet finishing."
   },
   {
@@ -867,7 +867,7 @@
     "rating": 4.7,
     "numReviews": 62,
     "stock": 5,
-    "images": ["@/assets/images/Watches/Rolex Day-Date 228235 Rose Gold Olive Green Dial/rolex-day-date-40-rose-gold-olive-green-dial-228235 (2).jpg"],
+    "images": ["@/assets/images/Watches/Rolex 1908.png"],
     "description": "A bold day-date configuration with refined rose-gold accents."
   },
   {
@@ -880,7 +880,7 @@
     "rating": 4.8,
     "numReviews": 57,
     "stock": 4,
-    "images": ["@/assets/images/Watches/Rolex Day-Date 228235 Rose Gold Olive Green Dial/rolex-day-date-40-rose-gold-olive-green-dial-228235 (3).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
     "description": "An elevated day-date profile with a rich olive dial and polished casework."
   },
   {
@@ -893,7 +893,7 @@
     "rating": 4.8,
     "numReviews": 53,
     "stock": 4,
-    "images": ["@/assets/images/Watches/Rolex Day-Date 228235 Rose Gold Olive Green Dial/rolex-day-date-40-rose-gold-olive-green-dial-228235 (4).jpg"],
+    "images": ["@/assets/images/Watches/Rolex 1908.png"],
     "description": "A premium day-date with a deep green dial and luxurious finishing."
   },
   {
@@ -906,7 +906,7 @@
     "rating": 4.8,
     "numReviews": 49,
     "stock": 3,
-    "images": ["@/assets/images/Watches/Rolex Day-Date 228235 Rose Gold Olive Green Dial/rolex-day-date-40-rose-gold-olive-green-dial-228235 (5).jpg"],
+    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
     "description": "A refined day-date with rose-gold shine and a smooth bracelet profile."
   },
   {
@@ -919,7 +919,7 @@
     "rating": 4.9,
     "numReviews": 45,
     "stock": 3,
-    "images": ["@/assets/images/Watches/Rolex Day-Date 228235 Rose Gold Olive Green Dial/rolex-day-date-40-rose-gold-olive-green-dial-228235 (6).jpg"],
+    "images": ["@/assets/images/Watches/Rolex 1908.png"],
     "description": "A collector-grade day-date with premium finishing and a rich dial tone."
   },
   {
@@ -932,7 +932,7 @@
     "rating": 4.9,
     "numReviews": 41,
     "stock": 3,
-    "images": ["@/assets/images/Watches/Rolex Day-Date 228235 Rose Gold Olive Green Dial/rolex-day-date-40-rose-gold-olive-green-dial-228235.png"],
+    "images": ["@/assets/images/Watches/Rolex Lady Datejust.png"],
     "description": "A special-edition day-date with a polished rose-gold finish and rich olive dial."
   },
   {
