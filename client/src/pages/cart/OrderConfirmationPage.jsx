@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import orderService from '../../services/orderService';
+import { orderService } from '../../services/orderService';
 import './OrderConfirmationPage.css';
 
 export default function OrderConfirmationPage() {
