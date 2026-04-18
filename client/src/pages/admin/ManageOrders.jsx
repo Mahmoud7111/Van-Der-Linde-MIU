@@ -2,7 +2,8 @@ import { useLoaderData } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
-import { formatDate, formatPrice } from '@/utils/formatters'
+import { useCurrency } from '@/context/CurrencyContext'
+import { formatDate } from '@/utils/formatters'
 import { ORDER_STATUS } from '@/utils/constants'
 import './ManageOrders.css'
 
@@ -51,6 +52,7 @@ const getItemCount = (order) => {
 export default function ManageOrders() {
   const data = useLoaderData()
   const orders = Array.isArray(data) ? data : []
+  const { formatPrice } = useCurrency()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
