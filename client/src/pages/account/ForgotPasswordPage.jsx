@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 import toast from 'react-hot-toast'
+
 import { forgotPasswordSchema } from '@/utils/validators'
 import { authService } from '@/services/authService'
 import PageTransition from '@/components/common/PageTransition'
@@ -10,8 +10,8 @@ import Button from '@/components/common/Button'
 import authHeroImage from '@/assets/Models/Dutch Van Der Linde1.png'
 import './AuthPage.css'
 
-
-const {
+export default function ForgotPasswordPage() {
+  const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
@@ -26,7 +26,7 @@ const {
 
   const onSubmit = async ({ email }) => {
     try {
-       await authService.forgotPassword({ email: email.trim() })
+      await authService.forgotPassword({ email: email.trim() })
       toast.success('If this email exists, a reset link has been sent.')
       reset()
     } catch (error) {
@@ -108,7 +108,7 @@ const {
               </Button>
             </form>
 
-            <div className="auth-vdl-row" style={{ marginTop: '14px' }}>
+            <div className="auth-vdl-row auth-vdl-row--cta">
               <Link to="/login" className="auth-vdl-forgot">
                 Back to Sign In
               </Link>
