@@ -10,7 +10,9 @@ import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import authHeroImage from '@/assets/Models/Dutch Van Der Linde1.png'
 import './AuthPage.css'
-const { login } = useAuth()
+
+export default function LoginPage() {
+  const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from?.pathname || '/'
