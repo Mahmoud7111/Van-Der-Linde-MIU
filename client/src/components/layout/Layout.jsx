@@ -28,6 +28,9 @@ import ClockHandCursor from '@/components/common/ClockHandCursor'
 import LoadingScreen from '@/components/common/LoadingScreen'
 import './Layout.css'
 
+// Chatbot floating button and window
+import Chatbot from '@/components/features/Chatbot'
+
 // Root layout component for all application routes.
 export default function Layout() {
   // Router navigation state tells us when loaders or route transitions are in progress.
@@ -83,6 +86,9 @@ export default function Layout() {
 
       {/* Shared footer across all pages. */}
       <Footer />
+
+      {/* Floating Chatbot button and window */}
+      <Chatbot />
 
       {/* Global marketing modals */}
       <EmailCaptureModal />

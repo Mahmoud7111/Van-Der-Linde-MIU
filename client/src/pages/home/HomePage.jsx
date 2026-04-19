@@ -113,6 +113,13 @@ const TRUST_STRIP_ITEMS = [
   },
 ]
 
+// Converts collection slug or name into a URL path for the collection page.
+/* 
+Takes a collection object.
+Tries to use its slug property (if it exists and is a string).
+If not, it creates a slug from the collection's name by making it lowercase, replacing spaces and special characters with hyphens, and trimming extra hyphens.
+Returns a URL path like /collections/your-slug or just /collections if no slug is available.
+*/
 const getCollectionPath = (collection) => {
   const providedSlug = typeof collection?.slug === 'string' ? collection.slug.trim() : ''
   const fallbackSlug = String(collection?.name || '')
