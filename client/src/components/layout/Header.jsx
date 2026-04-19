@@ -55,29 +55,6 @@ export default function Header() {
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
 
-  // Reads authenticated user; full header uses this for account menu, logout, and role links.
-  const { user } = useAuth()
-    const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false)
-  const authMenuRef = useRef(null)
-
-  const closeAuthMenu = useCallback(() => {
-    setIsAuthMenuOpen(false)
-  }, [])
-
-  useClickOutside(authMenuRef, closeAuthMenu, isAuthMenuOpen)
-
-  useEffect(() => {
-    if (!isAuthMenuOpen) return undefined
-
-    const handleEscape = (event) => {
-      if (event.key === 'Escape') {
-        closeAuthMenu()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [closeAuthMenu, isAuthMenuOpen])
 
 
   // NavLink className helpers keep JSX clean and apply active state via CSS modifier.
@@ -202,53 +179,15 @@ export default function Header() {
               </NavLink>
 
 
-              {/* Globe icon now exposes authentication links for guest users. */}
-              <div className="header__auth-menu" ref={authMenuRef}>
-                <button
-                  type="button"
-                  className="header__icon-control"
-                  aria-label="Authentication menu"
-                  aria-expanded={isAuthMenuOpen}
-                  aria-haspopup="menu"
-                  onClick={() => setIsAuthMenuOpen((prev) => !prev)}
-                >
-                  <FiGlobe aria-hidden="true" />
-                </button>
+               <button type="button" className="header__icon-control" aria-label="Language">
+                              <FiGlobe aria-hidden="true" />
+                            </button>
 
-                {isAuthMenuOpen && (
-                  <div className="header__auth-dropdown" role="menu" aria-label="Authentication links">
-                    {!user ? (
-                      <>
-                        <Link
-                          to="/login"
-                          className="header__auth-link"
-                          role="menuitem"
-                          onClick={closeAuthMenu}
-                        >
-                          Login
-                        </Link>
-                        <Link
-                          to="/register"
-                          className="header__auth-link"
-                          role="menuitem"
-                          onClick={closeAuthMenu}
-                        >
-                          Register
-                        </Link>
-                      </>
-                    ) : (
-                      <Link
-                        to="/account"
-                        className="header__auth-link"
-                        role="menuitem"
-                        onClick={closeAuthMenu}
-                      >
-                        My Account
-                      </Link>
-                    )}
-                  </div>
-                )}
-              </div>
+              <button type="button" className="header__icon-control" aria-label="Dark mode toggle">
+                <FiMoon aria-hidden="true" />
+
+
+              
               <DarkModeToggle className="header__icon-control" />
 
               <CurrencySwitcher className="header__icon-control" />
