@@ -14,21 +14,54 @@
  */
 import api from '@/api/axiosInstance'
 import { USE_MOCK } from '@/utils/constants'
+import adminUser from '@/data/admin.json'
 import mockUser from '@/data/user.json'
 
 // Mock auth service keeps async contract via Promise.resolve while backend is not ready.
+const MOCK_USER_KEY = 'mock-user'
+
+const resolveMockUser = (email) => {
+  if (!email) return mockUser
+  const normalizedEmail = String(email).toLowerCase().trim()
+  if (normalizedEmail === adminUser.email.toLowerCase()) {
+    return adminUser
+  }
+  return mockUser
+}
+
 const mock = {
   // Called by AuthContext.login from LoginPage submit flow.
-  login: () => Promise.resolve({ user: mockUser, token: 'mock-token-123' }),
+  login: ({ email } = {}) => {
+    const user = resolveMockUser(email)
+    localStorage.setItem(MOCK_USER_KEY, JSON.stringify(user))
+    return Promise.resolve({ user, token: `mock-token-${user.role}` })
+  },
 
   // Called by AuthContext.register from RegisterPage submit flow.
-  register: () => Promise.resolve({ user: mockUser, token: 'mock-token-123' }),
+  register: (data = {}) => {
+    const user = {
+      ...mockUser,
+      _id: `user-${Date.now()}`,
+      name: data.name || mockUser.name,
+      email: data.email || mockUser.email,
+      role: 'user',
+    }
+    localStorage.setItem(MOCK_USER_KEY, JSON.stringify(user))
+    return Promise.resolve({ user, token: 'mock-token-user' })
+  },
 
   // Called on app startup by AuthContext to restore session from token.
-  getMe: () => Promise.resolve(mockUser),
+  getMe: () => {
+    const storedUser = localStorage.getItem(MOCK_USER_KEY)
+    const user = storedUser ? JSON.parse(storedUser) : mockUser
+    return Promise.resolve(user)
+  },
 
   // Called when user logs out from header/account controls.
-  logout: () => Promise.resolve(),
+  logout: () => {
+    localStorage.removeItem(MOCK_USER_KEY)
+    return Promise.resolve()
+  },
 
   // Called by ForgotPasswordPage to simulate email dispatch.
   forgotPassword: () => Promise.resolve({ message: 'Email sent' }),

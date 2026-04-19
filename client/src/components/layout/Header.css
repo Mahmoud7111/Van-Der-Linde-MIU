@@ -9,6 +9,7 @@
 		color-mix(in srgb, var(--color-surface) 87%, var(--color-gold) 13%) 46%,
 		color-mix(in srgb, var(--color-surface) 95%, var(--color-dark) 5%) 100%
 	);
+	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
 	box-shadow: 0 14px 28px color-mix(in srgb, var(--color-dark) 14%, transparent 86%);
 	transition:
@@ -33,6 +34,7 @@
 	background: transparent;
 	box-shadow: none;
 	border-bottom-color: transparent;
+	-webkit-backdrop-filter: none;
 	backdrop-filter: none;
 }
 
@@ -146,6 +148,7 @@
 	line-height: 1;
 	color: color-mix(in srgb, var(--color-dark) 55%, var(--color-muted) 45%);
 	margin-right: var(--space-xs);
+	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -213,6 +216,17 @@
 
 .header__icon-control svg {
 	font-size: 1rem;
+}
+
+.header__admin-icon {
+	width: 1.15rem;
+	height: 1.15rem;
+	display: block;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
 }
 
 .header__icon-control--cart {
@@ -340,6 +354,7 @@
 	background: color-mix(in srgb, var(--color-white) 78%, var(--color-surface) 22%);
 	border-color: color-mix(in srgb, var(--color-gold) 58%, transparent 42%);
 }
+
 
 [data-theme='dark'] .header__divider {
 	color: color-mix(in srgb, var(--color-muted) 70%, var(--color-dark) 30%);
