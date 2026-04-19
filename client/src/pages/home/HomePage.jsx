@@ -72,7 +72,9 @@ import '@/pages/home/HomePage.css'
 // Shared constants keep behavior knobs centralized and remove magic values.
 const MOBILE_REVIEWS_MEDIA_QUERY = '(max-width: 768px)'
 const FAVORITE_SWITCH_COOLDOWN_MS = 1050
-const FAVORITE_SLOT_TRANSITION = { duration: 0.95, ease: [0.22, 1, 0.36, 1] }
+const FAVORITE_SLOT_TRANSITION = { duration: 1.12, ease: [0.22, 1, 0.36, 1] }
+const FAVORITE_SLOT_EDGE_TRAVEL_PX = 340
+const FAVORITE_SLOT_STAGGER_DELAY_S = 0.08
 
 // Product visuals shown in the quiz teaser rail.
 const QUIZ_WATCHES = [
@@ -304,25 +306,98 @@ export default function HomePage() {
     }),
   }
 
-  // Watch slot transforms create the center-focus carousel composition.
-  const favoriteSlotVariants = {
-    left: {
-      scale: 0.58,
-      x: -44,
-      y: 8,
-      opacity: 1,
-    },
-    center: {
-      scale: 1.14,
-      x: 0,
-      y: 0,
-      opacity: 1,
-    },
-    right: {
+  const getFavoriteSlotState = (slot) => {
+    if (slot === 'left') {
+      return {
+        scale: 0.58,
+        x: -44,
+        y: 8,
+        opacity: 1,
+        zIndex: 2,
+      }
+    }
+
+    if (slot === 'center') {
+      return {
+        scale: 1.14,
+        x: 0,
+        y: 0,
+        opacity: 1,
+        zIndex: 4,
+      }
+    }
+
+    return {
       scale: 0.58,
       x: 44,
       y: 8,
       opacity: 1,
+      zIndex: 2,
+    }
+  }
+
+  const getFavoriteSlotDelay = (slot, direction) => {
+    const orderedSlots = direction > 0
+      ? ['left', 'center', 'right']
+      : ['right', 'center', 'left']
+
+    const slotOrderIndex = orderedSlots.indexOf(slot)
+
+    return slotOrderIndex === -1
+      ? 0
+      : slotOrderIndex * FAVORITE_SLOT_STAGGER_DELAY_S
+  }
+
+  const getFavoriteSlotMotionTransition = (slot, direction) => {
+    const timedTransition = {
+      ...FAVORITE_SLOT_TRANSITION,
+      delay: getFavoriteSlotDelay(slot, direction),
+    }
+
+    return {
+      layout: timedTransition,
+      ...timedTransition,
+    }
+  }
+
+  // Watch slot transforms create the center-focus carousel composition.
+  const favoriteSlotVariants = {
+    enter: ({ direction, slot }) => {
+      const base = getFavoriteSlotState(slot)
+
+      return {
+        ...base,
+        // New side card should visibly slide in from the navigation direction.
+        x: base.x + (direction > 0 ? FAVORITE_SLOT_EDGE_TRAVEL_PX : -FAVORITE_SLOT_EDGE_TRAVEL_PX),
+        opacity: 1,
+        zIndex: 1,
+      }
+    },
+    left: getFavoriteSlotState('left'),
+    center: getFavoriteSlotState('center'),
+    right: getFavoriteSlotState('right'),
+    exit: (custom) => {
+      // Exit should follow the current click direction for consistent left/right smoothness.
+      const direction = typeof custom === 'number'
+        ? custom
+        : favoriteDirection
+
+      // If slot is missing on exit, infer the outgoing side from direction.
+      const slot = custom && typeof custom === 'object' && custom.slot
+        ? custom.slot
+        : direction > 0
+          ? 'left'
+          : 'right'
+
+      const base = getFavoriteSlotState(slot)
+
+      return {
+        ...base,
+        // Outgoing side card should continue sliding out in the same flow.
+        x: base.x + (direction > 0 ? -FAVORITE_SLOT_EDGE_TRAVEL_PX : FAVORITE_SLOT_EDGE_TRAVEL_PX),
+        opacity: 1,
+        zIndex: 1,
+      }
     },
   }
 
@@ -730,54 +805,55 @@ export default function HomePage() {
 
               <div className="home-favorites__rail" aria-live="polite">
                 {/* Exactly three slots: previous, active center, next */}
-                {favoriteRailItems.map(({ slot, product, index }) => (
-                  <Motion.div
-                    key={product._id}
-                    layout="position"
-                    className={`home-favorites__watch-slot home-favorites__watch-slot--${slot}`}
-                    variants={favoriteSlotVariants}
-                    initial={false}
-                    animate={slot}
-                    transition={{
-                      layout: FAVORITE_SLOT_TRANSITION,
-                      ...FAVORITE_SLOT_TRANSITION,
-                    }}
-                  >
-                    {slot === 'center' ? (
-                      // Center card links directly to product detail page.
-                      <Button
-                        to={`/watch/${product._id}`}
-                        variant="home-watch-link-center"
-                        className="home-favorites__watch-link"
-                        aria-label={`View details for ${product.name}`}
-                      >
-                        <img
-                          className="home-favorites__watch-image"
-                          src={resolveFavoriteWatchImage(product)}
-                          alt={product.name}
-                          loading="lazy"
-                        />
-                      </Button>
-                    ) : (
-                      // Side cards are promotion buttons that move into center.
-                      <Button
-                        variant="home-watch-link"
-                        className="home-favorites__watch-link"
-                        onClick={() => goToFavorite(index)}
-                        disabled={isFavoriteTransitioning}
-                        aria-label={`Show ${product.name} in the center`}
-                      >
-                        <img
-                          className="home-favorites__watch-image"
-                          src={resolveFavoriteWatchImage(product)}
-                          alt=""
-                          loading="lazy"
-                          aria-hidden="true"
-                        />
-                      </Button>
-                    )}
-                  </Motion.div>
-                ))}
+                <AnimatePresence initial={false} mode="sync" custom={favoriteDirection}>
+                  {favoriteRailItems.map(({ slot, product, index }) => (
+                    <Motion.div
+                      key={product._id}
+                      layout="position"
+                      className={`home-favorites__watch-slot home-favorites__watch-slot--${slot}`}
+                      variants={favoriteSlotVariants}
+                      custom={{ direction: favoriteDirection, slot }}
+                      initial="enter"
+                      animate={slot}
+                      exit="exit"
+                      transition={getFavoriteSlotMotionTransition(slot, favoriteDirection)}
+                    >
+                      {slot === 'center' ? (
+                        // Center card links directly to product detail page.
+                        <Button
+                          to={`/watch/${product._id}`}
+                          variant="home-watch-link-center"
+                          className="home-favorites__watch-link"
+                          aria-label={`View details for ${product.name}`}
+                        >
+                          <img
+                            className="home-favorites__watch-image"
+                            src={resolveFavoriteWatchImage(product)}
+                            alt={product.name}
+                            loading="lazy"
+                          />
+                        </Button>
+                      ) : (
+                        // Side cards are promotion buttons that move into center.
+                        <Button
+                          variant="home-watch-link"
+                          className="home-favorites__watch-link"
+                          onClick={() => goToFavorite(index)}
+                          disabled={isFavoriteTransitioning}
+                          aria-label={`Show ${product.name} in the center`}
+                        >
+                          <img
+                            className="home-favorites__watch-image"
+                            src={resolveFavoriteWatchImage(product)}
+                            alt=""
+                            loading="lazy"
+                            aria-hidden="true"
+                          />
+                        </Button>
+                      )}
+                    </Motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
 
               <Button
@@ -995,6 +1071,7 @@ export default function HomePage() {
             {/*
               Add this in index.html:
               <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+              we use the model-viewer web component for easy 3D rendering without a heavy custom Three.js setup.
             */}
             <div className="home-configurator__model-wrap">
               {/* model-viewer web component handles interactive 3D rendering */}
