@@ -1,0 +1,241 @@
+.contact-page {
+  padding-top: 120px;
+  min-height: 100vh;
+  color: var(--color-text, #1a1a1a);
+}
+
+.contact-page__header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 5rem;
+  padding: 0 2rem;
+}
+
+.contact-page__title {
+  font-size: 3.5rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+  color: var(--color-dark, #1a1a1a);
+}
+
+.contact-page__subtitle {
+  font-size: 1.1rem;
+  color: var(--color-muted, #666);
+  line-height: 1.6;
+}
+
+.contact-page__content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 6rem;
+  padding: 0 2rem 8rem;
+}
+
+/* Contact Info Styling */
+.contact-info__heading,
+.contact-form__heading {
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-gold, #c9a84c);
+}
+
+.contact-info__item {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.contact-info__icon {
+  font-size: 1.5rem;
+  color: var(--color-gold, #c9a84c);
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.contact-info__item h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  color: var(--color-muted, #666);
+}
+
+.contact-info__item p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Form Styling */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted, #666);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--color-surface, #f8f0e5);
+  border-radius: var(--radius-sm, 4px);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color var(--transition-normal);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-gold, #c9a84c);
+}
+
+.contact-form__success {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(201, 168, 76, 0.05);
+  border-radius: var(--radius-md, 8px);
+}
+
+.contact-form__success h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--color-gold, #c9a84c);
+}
+
+.contact-form__success p {
+  margin-bottom: 2.5rem;
+  color: var(--color-muted, #666);
+}
+
+/* Dark Mode Overrides */
+[data-theme='dark'] .contact-page__title {
+  color: var(--color-gold, #c9a84c);
+}
+
+[data-theme='dark'] .contact-page__subtitle,
+[data-theme='dark'] .contact-info__item p {
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .contact-form__success p {
+  color: #000000 !important;
+}
+
+[data-theme='dark'] .contact-form-container {
+  background: var(--color-dark);
+  padding: 3rem;
+  border-radius: var(--radius-md);
+}
+
+[data-theme='dark'] .contact-info__item h3 {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme='dark'] .form-group label,
+[data-theme='dark'] .contact-form label {
+  color: #000000 !important;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .form-group input,
+[data-theme='dark'] .form-group select,
+[data-theme='dark'] .form-group textarea {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #000000 !important;
+  transition: all 0.3s ease;
+}
+
+/* When input is focused or has content (placeholder not shown) */
+[data-theme='dark'] .form-group input:focus,
+[data-theme='dark'] .form-group textarea:focus,
+[data-theme='dark'] .form-group input:not(:placeholder-shown),
+[data-theme='dark'] .form-group textarea:not(:placeholder-shown) {
+  background: #0d1b2a;
+  color: #ffffff !important;
+  border-color: var(--color-gold);
+}
+
+/* Force select and its label to stay dark-on-light in dark mode */
+[data-theme='dark'] .form-group select,
+[data-theme='dark'] .form-group select:focus,
+[data-theme='dark'] .form-group select:not([value=""]) {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .form-group label {
+  color: #000000 !important;
+}
+
+[data-theme='dark'] .form-group input::placeholder,
+[data-theme='dark'] .form-group textarea::placeholder {
+  color: #000000;
+  opacity: 0.6;
+}
+
+[data-theme='dark'] .form-group select option {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+
+/* Fix for autofill background in dark mode */
+[data-theme='dark'] .form-group input:-webkit-autofill,
+[data-theme='dark'] .form-group input:-webkit-autofill:hover,
+[data-theme='dark'] .form-group input:-webkit-autofill:focus,
+[data-theme='dark'] .form-group textarea:-webkit-autofill,
+[data-theme='dark'] .form-group textarea:-webkit-autofill:hover,
+[data-theme='dark'] .form-group textarea:-webkit-autofill:focus,
+[data-theme='dark'] .form-group select:-webkit-autofill,
+[data-theme='dark'] .form-group select:-webkit-autofill:hover,
+[data-theme='dark'] .form-group select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0d1b2a inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+  .contact-page__content {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+
+  .contact-page__title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-page {
+    padding-top: 100px;
+  }
+
+  .contact-page__header {
+    margin-bottom: 3rem;
+  }
+}

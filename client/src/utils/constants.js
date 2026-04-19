@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Shared application constants.
  *
  * What this file is:
@@ -43,6 +43,8 @@ export const CURRENCIES = [
   { code: 'USD', symbol: '$', label: 'US Dollar' },
   { code: 'EUR', symbol: '€', label: 'Euro' },
   { code: 'EGP', symbol: 'E£', label: 'Egyptian Pound' },
+  { code: 'SAR', symbol: 'Rs', label: 'Saudi Riyal' },
+  { code: 'AED', symbol: 'ED£', label: 'UAE Dirham' },
 ]
 
 // Language options used by LanguageContext to set `lang`, `dir`, and translation lookup key.
