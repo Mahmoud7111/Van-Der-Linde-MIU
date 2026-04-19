@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { CATEGORIES, SORT_OPTIONS } from '@/utils/constants'
+import { useCurrency } from '@/context/CurrencyContext'
+import { CATEGORIES, CURRENCIES, SORT_OPTIONS } from '@/utils/constants'
 import brands from '@/data/brands.json'
 import './ProductFilter.css'
 
@@ -23,6 +24,7 @@ const RATING_OPTIONS = [
 
 export default function ProductFilter({ defaultGender }) {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { currency } = useCurrency()
   const category = searchParams.get('category') || 'all'
   const brand = searchParams.get('brand') || 'all'
   const genderParam = searchParams.get('gender')
@@ -34,6 +36,7 @@ export default function ProductFilter({ defaultGender }) {
   const searchValue = (searchParams.get('search') || '').trim()
 
   const [searchInput, setSearchInput] = useState(searchValue)
+  const currencySymbol = CURRENCIES.find((item) => item.code === currency)?.symbol ?? '$'
 
   useEffect(() => {
     setSearchInput(searchValue)
@@ -201,7 +204,7 @@ export default function ProductFilter({ defaultGender }) {
             <span className="product-filter__label">Price range</span>
             <div className="product-filter__range">
               <label className="product-filter__range-field" htmlFor="price-min">
-                <span className="product-filter__prefix">$</span>
+                <span className="product-filter__prefix">{currencySymbol}</span>
                 <input
                   id="price-min"
                   type="number"
@@ -215,7 +218,7 @@ export default function ProductFilter({ defaultGender }) {
               </label>
               <span className="product-filter__range-divider">-</span>
               <label className="product-filter__range-field" htmlFor="price-max">
-                <span className="product-filter__prefix">$</span>
+                <span className="product-filter__prefix">{currencySymbol}</span>
                 <input
                   id="price-max"
                   type="number"

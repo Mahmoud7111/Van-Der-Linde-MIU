@@ -55,7 +55,7 @@ export default function RegisterPage() {
 
       await registerUser(payload)
       toast.success('Account created successfully!')
-      navigate('/login')
+      navigate('/account', { replace: true })
     } catch (error) {
       const message =
         error?.response?.data?.message ||

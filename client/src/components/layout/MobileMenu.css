@@ -131,6 +131,17 @@
   transition: all var(--transition-fast);
 }
 
+.mobile-menu__admin-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .mobile-menu__icon-control--cart {
   background: color-mix(in srgb, var(--color-gold) 18%, var(--color-white) 82%);
 }

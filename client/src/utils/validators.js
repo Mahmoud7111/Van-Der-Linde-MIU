@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Validation schemas built with Yup.
  *
  * What this file is:
@@ -59,9 +59,8 @@ export const registerSchema = yup.object({
     .string()
     .oneOf([yup.ref('password')], 'Passwords must match')
     .required('Please confirm your password'),
-})
 
-// Optional demographic fields.
+  // Optional demographic fields.
   dateOfBirth: yup.string().nullable(),
   gender: yup
     .string()

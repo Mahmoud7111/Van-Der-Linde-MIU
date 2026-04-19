@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Button from '@/components/common/Button'
@@ -12,6 +12,7 @@ import {
   FiZap, 
   FiClock 
 } from 'react-icons/fi'
+import { useCurrency } from '@/context/CurrencyContext'
 import { watchService } from '@/services/watchService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import './WatchQuizPage.css'
@@ -48,6 +49,7 @@ const QUESTIONS = [
 ]
 
 export default function WatchQuizPage() {
+  const { formatPrice } = useCurrency()
   const [step, setStep] = useState(0) // 0: welcome, 1-N: questions, N+1: results
   const [answers, setAnswers] = useState({})
   const [results, setResults] = useState([])
@@ -72,25 +74,26 @@ export default function WatchQuizPage() {
     
     try {
       const allWatches = await watchService.getAll()
+      const watchList = Array.isArray(allWatches) ? allWatches : []
       
       // Advanced scoring logic for better matching
-      const scoredWatches = allWatches.map(watch => {
+      const scoredWatches = watchList.map((watch) => {
         let score = 0
         
         // 1. Category match (High weight)
-        if (finalAnswers.category && watch.category === finalAnswers.category) {
+        if (finalAnswers.category && watch?.category === finalAnswers.category) {
           score += 10
         }
         
         // 2. Price match (Medium weight)
-        const price = watch.price
+        const price = Number(watch?.price) || 0
         if (finalAnswers.priceRange === 'low' && price < 1000) score += 5
         else if (finalAnswers.priceRange === 'mid' && price >= 1000 && price <= 2000) score += 5
         else if (finalAnswers.priceRange === 'high' && price > 2000) score += 5
         
         // 3. Style match (Medium weight)
-        const desc = watch.description.toLowerCase()
-        const name = watch.name.toLowerCase()
+        const desc = String(watch?.description || '').toLowerCase()
+        const name = String(watch?.name || '').toLowerCase()
         const style = finalAnswers.style
         
         if (style === 'minimalist') {
@@ -112,11 +115,11 @@ export default function WatchQuizPage() {
 
       // Sort by score and take top 3
       const filtered = scoredWatches
-        .filter(w => w.quizScore > 0)
+        .filter((watch) => watch.quizScore > 0)
         .sort((a, b) => b.quizScore - a.quizScore)
         .slice(0, 3)
 
-      setResults(filtered.length > 0 ? filtered : allWatches.slice(0, 3))
+      setResults(filtered.length > 0 ? filtered : watchList.slice(0, 3))
     } catch (error) {
       console.error("Failed to fetch results", error)
     } finally {
@@ -209,18 +212,21 @@ export default function WatchQuizPage() {
                 <div className="loader">Analyzing your style...</div>
               ) : (
                 <div className="results-grid">
-                  {results.map((watch) => (
-                    <div key={watch._id} className="result-card">
+                  {results.map((watch, index) => {
+                    const watchId = watch?._id || watch?.id
+
+                    return (
+                    <div key={watchId || `${watch?.name || 'watch'}-${index}`} className="result-card">
                       <img 
-                        src={resolveWatchProductImage(watch.images?.[0])} 
-                        alt={watch.name} 
+                        src={resolveWatchProductImage(watch?.images?.[0] || watch?.image)} 
+                        alt={watch?.name || 'Watch'} 
                         className="result-card__image" 
                       />
-                      <h3 className="result-card__name">{watch.name}</h3>
-                      <span className="result-card__price">${watch.price.toLocaleString()}</span>
-                      <Button to={`/watch/${watch._id}`} variant="outline" size="sm">View Details</Button>
+                      <h3 className="result-card__name">{watch?.name || 'Van Der Linde Watch'}</h3>
+                      <span className="result-card__price">{formatPrice(Number(watch?.price) || 0)}</span>
+                      <Button to={watchId ? `/watch/${watchId}` : '/shop'} variant="outline" size="sm">View Details</Button>
                     </div>
-                  ))}
+                  )})}
                 </div>
               )}
               

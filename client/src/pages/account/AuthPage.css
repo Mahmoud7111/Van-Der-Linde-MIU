@@ -361,3 +361,83 @@
     columns: 1;
   }
 }
+
+[data-theme='dark'] .auth-split {
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .auth-panel {
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .auth-tabs {
+  border-bottom-color: color-mix(in srgb, var(--color-gold) 26%, transparent 74%);
+}
+
+[data-theme='dark'] .auth-tab {
+  color: color-mix(in srgb, var(--color-dark) 70%, var(--color-muted) 30%);
+}
+
+[data-theme='dark'] .auth-tab:hover {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .auth-tab--active {
+  color: var(--color-gold);
+  border-bottom-color: var(--color-gold);
+}
+
+[data-theme='dark'] .auth-vdl-label,
+[data-theme='dark'] .auth-vdl-checkbox,
+[data-theme='dark'] .auth-vdl-benefits__title,
+[data-theme='dark'] .auth-vdl-benefits li,
+[data-theme='dark'] .auth-vdl-divider,
+[data-theme='dark'] .auth-vdl-row span {
+  color: color-mix(in srgb, var(--color-dark) 84%, var(--color-muted) 16%);
+}
+
+[data-theme='dark'] .auth-vdl-forgot {
+  color: var(--color-gold);
+}
+
+[data-theme='dark'] .auth-vdl-input,
+[data-theme='dark'] .auth-vdl-select {
+  background: color-mix(in srgb, var(--color-white) 7%, transparent 93%);
+  border-color: color-mix(in srgb, var(--color-gold) 28%, transparent 72%);
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .auth-vdl-input::placeholder {
+  color: color-mix(in srgb, var(--color-dark) 52%, var(--color-muted) 48%);
+}
+
+[data-theme='dark'] .auth-vdl-input:focus,
+[data-theme='dark'] .auth-vdl-select:focus {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
+  background: color-mix(in srgb, var(--color-white) 10%, transparent 90%);
+}
+
+[data-theme='dark'] .auth-vdl-eye {
+  color: color-mix(in srgb, var(--color-dark) 74%, var(--color-muted) 26%);
+}
+
+[data-theme='dark'] .auth-vdl-social {
+  border-color: color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
+  color: var(--color-dark);
+  background: color-mix(in srgb, var(--color-white) 4%, transparent 96%);
+}
+
+[data-theme='dark'] .auth-vdl-social:hover {
+  border-color: var(--color-gold);
+  background: color-mix(in srgb, var(--color-gold) 12%, transparent 88%);
+}
+
+[data-theme='dark'] .auth-vdl-benefits {
+  border-top-color: color-mix(in srgb, var(--color-gold) 20%, transparent 80%);
+}
+
+[data-theme='dark'] .auth-vdl-divider::before,
+[data-theme='dark'] .auth-vdl-divider::after {
+  background: color-mix(in srgb, var(--color-gold) 20%, transparent 80%);
+}

@@ -80,14 +80,14 @@ export default function AccountPage() {
               <article className="account-card">
                 <h2 className="account-card__title">Quick Actions</h2>
                 <div className="account-actions">
-                  <Link className="account-link-btn" to="/account/orders">
+                  <Link className="account-link-btn" to="/orders">
                     View Order History
                   </Link>
-                  <Link className="account-link-btn" to="/account/wishlist">
+                  <Link className="account-link-btn" to="/wishlist">
                     View Wishlist
                   </Link>
-                  <Link className="account-link-btn" to="/account/reset-password">
-                    Change Password
+                  <Link className="account-link-btn" to="/forgot-password">
+                    Request Password Reset
                   </Link>
                 </div>
 

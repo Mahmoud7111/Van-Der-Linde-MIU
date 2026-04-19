@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/common/Button'
 import { FiGift, FiPenTool, FiMail, FiCheckCircle, FiX, FiInfo, FiTruck } from 'react-icons/fi'
 import { useCurrency } from '@/context/CurrencyContext'
+import { watchService } from '@/services/watchService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
-import productsData from '@/data/products.json'
 import heritageImage from '@/assets/images/Photos/Heritage.avif'
 import craftImage from '@/assets/images/Photos/About.png'
 import goldFoilWrapImage from '@/assets/images/Photos/Gold Foil Wrap.png'
@@ -13,6 +13,7 @@ import './GiftingPage.css'
 
 export default function GiftingPage() {
   const { formatPrice } = useCurrency()
+  const [products, setProducts] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
 
@@ -22,6 +23,24 @@ export default function GiftingPage() {
   const [selectedCard, setSelectedCard] = useState(null)
   const [recipientName, setRecipientName] = useState('')
   const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    watchService.getAll()
+      .then((data) => {
+        if (!isMounted) return
+        setProducts(Array.isArray(data) ? data : [])
+      })
+      .catch(() => {
+        if (!isMounted) return
+        setProducts([])
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -177,7 +196,7 @@ export default function GiftingPage() {
                   <p className="step-subtitle"><FiInfo /> Choose the perfect watch for your gift</p>
 
                   <div className="scroll-container">
-                    {productsData.map(product => (
+                    {products.map(product => (
                       <div
                         key={product._id}
                         className={`selection-card ${selectedProduct?._id === product._id ? 'selected' : ''}`}

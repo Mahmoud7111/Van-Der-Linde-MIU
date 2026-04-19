@@ -49,7 +49,7 @@ const CATEGORY_BY_SLUG = {
 export default function CollectionDetailPage() {
   const data = useLoaderData()
   const collection = data?.collection
-  const watches = Array.isArray(data?.watches) ? data.watches : []
+  const watches = useMemo(() => (Array.isArray(data?.watches) ? data.watches : []), [data])
 
   const collectionName = collection?.name ?? 'Van Der Linde Collection'
   const collectionDescription =

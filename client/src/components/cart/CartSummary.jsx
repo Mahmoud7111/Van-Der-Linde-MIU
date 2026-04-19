@@ -1,12 +1,13 @@
-import React from 'react'
 import { cn } from '@/utils/cn'
+import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import './CartSummary.css'
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount)
+
+const toFiniteNumber = (value) => {
+  const numericValue = Number(value)
+  return Number.isFinite(numericValue) ? numericValue : 0
 }
+
 export default function CartSummary({
   subtotal,
   shippingCost = 0,
@@ -16,27 +17,37 @@ export default function CartSummary({
   onCheckout,
   className,
 }) {
+  const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
+
+  const safeSubtotal = toFiniteNumber(subtotal)
+  const safeShippingCost = toFiniteNumber(shippingCost)
+  const safeTax = toFiniteNumber(tax)
+  const safeTotal = toFiniteNumber(total)
+
   return (
-    <section className={cn('cart-summary', className)} aria-label="Order Summary">
-      <h2 className="cart-summary__title">Order Summary</h2>
+    <section className={cn('cart-summary', className)} aria-label={t('cart.summaryTitle')}>
+      <h2 className="cart-summary__title">{t('cart.summaryTitle')}</h2>
       <dl className="cart-summary__list">
         <div className="cart-summary__row">
-          <dt className="cart-summary__label">Subtotal</dt>
-          <dd className="cart-summary__value">{formatCurrency(subtotal)}</dd>
+          <dt className="cart-summary__label">{t('cart.subtotal')}</dt>
+          <dd className="cart-summary__value">{formatPrice(safeSubtotal)}</dd>
         </div>
         <div className="cart-summary__row">
-          <dt className="cart-summary__label">Estimated Shipping</dt>
+          <dt className="cart-summary__label">{t('cart.estimatedShipping')}</dt>
           <dd className="cart-summary__value">
-            {shippingCost === 0 ? 'Calculated at checkout' : formatCurrency(shippingCost)}
+            {safeShippingCost === 0
+              ? t('cart.calculatedAtCheckout')
+              : formatPrice(safeShippingCost)}
           </dd>
         </div>
         <div className="cart-summary__row">
-          <dt className="cart-summary__label">Estimated Tax</dt>
-          <dd className="cart-summary__value">{formatCurrency(tax)}</dd>
+          <dt className="cart-summary__label">{t('cart.estimatedTax')}</dt>
+          <dd className="cart-summary__value">{formatPrice(safeTax)}</dd>
         </div>
         <div className={cn('cart-summary__row', 'cart-summary__row--total')}>
-          <dt className="cart-summary__label">Total</dt>
-          <dd className="cart-summary__value">{formatCurrency(total)}</dd>
+          <dt className="cart-summary__label">{t('cart.total')}</dt>
+          <dd className="cart-summary__value">{formatPrice(safeTotal)}</dd>
         </div>
       </dl>
       <button
@@ -46,11 +57,9 @@ export default function CartSummary({
         disabled={isProcessing}
         aria-busy={isProcessing}
       >
-        {isProcessing ? 'Processing...' : 'Proceed to Checkout'}
+        {isProcessing ? t('cart.processing') : t('cart.proceedCheckout')}
       </button>
-      <p className="cart-summary__note">
-        Taxes and shipping costs may change during the checkout process based on your final shipping address.
-      </p>
+      <p className="cart-summary__note">{t('cart.checkoutNote')}</p>
     </section>
   )
 }

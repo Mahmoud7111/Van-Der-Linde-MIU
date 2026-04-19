@@ -20,9 +20,3 @@ export default function useDebounce(value, delay = 300) {
 
   return debouncedValue
 }
-    // Cancel pending update when value/delay changes or component unmounts.
-    return () => clearTimeout(timeoutId)
-  }, [value, normalizedDelay])
-
-  return debouncedValue
-}

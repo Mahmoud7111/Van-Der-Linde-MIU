@@ -75,6 +75,7 @@ const FAVORITE_SWITCH_COOLDOWN_MS = 1050
 const FAVORITE_SLOT_TRANSITION = { duration: 1.12, ease: [0.22, 1, 0.36, 1] }
 const FAVORITE_SLOT_EDGE_TRAVEL_PX = 340
 const FAVORITE_SLOT_STAGGER_DELAY_S = 0.08
+const COLLECTION_DRAG_CLICK_THRESHOLD_PX = 16
 
 // Product visuals shown in the quiz teaser rail.
 const QUIZ_WATCHES = [
@@ -111,6 +112,18 @@ const TRUST_STRIP_ITEMS = [
     subtitle: 'for all payments',
   },
 ]
+
+const getCollectionPath = (collection) => {
+  const providedSlug = typeof collection?.slug === 'string' ? collection.slug.trim() : ''
+  const fallbackSlug = String(collection?.name || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  const slug = providedSlug || fallbackSlug
+  return slug ? `/collections/${encodeURIComponent(slug)}` : '/collections'
+}
 
 export default function HomePage() {
   // ============================================================================
@@ -537,8 +550,20 @@ export default function HomePage() {
   // ── Pointer drag handlers ──────────────────────────────────────────────────
   // Supports mouse drag on desktop in addition to native touch/wheel scroll.
 
+  const isInteractivePointerTarget = (target) =>
+    target instanceof Element &&
+    Boolean(target.closest('a, button, input, textarea, select, label'))
+
   const handlePointerDown = (e) => {
     if (!scrollTrackRef.current) return
+    if (e.button !== 0) return
+
+    // Let links/buttons inside cards handle normal click behavior without drag interception.
+    if (isInteractivePointerTarget(e.target)) {
+      isDraggingRef.current = false
+      dragDistanceRef.current = 0
+      return
+    }
 
     // Capture pointer to keep drag active even if cursor leaves element bounds.
     isDraggingRef.current = true
@@ -562,12 +587,21 @@ export default function HomePage() {
     scrollTrackRef.current?.releasePointerCapture?.(e.pointerId)
   }
 
-  // Suppress link navigation if the pointer moved more than 8px — it was a drag, not a click.
+  // Suppress link navigation if drag distance crossed the click threshold.
   const handleCardClick = (e) => {
-    if (dragDistanceRef.current > 8) {
+    if (dragDistanceRef.current > COLLECTION_DRAG_CLICK_THRESHOLD_PX) {
       // Cancel click-through if user was dragging horizontally.
       e.preventDefault()
     }
+
+    // Ensure a previous drag never blocks future intentional taps/clicks.
+    dragDistanceRef.current = 0
+  }
+
+  const handleCardPointerDown = (e) => {
+    // Keep link interactions independent from the parent drag container.
+    e.stopPropagation()
+    dragDistanceRef.current = 0
   }
 
   // ============================================================================
@@ -756,7 +790,8 @@ export default function HomePage() {
                   <p className="home-collection-card__description">{collection.description}</p>
                   <Link
                     className="home-collection-card__link"
-                    to={`/collections/${collection.slug}`}
+                    to={getCollectionPath(collection)}
+                    onPointerDown={handleCardPointerDown}
                     onClick={handleCardClick}
                   >
                     Explore <span aria-hidden="true">→</span>

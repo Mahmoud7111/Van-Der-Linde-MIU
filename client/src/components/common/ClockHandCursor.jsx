@@ -1,21 +1,24 @@
 // @ts-nocheck
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { motion as Motion } from 'framer-motion'
 import './ClockHandCursor.css'
 
 export default function ClockHandCursor() {
   const [pos, setPos] = useState({ x: 0, y: 0 })
+  const [angleDeg, setAngleDeg] = useState(0)
   const [isClicking, setIsClicking] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
   const [reduced, setReduced] = useState(false)
 
-  const angleRef = useRef(0)
   const lastRef = useRef({ x: 0, y: 0 })
 
   const handleMove = useCallback((e) => {
     const dx = e.clientX - lastRef.current.x
     const dy = e.clientY - lastRef.current.y
-    if (dx || dy) angleRef.current = Math.atan2(dy, dx)
+    if (dx || dy) {
+      const nextAngleDeg = (Math.atan2(dy, dx) * 180) / Math.PI
+      setAngleDeg(nextAngleDeg)
+    }
     lastRef.current = { x: e.clientX, y: e.clientY }
     setPos({ x: e.clientX, y: e.clientY })
   }, [])
@@ -60,18 +63,17 @@ export default function ClockHandCursor() {
 
   if (reduced) return null
 
-  const angleDeg = (angleRef.current * 180) / Math.PI
   const hourDeg = angleDeg * 0.5
 
   return (
     <div className="clock-cursor" aria-hidden="true">
-      <motion.div
+      <Motion.div
         className="clock-cursor__center"
         style={{ translateX: '-50%', translateY: '-50%' }}
         animate={{ x: pos.x, y: pos.y }}
         transition={{ type: 'spring', damping: 24, stiffness: 320, mass: 0.6 }}
       >
-        <motion.div
+        <Motion.div
           className="clock-cursor__glow"
           style={{ translateX: '-50%', translateY: '-50%' }}
           animate={{
@@ -80,7 +82,7 @@ export default function ClockHandCursor() {
           }}
           transition={{ type: 'spring', damping: 30, stiffness: 200, mass: 0.8 }}
         />
-        <motion.div
+        <Motion.div
           className="clock-cursor__face"
           style={{ translateX: '-50%', translateY: '-50%' }}
           animate={{
@@ -89,7 +91,7 @@ export default function ClockHandCursor() {
           }}
           transition={{ type: 'spring', damping: 28, stiffness: 240, mass: 0.7 }}
         />
-        <motion.div
+        <Motion.div
           className="clock-cursor__hand clock-cursor__hand--minute"
           style={{ translateX: '0%', translateY: '-50%' }}
           animate={{
@@ -99,7 +101,7 @@ export default function ClockHandCursor() {
           }}
           transition={{ type: 'spring', damping: 22, stiffness: 260, mass: 0.6 }}
         />
-        <motion.div
+        <Motion.div
           className="clock-cursor__hand clock-cursor__hand--hour"
           style={{ translateX: '0%', translateY: '-50%' }}
           animate={{
@@ -109,7 +111,7 @@ export default function ClockHandCursor() {
           }}
           transition={{ type: 'spring', damping: 26, stiffness: 220, mass: 0.7 }}
         />
-        <motion.div
+        <Motion.div
           className="clock-cursor__pivot"
           style={{ translateX: '-50%', translateY: '-50%' }}
           animate={{
@@ -118,7 +120,7 @@ export default function ClockHandCursor() {
           }}
           transition={{ type: 'spring', damping: 25, stiffness: 350, mass: 0.5 }}
         />
-      </motion.div>
+      </Motion.div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion as Motion } from 'framer-motion'
 import { Link, useLoaderData } from 'react-router-dom'
 import { resolveCollectionCoverImage } from '@/utils/watchImageResolver'
 import './CollectionsPage.css'
@@ -15,27 +15,27 @@ export default function CollectionsPage() {
   return (
     <div className="collections-page">
       <header className="collections-page__header">
-        <motion.h1
+        <Motion.h1
           className="collections-page__title"
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
         >
           Our Collections
-        </motion.h1>
-        <motion.p
+        </Motion.h1>
+        <Motion.p
           className="collections-page__subtitle"
           initial="hidden"
           animate="visible"
           variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
         >
           Discover our curated ranges of exceptional timepieces, each defined by distinct design philosophies and masterful craftsmanship.
-        </motion.p>
+        </Motion.p>
       </header>
 
       <div className="collections-list">
         {collections.map((collection, index) => (
-          <motion.article
+          <Motion.article
             key={collection._id}
             className={`collection-row ${index % 2 === 1 ? 'collection-row--reverse' : ''}`}
             initial="hidden"
@@ -52,7 +52,7 @@ export default function CollectionsPage() {
             </div>
 
             <div className="collection-row__content">
-              <motion.div
+              <Motion.div
                 className="collection-row__text-wrap"
                 variants={{
                   hidden: { opacity: 0, x: index % 2 === 0 ? 30 : -30 },
@@ -65,9 +65,9 @@ export default function CollectionsPage() {
                   <span className="cta-line"></span>
                   View Collection
                 </Link>
-              </motion.div>
+              </Motion.div>
             </div>
-          </motion.article>
+          </Motion.article>
         ))}
       </div>
     </div>

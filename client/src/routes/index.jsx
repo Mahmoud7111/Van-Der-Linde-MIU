@@ -14,7 +14,7 @@
  * Imported by main.jsx and passed into <RouterProvider router={router} />.
  */
 import { lazy } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import PrivateRoute from '@/routes/PrivateRoute'
 import AdminRoute from '@/routes/AdminRoute'
@@ -30,8 +30,6 @@ import ErrorPage from '@/pages/info/ErrorPage.jsx'  // ← regular import, not l
 //! // With lazy — only the visited page's code downloads on first visit, other pages load when visited later.
 const HomePage = lazy(() => import('@/pages/home/HomePage.jsx'))
 const ShopPage = lazy(() => import('@/pages/shop/ShopPage.jsx'))
-const ShopMenPage = lazy(() => import('@/pages/shop/ShopMenPage.jsx'))
-const ShopWomenPage = lazy(() => import('@/pages/shop/ShopWomenPage.jsx'))
 const ProductDetailPage = lazy(() => import('@/pages/product/ProductDetailPage.jsx'))
 
 const CartPage = lazy(() => import('@/pages/cart/CartPage.jsx'))
@@ -117,13 +115,25 @@ export const router = createBrowserRouter([
       },
       {
         path: 'shop/men',
-        element: <ShopMenPage />,
-        loader: ({ request }) => watchService.getAll(getShopFilters(request, 'men')),
+        element: <CollectionDetailPage />,
+        loader: async () => {
+          const [collection, watches] = await Promise.all([
+            collectionService.getBySlug('mens-collection'),
+            watchService.getAll(),
+          ])
+          return { collection, watches }
+        },
       },
       {
         path: 'shop/women',
-        element: <ShopWomenPage />,
-        loader: ({ request }) => watchService.getAll(getShopFilters(request, 'women')),
+        element: <CollectionDetailPage />,
+        loader: async () => {
+          const [collection, watches] = await Promise.all([
+            collectionService.getBySlug('womens-collection'),
+            watchService.getAll(),
+          ])
+          return { collection, watches }
+        },
       },
       {
         path: 'watch/:id',
@@ -164,13 +174,17 @@ export const router = createBrowserRouter([
 
       // Account routes requiring authentication; loaders prefetch user order data before render.
       {
-        path: 'profile',
+        path: 'account',
         element: (
           <PrivateRoute>
             <AccountPage />
           </PrivateRoute>
         ),
         loader: () => orderService.getMyOrders(), // Account page shows recent orders, so we preload them here. In a real app, we might have a separate endpoint for just the recent orders summary to optimize this loader.
+      },
+      {
+        path: 'profile',
+        element: <Navigate to="/account" replace />,
       },
       {
         path: 'orders',
@@ -191,7 +205,11 @@ export const router = createBrowserRouter([
       },
 
       // Informational and marketing pages.
-      { path: 'collections', element: <CollectionsPage /> },
+      {
+        path: 'collections',
+        element: <CollectionsPage />,
+        loader: () => collectionService.getAll(),
+      },
       {
         path: 'collections/:slug',
         element: <CollectionDetailPage />,

@@ -37,12 +37,21 @@ const getStatusLabel = (status) => STATUS_LABELS[status] ?? 'Unknown'
 const getStatusTone = (status) => STATUS_TONES[status] ?? 'neutral'
 
 const getOrderTotal = (order) => {
-  const total = Number(order?.totalPrice)
+  const total = Number(order?.totalPrice ?? order?.totalAmount ?? order?.total)
   return Number.isFinite(total) ? total : 0
 }
 
-const getCustomerName = (order) => order?.shippingAddress?.fullName?.trim() || 'Guest'
-const getCustomerEmail = (order) => order?.shippingAddress?.email?.trim() || ''
+const getCustomerName = (order) =>
+  order?.shippingAddress?.fullName?.trim() ||
+  order?.shippingAddress?.name?.trim() ||
+  order?.shipping?.fullName?.trim() ||
+  order?.shipping?.name?.trim() ||
+  'Guest'
+
+const getCustomerEmail = (order) =>
+  order?.shippingAddress?.email?.trim() ||
+  order?.shipping?.email?.trim() ||
+  ''
 const getOrderDate = (order) => formatDate(order?.createdAt) || 'Date unavailable'
 const getItemCount = (order) => {
   const items = Array.isArray(order?.items) ? order.items : []
@@ -52,7 +61,7 @@ const getItemCount = (order) => {
 
 export default function ManageOrders() {
   const data = useLoaderData()
-  const orders = Array.isArray(data) ? data : []
+  const orders = useMemo(() => (Array.isArray(data) ? data : []), [data])
   const { formatPrice } = useCurrency()
   const [orderList, setOrderList] = useState(orders)
   const [search, setSearch] = useState('')
@@ -137,7 +146,7 @@ export default function ManageOrders() {
         type: 'success',
         message: `Order ${order._id} updated to ${getStatusLabel(nextStatus)}.`,
       })
-    } catch (error) {
+    } catch {
       setStatusMessage({ type: 'error', message: 'Unable to update order status right now.' })
     } finally {
       setIsUpdating(false)

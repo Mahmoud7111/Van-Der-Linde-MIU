@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiMail, FiCheckCircle } from 'react-icons/fi';
 import Button from './Button';
 import watchImage from '@/assets/images/Photos/About.png';
@@ -11,10 +11,13 @@ const EmailCaptureModal = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    // Show modal after 1 second for testing (removed localStorage check)
+    const hasSeenModal = localStorage.getItem('hasSeenEmailModal') === 'true';
+    if (hasSeenModal) return;
+
     const timer = setTimeout(() => {
       setIsOpen(true);
     }, 1000);
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -38,7 +41,7 @@ const EmailCaptureModal = () => {
     <AnimatePresence>
       {isOpen && (
         <div className="email-modal-overlay">
-          <motion.div
+          <Motion.div
             className="email-modal-container"
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -89,7 +92,7 @@ const EmailCaptureModal = () => {
                     </p>
                   </div>
                 ) : (
-                  <motion.div
+                  <Motion.div
                     className="email-modal-success"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -102,11 +105,11 @@ const EmailCaptureModal = () => {
                       An invitation has been sent to your inbox. Your journey with
                       Van Der Linde has officially begun.
                     </p>
-                  </motion.div>
+                  </Motion.div>
                 )}
               </div>
             </div>
-          </motion.div>
+          </Motion.div>
         </div>
       )}
     </AnimatePresence>

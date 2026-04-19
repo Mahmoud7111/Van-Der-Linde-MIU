@@ -42,6 +42,11 @@
 
 .checkout-steps__link {
   cursor: pointer;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
 }
 
 .checkout-steps__connector {

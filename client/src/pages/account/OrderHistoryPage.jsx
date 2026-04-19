@@ -79,7 +79,7 @@ export default function OrderHistoryPage() {
                           <td className="order-history-table__total">{formatPrice(total)}</td>
                           <td>
                             <div className="order-history-page__actions">
-                              <Link to={`/account/orders/${id}`} className="order-history-link-btn">
+                              <Link to={`/order-confirmation?orderId=${id}`} className="order-history-link-btn">
                                 Details
                               </Link>
                               <Link to="/contact" className="order-history-link-btn">

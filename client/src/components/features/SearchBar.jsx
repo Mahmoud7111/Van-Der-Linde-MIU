@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { FiSearch, FiX } from 'react-icons/fi'
 import { watchService } from '@/services/watchService'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import useDebounce from '@/hooks/useDebounce'
 import useClickOutside from '@/hooks/useClickOutside'
@@ -14,6 +15,7 @@ export default function SearchBar() {
   const [results, setResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
 
   const searchRef = useRef(null)
   const inputRef = useRef(null)
@@ -29,16 +31,16 @@ export default function SearchBar() {
   // Trigger search logic whenever the debounced query changes
   useEffect(() => {
     if (!debouncedQuery.trim()) {
-      setResults([])
       return
     }
 
-    setIsLoading(true)
     watchService.getAll({ search: debouncedQuery })
       .then((data) => setResults(data))
       .catch((err) => console.error("Search failed:", err))
       .finally(() => setIsLoading(false))
   }, [debouncedQuery])
+
+  const visibleResults = debouncedQuery.trim() ? results : []
 
   const toggleSearch = () => {
     setIsOpen(!isOpen)
@@ -51,6 +53,14 @@ export default function SearchBar() {
   const closeSearch = () => {
     setIsOpen(false)
     setQuery('')
+    setResults([])
+    setIsLoading(false)
+  }
+
+  const handleQueryChange = (event) => {
+    const nextQuery = event.target.value
+    setQuery(nextQuery)
+    setIsLoading(Boolean(nextQuery.trim()))
   }
 
   return (
@@ -59,7 +69,7 @@ export default function SearchBar() {
         type="button" 
         className="header__icon-control" 
         onClick={toggleSearch}
-        aria-label="Toggle search"
+        aria-label={t('header.toggleSearch')}
       >
         <FiSearch aria-hidden="true" />
       </button>
@@ -71,12 +81,12 @@ export default function SearchBar() {
             ref={inputRef}
             type="text"
             className="search-bar__input"
-            placeholder="Search watches..."
+            placeholder={t('header.search')}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={handleQueryChange}
           />
           {query && (
-            <button className="search-bar__clear" onClick={() => setQuery('')} aria-label="Clear search">
+            <button className="search-bar__clear" onClick={closeSearch} aria-label={t('search.clear')}>
               <FiX aria-hidden="true" />
             </button>
           )}
@@ -84,15 +94,15 @@ export default function SearchBar() {
 
         {isOpen && query.trim() !== '' && (
           <div className="search-bar__results">
-            {isLoading && <div className="search-bar__loading">Searching...</div>}
+            {isLoading && <div className="search-bar__loading">{t('search.loading')}</div>}
             
-            {!isLoading && results.length === 0 && (
-              <div className="search-bar__no-results">No watches found for "{query}"</div>
+            {!isLoading && visibleResults.length === 0 && (
+              <div className="search-bar__no-results">{t('search.noResults', { query })}</div>
             )}
 
-            {!isLoading && results.length > 0 && (
+            {!isLoading && visibleResults.length > 0 && (
               <ul className="search-bar__results-list">
-                {results.slice(0, 5).map((watch) => (
+                {visibleResults.slice(0, 5).map((watch) => (
                   <li key={watch._id} className="search-bar__result-item">
                     <Link to={`/watch/${watch._id}`} className="search-bar__result-link" onClick={closeSearch}>
                       <img src={resolveWatchProductImage(watch.images?.[0])} alt={watch.name} className="search-bar__result-image" />
@@ -103,10 +113,10 @@ export default function SearchBar() {
                     </Link>
                   </li>
                 ))}
-                {results.length > 5 && (
+                {visibleResults.length > 5 && (
                   <li className="search-bar__result-more">
                     <Link to={`/shop?search=${encodeURIComponent(query)}`} onClick={closeSearch}>
-                      View all {results.length} results
+                      {t('search.viewAllResults', { count: visibleResults.length })}
                     </Link>
                   </li>
                 )}
