@@ -1,0 +1,30 @@
+.order-status-stepper {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.order-status-stepper .step {
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.order-status-stepper .step:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+
+.order-status-stepper .step.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+
+.order-status-stepper .step:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -65,7 +65,9 @@
   justify-content: flex-end;
   gap: var(--space-md);
   padding:
-    calc(var(--space-2xl) + var(--space-xl)) clamp(var(--space-lg), 6vw, var(--space-2xl)) clamp(var(--space-xl), 10vh, calc(var(--space-2xl) + var(--space-xl)));
+    calc(var(--space-2xl) + var(--space-xl))
+    clamp(var(--space-lg), 6vw, var(--space-2xl))
+    clamp(var(--space-xl), 10vh, calc(var(--space-2xl) + var(--space-xl)));
 }
 
 .home-hero__title {
@@ -101,49 +103,20 @@
 }
 
 .home-hero__cta {
-  /* Shared visual language with other rounded gold-outline CTAs on the page. */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  /* Hero keeps only page-specific reveal timing; visual style comes from Button.css. */
   margin-top: var(--space-sm);
-  padding: var(--space-sm) var(--space-xl);
-  border: 1px solid var(--color-gold);
-  border-radius: var(--radius-full);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-gold);
-  background: transparent;
-  cursor: pointer;
   opacity: 0;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal),
-    transform var(--transition-fast);
   animation: fadeIn var(--transition-slow) 0.9s forwards;
 }
 
-.home-hero__cta:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  transform: translateY(-1px);
-}
-
-.home-hero__cta:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: var(--space-xs);
-}
-
 @media (max-width: 768px) {
-
   /* Hero type and spacing scale down for handheld screens. */
   .home-hero__content {
     gap: var(--space-sm);
     padding:
-      calc(var(--space-2xl) + var(--space-lg)) var(--space-md) calc(var(--space-2xl) + var(--space-md));
+      calc(var(--space-2xl) + var(--space-lg))
+      var(--space-md)
+      calc(var(--space-2xl) + var(--space-md));
   }
 
   .home-hero__title {
@@ -166,9 +139,11 @@
 .home-trust {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg,
-      color-mix(in srgb, var(--color-surface) 97%, var(--color-white) 3%) 0%,
-      var(--color-surface) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface) 97%, var(--color-white) 3%) 0%,
+    var(--color-surface) 100%
+  );
   border-top: 1px solid color-mix(in srgb, var(--color-gold) 22%, transparent 78%);
   border-bottom: 1px solid color-mix(in srgb, var(--color-gold) 22%, transparent 78%);
 }
@@ -240,9 +215,11 @@
 
 [data-theme='dark'] .home-trust {
   /* Dark theme retains marquee structure while deepening the surface tint. */
-  background: linear-gradient(180deg,
-      color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
-      color-mix(in srgb, var(--color-surface) 90%, #000 10%) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
+    color-mix(in srgb, var(--color-surface) 90%, #000 10%) 100%
+  );
 }
 
 [data-theme='dark'] .home-trust__icon {
@@ -259,7 +236,6 @@
 }
 
 @media (max-width: 1024px) {
-
   /* Medium screens increase marquee item footprint for readability. */
   .home-trust__item {
     min-width: clamp(230px, 40vw, 320px);
@@ -271,7 +247,6 @@
 }
 
 @media (max-width: 768px) {
-
   /* Mobile shifts to near full-width marquee cards to reduce visual crowding. */
   .home-trust__item {
     min-width: 84vw;
@@ -292,7 +267,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   /* Accessibility: replace motion loop with static grouped layout. */
   .home-trust__track {
     animation: none;
@@ -332,9 +306,11 @@
   */
 
   position: relative;
-  background: linear-gradient(90deg,
-      color-mix(in srgb, var(--color-surface) 94%, var(--color-dark) 6%) 0%,
-      var(--color-surface) 100%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-surface) 94%, var(--color-dark) 6%) 0%,
+    var(--color-surface) 100%
+  );
 }
 
 /*
@@ -380,11 +356,16 @@
   justify-content: center;
   gap: var(--space-lg);
   padding:
-    var(--space-2xl) var(--space-xl) var(--space-2xl) clamp(var(--space-lg), 4vw, var(--space-2xl));
-  background: linear-gradient(90deg,
-      var(--color-surface) 0%,
-      var(--color-surface) 72%,
-      color-mix(in srgb, var(--color-surface) 0%, transparent 100%) 100%);
+    var(--space-2xl)
+    var(--space-xl)
+    var(--space-2xl)
+    clamp(var(--space-lg), 4vw, var(--space-2xl));
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-surface) 72%,
+    color-mix(in srgb, var(--color-surface) 0%, transparent 100%) 100%
+  );
   opacity: 0;
   transform: translateY(var(--space-md));
 }
@@ -519,7 +500,10 @@
   flex-shrink: 0;
   gap: var(--space-md);
   padding:
-    var(--space-2xl) var(--space-xl) var(--space-2xl) calc(43vw - var(--intro-width));
+    var(--space-2xl)
+    var(--space-xl)
+    var(--space-2xl)
+    calc(43vw - var(--intro-width));
   /* positions first card start close to the center-right composition target */
 }
 
@@ -534,7 +518,8 @@
   overflow: hidden;
   background: var(--color-dark);
   border: 1px solid color-mix(in srgb, var(--color-white) 20%, transparent 80%);
-  box-shadow: 0 var(--space-lg) var(--space-xl) color-mix(in srgb, var(--color-dark) 34%, transparent 66%);
+  box-shadow: 0 var(--space-lg) var(--space-xl)
+    color-mix(in srgb, var(--color-dark) 34%, transparent 66%);
   opacity: 0;
   transform: translateY(var(--space-md));
   transition:
@@ -553,7 +538,8 @@
   transform: translateY(calc(var(--space-xs) * -1));
   border-color: color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
   box-shadow:
-    0 calc(var(--space-xl) + var(--space-sm)) calc(var(--space-2xl) + var(--space-sm)) color-mix(in srgb, var(--color-dark) 42%, transparent 58%);
+    0 calc(var(--space-xl) + var(--space-sm)) calc(var(--space-2xl) + var(--space-sm))
+    color-mix(in srgb, var(--color-dark) 42%, transparent 58%);
 }
 
 .home-collection-card__media {
@@ -576,10 +562,12 @@
 .home-collection-card__shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-      color-mix(in srgb, var(--color-dark) 8%, transparent 92%) 0%,
-      color-mix(in srgb, var(--color-dark) 22%, transparent 78%) 52%,
-      color-mix(in srgb, var(--color-dark) 78%, transparent 22%) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-dark) 8%, transparent 92%) 0%,
+    color-mix(in srgb, var(--color-dark) 22%, transparent 78%) 52%,
+    color-mix(in srgb, var(--color-dark) 78%, transparent 22%) 100%
+  );
 }
 
 .home-collection-card__content {
@@ -654,16 +642,20 @@
 
 [data-theme='dark'] .home-collections {
   /* Dark-mode palette adjustment only; geometry and behavior stay identical. */
-  background: linear-gradient(90deg,
-      color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
-      var(--color-surface) 100%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
+    var(--color-surface) 100%
+  );
 }
 
 [data-theme='dark'] .home-collections__intro {
-  background: linear-gradient(90deg,
-      var(--color-surface) 0%,
-      var(--color-surface) 72%,
-      color-mix(in srgb, var(--color-surface) 0%, transparent 100%) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-surface) 72%,
+    color-mix(in srgb, var(--color-surface) 0%, transparent 100%) 100%
+  );
 }
 
 [data-theme='dark'] .home-collections__title {
@@ -673,7 +665,6 @@
 /* ── Responsive ────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
-
   /* Collections converts from sticky+horizontal desktop pattern to vertical-first mobile flow. */
   .home-collections {
     --card-width: 80vw;
@@ -710,7 +701,6 @@
     display: none;
   }
 }
-
 /* ── END COLLECTIONS ── */
 
 /* ── SHOP FAVORITES ─────────────────────────────────────────────────────── */
@@ -731,7 +721,9 @@
   align-items: center;
   box-sizing: border-box;
   padding:
-    clamp(1.2rem, 4.6vh, 3.1rem) clamp(var(--space-md), 4vw, var(--space-2xl)) clamp(1.1rem, 4.2vh, 2.8rem);
+    clamp(1.2rem, 4.6vh, 3.1rem)
+    clamp(var(--space-md), 4vw, var(--space-2xl))
+    clamp(1.1rem, 4.2vh, 2.8rem);
   background: var(--color-surface);
 }
 
@@ -770,25 +762,9 @@
 }
 
 .home-favorites__nav {
-  /* Uses the same circular control motif as collections/reviews arrows. */
+  /* Keeps only stage layering and placement hooks for shared button variants. */
   position: relative;
-  width: 2.6rem;
-  height: 2.6rem;
-  border: 1px solid color-mix(in srgb, var(--color-gold) 42%, transparent 58%);
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--color-white) 88%, transparent 12%);
-  color: var(--color-gold);
-  font-size: 1rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal),
-    transform var(--transition-fast);
 }
 
 .home-favorites__nav--left {
@@ -801,20 +777,6 @@
   grid-column: 3;
   grid-row: 1;
   justify-self: end;
-}
-
-.home-favorites__nav:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  border-color: var(--color-gold);
-  transform: translateY(-1px);
-}
-
-.home-favorites__nav:disabled,
-.home-favorites__nav:disabled:hover {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
 }
 
 .home-favorites__rail {
@@ -843,33 +805,21 @@
   will-change: transform, opacity;
 }
 
+.home-favorites__watch-slot--left {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 .home-favorites__watch-slot--center {
   /* The active card stays on top so scaled neighbors never overlap it visually. */
+  grid-column: 2;
+  grid-row: 1;
   z-index: 4;
 }
 
-.home-favorites__watch-link {
-  /* Works for both side preview buttons and center detail link. */
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: end center;
-  align-self: stretch;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  transition:
-    opacity var(--transition-normal),
-    transform var(--transition-normal);
-}
-
-.home-favorites__watch-link:disabled {
-  pointer-events: none;
-  cursor: default;
-}
-
-.home-favorites__watch-link--center:hover {
-  transform: translateY(-5px) scale(1.04);
+.home-favorites__watch-slot--right {
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .home-favorites__watch-image {
@@ -950,55 +900,6 @@
   align-items: center;
   gap: 0.55rem;
 }
-
-.home-favorites__action {
-  min-width: 170px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.62rem 1.05rem;
-  border: 1px solid color-mix(in srgb, var(--color-gold) 35%, transparent 65%);
-  border-radius: var(--radius-full);
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal),
-    transform var(--transition-fast);
-}
-
-.home-favorites__action:hover {
-  transform: translateX(var(--space-xs));
-}
-
-.home-favorites__action--solid {
-  background: color-mix(in srgb, var(--color-dark) 95%, #000 5%);
-  color: var(--color-white);
-  border-color: color-mix(in srgb, var(--color-dark) 80%, transparent 20%);
-}
-
-.home-favorites__action--solid:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  border-color: var(--color-gold);
-}
-
-.home-favorites__action--ghost {
-  background: transparent;
-  color: color-mix(in srgb, var(--color-dark) 86%, var(--color-gold) 14%);
-  border-color: color-mix(in srgb, var(--color-dark) 35%, transparent 65%);
-}
-
-.home-favorites__action--ghost:hover {
-  background: var(--color-gold);
-  color: var(--color-dark);
-  border-color: var(--color-gold);
-}
-
 [data-theme='dark'] .home-favorites {
   /* Keep surface token parity between light/dark themes for this section shell. */
   background: var(--color-surface);
@@ -1022,34 +923,7 @@
   filter: drop-shadow(0 14px 24px color-mix(in srgb, #000 42%, transparent 58%));
 }
 
-[data-theme='dark'] .home-favorites__nav {
-  background: color-mix(in srgb, var(--color-white) 88%, transparent 12%);
-  color: var(--color-gold);
-  border-color: color-mix(in srgb, var(--color-gold) 42%, transparent 58%);
-}
-
-[data-theme='dark'] .home-favorites__nav:disabled,
-[data-theme='dark'] .home-favorites__nav:disabled:hover {
-  background: color-mix(in srgb, var(--color-white) 88%, transparent 12%);
-  color: var(--color-gold);
-  border-color: color-mix(in srgb, var(--color-gold) 42%, transparent 58%);
-}
-
-[data-theme='dark'] .home-favorites__action--solid {
-  /* Keep CTA hierarchy unchanged between themes for muscle-memory consistency. */
-  background: color-mix(in srgb, var(--color-dark) 95%, #000 5%);
-  color: var(--color-white);
-  border-color: color-mix(in srgb, var(--color-dark) 80%, transparent 20%);
-}
-
-[data-theme='dark'] .home-favorites__action--ghost {
-  background: transparent;
-  color: color-mix(in srgb, var(--color-dark) 88%, var(--color-gold) 12%);
-  border-color: color-mix(in srgb, var(--color-dark) 35%, transparent 65%);
-}
-
 @media (max-width: 1024px) {
-
   /* Keep the center-focused composition on tablets without clipping side watches. */
   .home-favorites__stage {
     gap: 0.6rem clamp(0.7rem, 2.4vw, 1.5rem);
@@ -1067,14 +941,15 @@
 }
 
 @media (max-width: 768px) {
-
   /* Mobile keeps the same 3-slot logic but compresses slot dimensions and control spacing. */
   .home-favorites {
     height: auto;
     max-height: none;
     min-height: auto;
     padding:
-      var(--space-xl) var(--space-md) calc(var(--space-xl) + var(--space-sm));
+      var(--space-xl)
+      var(--space-md)
+      calc(var(--space-xl) + var(--space-sm));
   }
 
   .home-favorites__inner {
@@ -1165,33 +1040,34 @@
   inset: 0;
   z-index: 0;
   background-size: cover;
-  background-position: center;
+  background-position: center 22%;
+  background-repeat: no-repeat;
   transform: scale(1);
   will-change: transform;
 }
 
 .home-gender__panel--him .home-gender__image {
-  /* Replace with real background-image in production */
-  background: linear-gradient(135deg,
-      color-mix(in srgb, var(--color-dark) 90%, #000 10%),
-      color-mix(in srgb, var(--color-dark) 70%, var(--color-muted) 30%));
+  /* Preserve image source from JSX and tune focal crop per panel. */
+  background-color: color-mix(in srgb, var(--color-dark) 86%, #000 14%);
+  background-position: 58% 20%;
 }
 
 .home-gender__panel--her .home-gender__image {
-  /* Replace with real background-image in production */
-  background: linear-gradient(135deg,
-      color-mix(in srgb, var(--color-muted) 40%, var(--color-surface) 60%),
-      color-mix(in srgb, var(--color-gold) 15%, var(--color-surface) 85%));
+  /* Preserve image source from JSX and tune focal crop per panel. */
+  background-color: color-mix(in srgb, var(--color-surface) 85%, var(--color-gold) 15%);
+  background-position: 50% 18%;
 }
 
 .home-gender__overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg,
-      color-mix(in srgb, var(--color-dark) 0%, transparent 100%) 0%,
-      color-mix(in srgb, var(--color-dark) 24%, transparent 76%) 40%,
-      color-mix(in srgb, var(--color-dark) 82%, transparent 18%) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-dark) 0%, transparent 100%) 0%,
+    color-mix(in srgb, var(--color-dark) 24%, transparent 76%) 40%,
+    color-mix(in srgb, var(--color-dark) 82%, transparent 18%) 100%
+  );
 }
 
 .home-gender__content {
@@ -1278,23 +1154,86 @@
 
 [data-theme='dark'] .home-gender__overlay {
   /* Slightly denser overlay in dark mode helps text contrast on both panels. */
-  background: linear-gradient(180deg,
-      color-mix(in srgb, var(--color-dark) 0%, transparent 100%) 0%,
-      color-mix(in srgb, var(--color-dark) 28%, transparent 72%) 36%,
-      color-mix(in srgb, var(--color-dark) 88%, transparent 12%) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-dark) 0%, transparent 100%) 0%,
+    color-mix(in srgb, var(--color-dark) 28%, transparent 72%) 36%,
+    color-mix(in srgb, var(--color-dark) 88%, transparent 12%) 100%
+  );
+}
+
+@media (max-width: 1024px) {
+  /* Tablet keeps side-by-side layout while relaxing crop and tightening type scale. */
+  .home-gender {
+    min-height: clamp(700px, 92vh, 920px);
+    height: clamp(700px, 92vh, 920px);
+  }
+
+  .home-gender__content {
+    padding: clamp(1.4rem, 3.5vw, 2.4rem);
+  }
+
+  .home-gender__title {
+    font-size: clamp(1.9rem, 4.8vw, 3rem);
+    letter-spacing: 0.14em;
+  }
+
+  .home-gender__subtitle {
+    margin-bottom: 1.25rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.17em;
+  }
+
+  .home-gender__panel--him .home-gender__image {
+    background-position: 56% 16%;
+  }
+
+  .home-gender__panel--her .home-gender__image {
+    background-position: 50% 14%;
+  }
 }
 
 @media (max-width: 768px) {
-
   /* Gender split stacks vertically on mobile to avoid squeezed panel typography. */
   .home-gender {
     flex-direction: column;
     height: auto;
+    min-height: auto;
   }
 
   .home-gender__panel {
     width: 100%;
-    height: clamp(420px, 65vh, 600px);
+    min-height: clamp(340px, 55svh, 460px);
+    height: clamp(360px, 60svh, 520px);
+  }
+
+  .home-gender__content {
+    padding: clamp(1.1rem, 5vw, 1.8rem);
+  }
+
+  .home-gender__title {
+    font-size: clamp(1.7rem, 9.2vw, 2.4rem);
+    letter-spacing: 0.12em;
+  }
+
+  .home-gender__subtitle {
+    margin: 0 0 1rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .home-gender__cta {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+  }
+
+  .home-gender__panel--him .home-gender__image {
+    background-position: 50% 14%;
+  }
+
+  .home-gender__panel--her .home-gender__image {
+    background-position: 50% 12%;
   }
 
   .home-gender__divider {
@@ -1314,14 +1253,19 @@
   position: relative;
   overflow: hidden;
   padding:
-    clamp(var(--space-xl), 7vw, calc(var(--space-2xl) + var(--space-sm))) clamp(var(--space-md), 5vw, var(--space-2xl));
+    clamp(var(--space-xl), 7vw, calc(var(--space-2xl) + var(--space-sm)))
+    clamp(var(--space-md), 5vw, var(--space-2xl));
   background:
-    radial-gradient(120% 85% at 50% 0%,
+    radial-gradient(
+      120% 85% at 50% 0%,
       color-mix(in srgb, var(--color-gold) 12%, transparent 88%) 0%,
-      transparent 58%),
-    linear-gradient(180deg,
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
       color-mix(in srgb, var(--color-surface) 97%, var(--color-white) 3%) 0%,
-      var(--color-surface) 100%);
+      var(--color-surface) 100%
+    );
 }
 
 .home-quiz__inner {
@@ -1426,12 +1370,16 @@
 [data-theme='dark'] .home-quiz {
   /* Dark mode keeps same content rhythm while reducing highlight intensity. */
   background:
-    radial-gradient(120% 85% at 50% 0%,
+    radial-gradient(
+      120% 85% at 50% 0%,
       color-mix(in srgb, var(--color-gold) 10%, transparent 90%) 0%,
-      transparent 58%),
-    linear-gradient(180deg,
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
       color-mix(in srgb, var(--color-surface) 96%, #000000 4%) 0%,
-      color-mix(in srgb, var(--color-surface) 92%, #000000 8%) 100%);
+      color-mix(in srgb, var(--color-surface) 92%, #000000 8%) 100%
+    );
 }
 
 [data-theme='dark'] .home-quiz__title,
@@ -1449,7 +1397,6 @@
 }
 
 @media (max-width: 1024px) {
-
   /* Tablet: widen quiz rail items to maintain visual cadence. */
   .home-quiz__rail {
     gap: var(--space-md);
@@ -1461,11 +1408,11 @@
 }
 
 @media (max-width: 768px) {
-
   /* Mobile: tighten typography and preserve readable watch thumbnails. */
   .home-quiz {
     padding:
-      clamp(var(--space-xl), 10vw, var(--space-2xl)) var(--space-md);
+      clamp(var(--space-xl), 10vw, var(--space-2xl))
+      var(--space-md);
   }
 
   .home-quiz__title {
@@ -1509,16 +1456,22 @@
   width: 100%;
   min-height: 100vh;
   background:
-    radial-gradient(90% 90% at 12% 18%,
+    radial-gradient(
+      90% 90% at 12% 18%,
       color-mix(in srgb, var(--color-gold) 12%, transparent 88%) 0%,
-      transparent 56%),
-    radial-gradient(80% 70% at 88% 82%,
+      transparent 56%
+    ),
+    radial-gradient(
+      80% 70% at 88% 82%,
       color-mix(in srgb, var(--color-gold) 9%, transparent 91%) 0%,
-      transparent 64%),
-    linear-gradient(120deg,
+      transparent 64%
+    ),
+    linear-gradient(
+      120deg,
       color-mix(in srgb, var(--color-dark) 94%, #000 6%) 0%,
       var(--color-dark) 48%,
-      color-mix(in srgb, var(--color-dark) 90%, #000 10%) 100%);
+      color-mix(in srgb, var(--color-dark) 90%, #000 10%) 100%
+    );
 }
 
 .home-configurator__inner {
@@ -1675,9 +1628,11 @@
   width: 62%;
   height: 62%;
   border-radius: 50%;
-  background: radial-gradient(circle,
-      color-mix(in srgb, var(--color-gold) 18%, transparent 82%) 0%,
-      transparent 70%);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-gold) 18%, transparent 82%) 0%,
+    transparent 70%
+  );
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -1703,7 +1658,6 @@
 }
 
 @keyframes float {
-
   /* Slow vertical drift to add life to the static 3D viewer frame. */
   0%,
   100% {
@@ -1718,34 +1672,27 @@
 [data-theme='dark'] .home-configurator {
   /* Preserve dramatic contrast in dark mode while aligning with global tokens. */
   background:
-    radial-gradient(90% 90% at 12% 18%,
+    radial-gradient(
+      90% 90% at 12% 18%,
       color-mix(in srgb, var(--color-gold) 10%, transparent 90%) 0%,
-      transparent 56%),
-    linear-gradient(120deg,
+      transparent 56%
+    ),
+    linear-gradient(
+      120deg,
       color-mix(in srgb, var(--color-surface) 96%, #000 4%) 0%,
-      color-mix(in srgb, var(--color-surface) 90%, #000 10%) 100%);
+      color-mix(in srgb, var(--color-surface) 90%, #000 10%) 100%
+    );
 }
 
-[data-theme='dark'] .home-configurator__label {
-  color: var(--color-gold);
-}
-
-[data-theme='dark'] .home-configurator__title {
-  color: #ffffff;
-  -webkit-text-stroke-color: var(--color-gold);
-}
-
-[data-theme='dark'] .home-configurator__desc {
-  color: #ffffff;
-  opacity: 0.9;
-}
-
-[data-theme='dark'] .home-configurator__cta-row a {
-  color: #ffffff;
+@media (max-width: 1024px) and (min-width: 769px) {
+  /* Tablet keeps two columns but centers the left narrative block vertically. */
+  .home-configurator__left {
+    justify-content: center;
+    padding-bottom: 0;
+  }
 }
 
 @media (max-width: 768px) {
-
   /* Mobile converts configurator into a single-column narrative + model stack. */
   .home-configurator__inner {
     grid-template-columns: 1fr;
@@ -1784,7 +1731,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   /* Accessibility: disable decorative floating animation. */
   .home-configurator__model-wrap {
     animation: none;
@@ -1803,14 +1749,19 @@
   position: relative;
   overflow: hidden;
   padding:
-    clamp(var(--space-xl), 7vw, calc(var(--space-2xl) + var(--space-sm))) clamp(var(--space-md), 5vw, var(--space-2xl));
+    clamp(var(--space-xl), 7vw, calc(var(--space-2xl) + var(--space-sm)))
+    clamp(var(--space-md), 5vw, var(--space-2xl));
   background:
-    radial-gradient(130% 90% at 5% 10%,
+    radial-gradient(
+      130% 90% at 5% 10%,
       color-mix(in srgb, var(--color-gold) 12%, transparent 88%) 0%,
-      transparent 56%),
-    linear-gradient(180deg,
+      transparent 56%
+    ),
+    linear-gradient(
+      180deg,
       color-mix(in srgb, var(--color-surface) 96%, var(--color-white) 4%) 0%,
-      var(--color-surface) 100%);
+      var(--color-surface) 100%
+    );
 }
 
 .home-reviews__inner {
@@ -1938,51 +1889,6 @@
   gap: var(--space-md);
 }
 
-.home-reviews__arrow {
-  width: 2.3rem;
-  height: 2.3rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--color-gold) 48%, transparent 52%);
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--color-white) 82%, transparent 18%);
-  color: color-mix(in srgb, var(--color-dark) 84%, var(--color-gold) 16%);
-  font-size: 1rem;
-  cursor: pointer;
-  transition:
-    transform var(--transition-normal),
-    background-color var(--transition-normal),
-    color var(--transition-normal),
-    border-color var(--transition-normal);
-}
-
-.home-reviews__arrow:hover {
-  transform: translateY(-1px);
-  background: var(--color-gold);
-  border-color: var(--color-gold);
-  color: var(--color-dark);
-}
-
-.home-reviews__dot {
-  width: 3px;
-  height: 12px;
-  border: 0;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--color-dark) 26%, transparent 74%);
-  cursor: pointer;
-  transition: transform var(--transition-fast), background-color var(--transition-normal);
-}
-
-.home-reviews__dot:hover {
-  transform: scale(1.08);
-}
-
-.home-reviews__dot--active {
-  transform: scale(1.1);
-  background: var(--color-gold);
-}
-
 .home-reviews__dots {
   display: inline-flex;
   align-items: center;
@@ -1992,12 +1898,16 @@
 [data-theme='dark'] .home-reviews {
   /* Dark mode keeps card hierarchy but deepens section canvas and shadows. */
   background:
-    radial-gradient(130% 90% at 5% 10%,
+    radial-gradient(
+      130% 90% at 5% 10%,
       color-mix(in srgb, var(--color-gold) 10%, transparent 90%) 0%,
-      transparent 56%),
-    linear-gradient(180deg,
+      transparent 56%
+    ),
+    linear-gradient(
+      180deg,
       color-mix(in srgb, var(--color-surface) 96%, #000000 4%) 0%,
-      color-mix(in srgb, var(--color-surface) 92%, #000000 8%) 100%);
+      color-mix(in srgb, var(--color-surface) 92%, #000000 8%) 100%
+    );
 }
 
 [data-theme='dark'] .home-reviews__title {
@@ -2014,25 +1924,11 @@
 [data-theme='dark'] .home-review-card__name,
 [data-theme='dark'] .home-review-card__quote,
 [data-theme='dark'] .home-review-card__location,
-[data-theme='dark'] .home-review-card__avatar,
-[data-theme='dark'] .home-reviews__arrow {
+[data-theme='dark'] .home-review-card__avatar {
   color: var(--color-dark);
 }
 
-[data-theme='dark'] .home-reviews__arrow {
-  background: color-mix(in srgb, var(--color-white) 8%, transparent 92%);
-}
-
-[data-theme='dark'] .home-reviews__dot {
-  background: color-mix(in srgb, var(--color-dark) 30%, transparent 70%);
-}
-
-[data-theme='dark'] .home-reviews__dot--active {
-  background: var(--color-gold);
-}
-
 @media (max-width: 1024px) {
-
   /* Tablet: reduce card columns from 3 to 2 for better reading width. */
   .home-reviews__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2040,11 +1936,11 @@
 }
 
 @media (max-width: 768px) {
-
   /* Mobile: single-column reviews with compact navigation controls. */
   .home-reviews {
     padding:
-      clamp(var(--space-xl), 11vw, var(--space-2xl)) var(--space-md);
+      clamp(var(--space-xl), 11vw, var(--space-2xl))
+      var(--space-md);
   }
 
   .home-reviews__title {
@@ -2088,7 +1984,9 @@
   justify-content: center;
   overflow: hidden;
   padding:
-    0 clamp(var(--space-md), 4vw, var(--space-2xl)) clamp(var(--space-xl), 9vh, calc(var(--space-2xl) + var(--space-sm)));
+    0
+    clamp(var(--space-md), 4vw, var(--space-2xl))
+    clamp(var(--space-xl), 9vh, calc(var(--space-2xl) + var(--space-sm)));
   background: var(--home-heritage-bg) center center / cover no-repeat;
 }
 
@@ -2196,12 +2094,9 @@
 }
 
 [data-theme='dark'] .home-heritage__eyebrow,
-[data-theme='dark'] .home-heritage__title {
-  color: var(--color-gold);
-}
-
+[data-theme='dark'] .home-heritage__title,
 [data-theme='dark'] .home-heritage__lead {
-  color: #ffffff;
+  color: color-mix(in srgb, var(--color-white) 88%, var(--color-gold) 12%);
 }
 
 [data-theme='dark'] .home-heritage__cta {
@@ -2215,7 +2110,6 @@
 }
 
 @media (max-width: 768px) {
-
   /* Heritage content panel scales down while preserving type hierarchy. */
   .home-heritage {
     min-height: clamp(520px, 88vh, 760px);

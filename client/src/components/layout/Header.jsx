@@ -157,6 +157,24 @@ export default function Header() {
                 <FiUser aria-hidden="true" />
               </NavLink>
 
+              <NavLink
+                aria-label="Admin dashboard"
+                className="header__icon-control header__icon-control--admin"
+                to="/admin"
+              >
+                <svg
+                  className="header__admin-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M3 18h18" />
+                  <path d="M4 18l2-9 6 6 6-8 2 11" />
+                  <circle cx="6" cy="7" r="1.4" />
+                  <circle cx="12" cy="11" r="1.2" />
+                  <circle cx="18" cy="5" r="1.4" />
+                </svg>
+              </NavLink>
+
               <NavLink aria-label="Wishlist" className={iconLinkClassName} to="/wishlist">
                 <FiHeart aria-hidden="true" />
               </NavLink>

@@ -17,12 +17,16 @@
  * 
  * ! routes/index.jsx tells the router: put all pages inside Layout
  */
-import { Suspense } from 'react'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 import { Outlet, useNavigation } from 'react-router-dom'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import EmailCaptureModal from '@/components/common/EmailCaptureModal'
 import ScrollToTop from '@/routes/ScrollToTop'
+import PageTransition from '@/components/common/PageTransition'
+import ClockHandCursor from '@/components/common/ClockHandCursor'
+import LoadingScreen from '@/components/common/LoadingScreen'
+import './Layout.css'
 
 // Root layout component for all application routes.
 export default function Layout() {
@@ -31,37 +35,29 @@ export default function Layout() {
 
   // Loading bar appears whenever router is fetching/transitioning to a new route.
   const isLoading = navigation.state === 'loading'
+  const [isSuspending, setIsSuspending] = useState(false)
+
+  const handleSuspenseStart = useCallback(() => setIsSuspending(true), [])
+  const handleSuspenseEnd = useCallback(() => setIsSuspending(false), [])
+
+  const showLoader = isLoading || isSuspending
 
   return (
     <>
       {/* Render once globally; no visible UI, only scroll reset side effect. */}
       <ScrollToTop />
 
+      <ClockHandCursor />
+      <LoadingScreen isVisible={showLoader} />
+
       {/* Shared top navigation across all pages. */}
       <Header />
-
-      {/* Route transition bar provides immediate feedback while loaders are resolving. */}
-      {isLoading && (   //! The Style Might Be Changed Later, but for now it's a simple fixed bar at the top of the page that animates while loading. */}
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '2px',
-            background: 'var(--color-gold)',
-            animation: 'loadingBar 1.2s linear infinite',
-            zIndex: 'var(--z-toast)',
-          }}
-          aria-hidden="true"
-        />
-      )}
 
       {/*
         Main content area expands to fill vertical space.
         `flex: 1` keeps footer pushed to the bottom on short pages.
       */}
-      <main style={{ flex: 1 }}>
+      <main className="layout__main">
         {/*
           Suspense is required because route elements are lazy-loaded with React.lazy in routes/index.jsx.
           Until the chunk resolves, this fallback is shown.
@@ -72,9 +68,16 @@ export default function Layout() {
           // Suspense provides that fallback while waiting for the lazy-loaded page to be ready
         */}
          {/* The fallback can be a spinner, skeleton, or simple "Loading..." text. It shows while the lazy-loaded page component is being fetched and rendered for the first time. Once the page component is ready, Suspense will render it in place of the fallback. */}
-        <Suspense fallback={<div style={{ padding: 'var(--space-lg)' }}>Loading...</div>}>
-          {/* Outlet is where createBrowserRouter renders matched child routes. */}
-          <Outlet /> {/*//! - current page renders HERE, Outlet is the placeholder for the current route's page component. It will render whatever page component matches the current URL, as defined in routes/index.jsx. Because those page components are lazy-loaded, they will trigger the Suspense fallback until they are ready. */}
+        <Suspense
+          fallback={
+            <SuspenseFallback onStart={handleSuspenseStart} onEnd={handleSuspenseEnd} />
+          }
+        >
+          {/* PageTransition wraps routed content to apply shared route enter animation. */}
+          <PageTransition>
+            {/* Outlet is where createBrowserRouter renders matched child routes. */}
+            <Outlet /> {/*//! - current page renders HERE, Outlet is the placeholder for the current route's page component. It will render whatever page component matches the current URL, as defined in routes/index.jsx. Because those page components are lazy-loaded, they will trigger the Suspense fallback until they are ready. */}
+          </PageTransition>
         </Suspense> 
       </main>
 
@@ -85,4 +88,13 @@ export default function Layout() {
       <EmailCaptureModal />
     </>
   )
+}
+
+function SuspenseFallback({ onStart, onEnd }) {
+  useEffect(() => {
+    onStart()
+    return () => onEnd()
+  }, [onStart, onEnd])
+
+  return null
 }

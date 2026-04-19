@@ -1,0 +1,25 @@
+/*
+  EmptyState stylesheet.
+
+  Styles the reusable EmptyState component for displaying messages when no data is available.
+*/
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.empty-state__title {
+  margin-bottom: var(--space-md);
+  font-size: 1.5rem;
+}
+
+.empty-state__description {
+  color: var(--color-muted);
+  margin-bottom: var(--space-lg);
+}
