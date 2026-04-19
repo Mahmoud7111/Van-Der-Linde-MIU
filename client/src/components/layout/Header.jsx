@@ -17,8 +17,10 @@
  * MobileMenu, sticky behavior, and responsive interactions) is owned by Dev 5.
  */
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import useClickOutside from '@/hooks/useClickOutside'
 import { useScrollDirection } from '@/hooks/useScrollDirection'
 import { useState } from 'react'
 import MobileMenu from './MobileMenu'
@@ -55,6 +57,28 @@ export default function Header() {
 
   // Reads authenticated user; full header uses this for account menu, logout, and role links.
   const { user } = useAuth()
+    const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false)
+  const authMenuRef = useRef(null)
+
+  const closeAuthMenu = useCallback(() => {
+    setIsAuthMenuOpen(false)
+  }, [])
+
+  useClickOutside(authMenuRef, closeAuthMenu, isAuthMenuOpen)
+
+  useEffect(() => {
+    if (!isAuthMenuOpen) return undefined
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        closeAuthMenu()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [closeAuthMenu, isAuthMenuOpen])
+
 
   // NavLink className helpers keep JSX clean and apply active state via CSS modifier.
   const navLinkClassName = ({ isActive }) =>
@@ -66,9 +90,7 @@ export default function Header() {
   const cartLinkClassName = ({ isActive }) =>
     `header__icon-control header__icon-control--cart${isActive ? ' header__icon-control--active' : ''}`
 
-  // Account destination and label depend on auth state.
-  const accountPath = user ? '/profile' : '/login'
-  const accountLabel = user ? 'Profile' : 'Login'
+  
 
   return (
     <header
@@ -152,8 +174,8 @@ export default function Header() {
                 </span>
               </NavLink>
 
-              {/* Account link destination switches based on auth state */}
-              <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
+               {/* User icon always opens account page. */}
+              <NavLink aria-label="Account" className={iconLinkClassName} to="/account">
                 <FiUser aria-hidden="true" />
               </NavLink>
 
@@ -180,11 +202,53 @@ export default function Header() {
               </NavLink>
 
 
-              {/* Language, wishlist, theme, currency — wired up by Dev 5 in full implementation */}
-              <button type="button" className="header__icon-control" aria-label="Language selector">
-                <FiGlobe aria-hidden="true" />
-              </button>
+              {/* Globe icon now exposes authentication links for guest users. */}
+              <div className="header__auth-menu" ref={authMenuRef}>
+                <button
+                  type="button"
+                  className="header__icon-control"
+                  aria-label="Authentication menu"
+                  aria-expanded={isAuthMenuOpen}
+                  aria-haspopup="menu"
+                  onClick={() => setIsAuthMenuOpen((prev) => !prev)}
+                >
+                  <FiGlobe aria-hidden="true" />
+                </button>
 
+                {isAuthMenuOpen && (
+                  <div className="header__auth-dropdown" role="menu" aria-label="Authentication links">
+                    {!user ? (
+                      <>
+                        <Link
+                          to="/login"
+                          className="header__auth-link"
+                          role="menuitem"
+                          onClick={closeAuthMenu}
+                        >
+                          Login
+                        </Link>
+                        <Link
+                          to="/register"
+                          className="header__auth-link"
+                          role="menuitem"
+                          onClick={closeAuthMenu}
+                        >
+                          Register
+                        </Link>
+                      </>
+                    ) : (
+                      <Link
+                        to="/account"
+                        className="header__auth-link"
+                        role="menuitem"
+                        onClick={closeAuthMenu}
+                      >
+                        My Account
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </div>
               <DarkModeToggle className="header__icon-control" />
 
               <CurrencySwitcher className="header__icon-control" />
