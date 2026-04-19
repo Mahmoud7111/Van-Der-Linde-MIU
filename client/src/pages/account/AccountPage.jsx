@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext'
 import PageTransition from '@/components/common/PageTransition'
 import Badge from '@/components/common/Badge'
 import Button from '@/components/common/Button'
-import '@/styles/AuthPage.css'
+import './AccountPage.css'
 const { user, logout } = useAuth()
 
   const fullName = useMemo(() => {
