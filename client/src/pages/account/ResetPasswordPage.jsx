@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -10,7 +11,9 @@ import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import authHeroImage from '@/assets/Models/Dutch Van Der Linde1.png'
 import './AuthPage.css'
-const navigate = useNavigate()
+
+export default function ResetPasswordPage() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -184,7 +187,7 @@ const navigate = useNavigate()
               </Button>
             </form>
 
-            <div className="auth-vdl-row" style={{ marginTop: '14px' }}>
+            <div className="auth-vdl-row auth-vdl-row--cta">
               <Link to="/login" className="auth-vdl-forgot">
                 Back to Sign In
               </Link>
