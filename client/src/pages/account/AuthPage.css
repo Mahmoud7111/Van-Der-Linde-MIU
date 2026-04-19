@@ -1,3 +1,4 @@
+/* Use same project font everywhere */
 .auth-split,
 .auth-split * {
   font-family: inherit !important;
@@ -10,7 +11,7 @@
   background: #f3efe7;
 }
 
-/* Left image side */
+
 .auth-hero {
   position: relative;
   overflow: hidden;
@@ -201,6 +202,10 @@
   justify-content: space-between;
   margin-top: 2px;
   gap: 10px;
+}
+
+.auth-vdl-row--cta {
+  margin-top: 14px;
 }
 
 .auth-vdl-checkbox {
