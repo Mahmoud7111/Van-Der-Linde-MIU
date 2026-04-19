@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from 'react-router-dom'
 import PageTransition from '@/components/common/PageTransition'
 import Badge from '@/components/common/Badge'
-import '@/styles/AuthPage.css'
+import './OrderHistoryPage.css'
 
 function formatDate(dateString) {
   if (!dateString) return '-'
