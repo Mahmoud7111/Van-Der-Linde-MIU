@@ -65,7 +65,7 @@ export const registerSchema = yup.object({
   dateOfBirth: yup.string().nullable(),
   gender: yup
     .string()
-    .oneOf(['', 'male', 'female', 'prefer_not_to_say'], 'Please select a valid option')
+    .oneOf(['', 'male', 'female'], 'Please select a valid option')
     .nullable(),
   interests: yup.array().of(yup.string()).default([]),
   // Terms agreement is required before account creation.
