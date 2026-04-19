@@ -1,22 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react'
 
-/**
- * useDebounce(value, delay) → debouncedValue
- * 
- * A hook that delays updating a value until the user stops changing it for N milliseconds.
- */
-export default function useDebounce(value, delay) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+
+export default function useDebounce(value, delay = 300) {
+  const normalizedDelay = Number.isFinite(Number(delay))
+    ? Math.max(0, Number(delay))
+    : 300
+
+  const [debouncedValue, setDebouncedValue] = useState(value)
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+    const timeoutId = setTimeout(() => {
+      setDebouncedValue(value)
+    }, normalizedDelay)
 
     return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
+      clearTimeout(timeoutId)
+    }
+  }, [value, normalizedDelay])
 
-  return debouncedValue;
+  return debouncedValue
+}
+    // Cancel pending update when value/delay changes or component unmounts.
+    return () => clearTimeout(timeoutId)
+  }, [value, normalizedDelay])
+
+  return debouncedValue
 }
