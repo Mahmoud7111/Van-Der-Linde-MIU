@@ -1,102 +1,164 @@
-import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
-import PageTransition from '@/components/common/PageTransition'
-import Badge from '@/components/common/Badge'
-import Button from '@/components/common/Button'
-import '@/styles/AuthPage.css'
-const { user, logout } = useAuth()
+.account-page {
+  min-height: 100vh;
+  background: var(--color-surface);
+  padding: 28px 16px 40px;
+}
 
-  const fullName = useMemo(() => {
-    const first = user?.firstName || ''
-    const last = user?.lastName || ''
-    const combined = `${first} ${last}`.trim()
-    return combined || user?.name || 'Guest User'
-  }, [user])
+.account-page__container {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+}
 
-  const initials = useMemo(() => {
-    const source = fullName.split(' ').filter(Boolean)
-    if (!source.length) return 'GU'
-    return source
-      .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase() || '')
-      .join('')
-  }, [fullName])
+.account-page__header {
+  background: color-mix(in srgb, var(--color-surface) 70%, var(--color-white) 30%);
+  border: 1px solid var(--color-border);
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
 
-  const handleLogout = async () => {
-    await logout()
+.account-page__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-gold);
+  color: var(--color-dark);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.account-page__eyebrow {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  font-weight: 700;
+}
+
+.account-page__name {
+  margin: 4px 0;
+  font-size: clamp(22px, 2.2vw, 32px);
+  color: var(--color-dark);
+}
+
+.account-page__email {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-dark) 58%, var(--color-muted) 42%);
+  font-size: 14px;
+}
+
+.account-page__badges {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.account-page__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.account-card {
+  background: color-mix(in srgb, var(--color-surface) 70%, var(--color-white) 30%);
+  border: 1px solid var(--color-border);
+  padding: 20px;
+}
+
+.account-card__title {
+  margin: 0 0 14px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-dark) 58%, var(--color-muted) 42%);
+}
+
+.account-card__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: 8px;
+  font-size: 13px;
+}
+
+.account-row span {
+  color: var(--color-muted);
+}
+
+.account-row strong {
+  color: var(--color-dark);
+}
+
+.account-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.account-card--guest {
+  margin-top: 16px;
+}
+
+.account-card__guest-copy {
+  margin: 0 0 14px;
+  color: color-mix(in srgb, var(--color-dark) 58%, var(--color-muted) 42%);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.account-actions--guest {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.account-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: color-mix(in srgb, var(--color-dark) 70%, var(--color-muted) 30%);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  background: transparent;
+}
+
+.account-link-btn:hover {
+  background: color-mix(in srgb, var(--color-surface) 70%, var(--color-white) 30%);
+  border-color: var(--color-gold-light);
+}
+
+.account-logout {
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .account-page__grid {
+    grid-template-columns: 1fr;
   }
 
-  return (
-    <PageTransition>
-      <section className="account-page">
-        <div className="account-page__container">
-          <header className="account-page__header">
-            <div className="account-page__avatar" aria-hidden="true">
-              {initials}
-            </div>
+  .account-actions--guest {
+    grid-template-columns: 1fr;
+  }
+}
 
-            <div className="account-page__identity">
-              <p className="account-page__eyebrow">My Account</p>
-              <h1 className="account-page__name">{fullName}</h1>
-              <p className="account-page__email">{user?.email || 'No email provided'}</p>
-              <div className="account-page__badges">
-                <Badge variant="primary">Member</Badge>
-                {user?.isVerified ? (
-                  <Badge variant="success">Verified</Badge>
-                ) : (
-                  <Badge variant="warning">Unverified</Badge>
-                )}
-              </div>
-            </div>
-          </header>
-
-          <div className="account-page__grid">
-            <article className="account-card">
-              <h2 className="account-card__title">Profile Details</h2>
-              <div className="account-card__rows">
-                <div className="account-row">
-                  <span>First Name</span>
-                  <strong>{user?.firstName || '-'}</strong>
-                </div>
-                <div className="account-row">
-                  <span>Last Name</span>
-                  <strong>{user?.lastName || '-'}</strong>
-                </div>
-                <div className="account-row">
-                  <span>Email</span>
-                  <strong>{user?.email || '-'}</strong>
-                </div>
-                <div className="account-row">
-                  <span>Phone</span>
-                  <strong>{user?.phone || '-'}</strong>
-                </div>
-              </div>
-            </article>
-
-            <article className="account-card">
-              <h2 className="account-card__title">Quick Actions</h2>
-              <div className="account-actions">
-                <Link className="account-link-btn" to="/account/orders">
-                  View Order History
-                </Link>
-                <Link className="account-link-btn" to="/account/wishlist">
-                  View Wishlist
-                </Link>
-                <Link className="account-link-btn" to="/account/reset-password">
-                  Change Password
-                </Link>
-              </div>
-
-              <div className="account-logout">
-                <Button type="button" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-    </PageTransition>
-  )
+@media (max-width: 700px) {
+  .account-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
