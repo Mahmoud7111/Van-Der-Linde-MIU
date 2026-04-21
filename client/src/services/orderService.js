@@ -13,6 +13,14 @@
  * - Admin orders pages call getAll(), getById(), and updateStatus().
  * - Checkout flow calls create().
  */
+
+/*
+axiosInstance is used only for real API calls, not for the mock data.
+The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
+and will not use it if USE_MOCK is true (mock mode).
+*/
+
+
 import api from '@/api/axiosInstance'
 import { USE_MOCK } from '@/utils/constants'
 import orders from '@/data/orders.json'
