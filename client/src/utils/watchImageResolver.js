@@ -1,5 +1,4 @@
 import collectionFallbackImage from '@/assets/images/notFound1.svg'
-import watchRolexLadyDatejust from '@/assets/images/Watches/Rolex Lady Datejust.png'
 
 /**
  * Watch image resolution helpers.

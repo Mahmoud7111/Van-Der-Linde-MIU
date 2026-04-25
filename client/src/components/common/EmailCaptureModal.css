@@ -255,8 +255,8 @@
   color: var(--color-gold);
 }
 
-@media (max-width: 850px) and (data-theme='dark') {
-  .email-modal-close-btn {
-     color: white; /* Maintain white on mobile overlay */
+@media (max-width: 850px) {
+  [data-theme='dark'] .email-modal-close-btn {
+    color: white; /* Maintain white on mobile overlay */
   }
 }
