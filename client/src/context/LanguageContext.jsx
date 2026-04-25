@@ -14,10 +14,21 @@
  * Header controls, translated labels, and any page/component that needs `t()`.
  */
 import { createContext, useContext, useEffect, useState } from 'react'
+import { LANGUAGES } from '@/utils/constants'
 import translations from '@/data/translations.json'
 
 // Create language context for current lang code and translation actions.
 const LanguageContext = createContext(null)
+
+const languageCodes = new Set([
+  ...LANGUAGES.map((item) => item.code),
+  ...Object.keys(translations || {}),
+])
+
+const normalizeLanguage = (value) => {
+  const normalizedValue = String(value || '').trim().toLowerCase()
+  return languageCodes.has(normalizedValue) ? normalizedValue : 'en'
+}
 
 // Apply language direction and lang metadata on the document root.
 const applyHtmlLanguageAttributes = (langCode) => {
@@ -34,7 +45,7 @@ const applyHtmlLanguageAttributes = (langCode) => {
 // Provider exposes language state and localization helpers.
 export const LanguageProvider = ({ children }) => {
   // Restore saved language or default to English.
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'en')
+  const [lang, setLang] = useState(() => normalizeLanguage(localStorage.getItem('lang')))
 
   useEffect(() => {
     // Keep document attributes synchronized whenever current language changes.
@@ -42,12 +53,22 @@ export const LanguageProvider = ({ children }) => {
   }, [lang])
 
   // Translation helper used by UI text: returns active language value, then English fallback, then raw key.
-  const t = (key) => translations?.[lang]?.[key] || translations?.en?.[key] || key
+  const t = (key, params = {}) => {
+    const template = translations?.[lang]?.[key] || translations?.en?.[key] || key
+
+    if (typeof template !== 'string') {
+      return String(template ?? key)
+    }
+
+    return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_match, token) =>
+      Object.prototype.hasOwnProperty.call(params, token) ? String(params[token]) : ''
+    )
+  }
 
   // Language setter updates React state, persistence, and document attributes in one action.
   const handleSetLang = (nextLang) => {
     // Normalize unsupported values back to English to avoid undefined translation maps.
-    const normalizedLang = nextLang === 'ar' ? 'ar' : 'en'
+    const normalizedLang = normalizeLanguage(nextLang)
 
     // Update React state so consumers re-render with new language.
     setLang(normalizedLang)

@@ -13,6 +13,13 @@
  * (for example `/collections` and `/collections/:slug`).
  */
 
+/*
+axiosInstance is used only for real API calls, not for the mock data.
+The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
+and will not use it if USE_MOCK is true (mock mode).
+*/
+
+
 //! Still in development
 
 import api from '@/api/axiosInstance'

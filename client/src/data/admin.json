@@ -1,0 +1,13 @@
+{
+  "_id": "admin-001",
+  "name": "Van Der Linde Admin",
+  "email": "admin@vanderlindewatches.com",
+  "password": "admin123",
+  "role": "admin",
+  "address": {
+    "street": "90 Luxury Avenue",
+    "city": "Cairo",
+    "country": "Egypt",
+    "zip": "11371"
+  }
+}

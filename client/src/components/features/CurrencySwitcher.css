@@ -1,0 +1,31 @@
+/**
+ * CurrencySwitcher.css
+ * 
+ * Provides structural styling and animations for the currency toggler.
+ * Inherits visual styling (colors, borders) from the parent classes.
+ */
+
+.currency-switcher__icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1em;
+  /* Animate whenever the content changes by forcing a re-render if needed,
+     though for a simple text change we just rely on instant swap. */
+}
+
+/* Add a subtle pop animation when clicked */
+.currency-switcher:active .currency-switcher__icon-wrapper {
+  transform: scale(0.85);
+  transition: transform 0.1s ease-out;
+}
+
+.currency-switcher__icon-wrapper {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.currency-switcher__label {
+  white-space: pre-wrap; /* Preserve the spacing from the string injection */
+  font-weight: 500;
+}

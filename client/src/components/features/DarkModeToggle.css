@@ -1,0 +1,41 @@
+/**
+ * DarkModeToggle.css
+ * 
+ * Provides micro-animations for the theme switch icons.
+ * General layout styling is handled by the parent container (Header/MobileMenu)
+ * passing in classNames like .header__icon-control.
+ */
+
+ .dark-mode-toggle__icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode-toggle__icon {
+  /* Trigger a subtle spin and scale animation each time the icon mounts */
+  animation: theme-icon-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Unique color tint for the sun icon */
+.dark-mode-toggle__icon--sun {
+  color: var(--color-gold);
+}
+
+@keyframes theme-icon-in {
+  0% {
+    transform: rotate(-90deg) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.dark-mode-toggle__label {
+  white-space: pre-wrap; /* Preserve the spacing from the string injection */
+}

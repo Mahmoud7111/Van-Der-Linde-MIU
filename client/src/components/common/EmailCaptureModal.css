@@ -1,0 +1,223 @@
+.email-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: calc(var(--z-cursor, 1200) - 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.email-modal-container {
+  background: var(--color-surface);
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+}
+
+.email-modal-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-dark);
+  z-index: 10;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.email-modal-close-btn:hover {
+  opacity: 1;
+}
+
+.email-modal-layout {
+  display: flex;
+  min-height: 550px;
+}
+
+/* Image Side */
+.email-modal-image-side {
+  flex: 1.2;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+.email-modal-image-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+  transition: transform 10s ease;
+}
+
+.email-modal-container:hover .email-modal-image-side img {
+  transform: scale(1.1);
+}
+
+.image-overlay-text {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  color: #fff;
+}
+
+.image-overlay-text span {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-gold);
+  padding-bottom: 0.5rem;
+}
+
+/* Content Side */
+.email-modal-content-side {
+  flex: 1;
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--color-surface);
+}
+
+.email-modal-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-gold);
+  margin-bottom: 1.5rem;
+}
+
+.email-modal-content-side h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  color: var(--color-dark);
+}
+
+.email-modal-content-side p {
+  color: var(--color-muted);
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  font-size: 1.05rem;
+}
+
+.email-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.email-field-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.email-field-icon {
+  position: absolute;
+  left: 1.2rem;
+  color: var(--color-gold);
+  font-size: 1.1rem;
+}
+
+.email-capture-input {
+  width: 100%;
+  padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+  background: var(--color-white);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.email-capture-input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 5px 15px rgba(201, 168, 76, 0.1);
+}
+
+.email-submit-btn {
+  width: 100%;
+  padding: 1.2rem !important;
+}
+
+.email-modal-disclaimer {
+  font-size: 0.75rem !important;
+  margin-top: 1.5rem;
+  opacity: 0.6;
+  text-align: center;
+}
+
+/* Success State */
+.email-modal-success {
+  text-align: center;
+}
+
+.success-icon-wrapper {
+  font-size: 4rem;
+  color: var(--color-gold);
+  margin-bottom: 2rem;
+}
+
+.email-modal-success h3 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* Dark Mode Overrides */
+[data-theme='dark'] .email-modal-container {
+  background: var(--color-dark);
+}
+
+[data-theme='dark'] .email-modal-content-side {
+  background: var(--color-dark);
+}
+
+[data-theme='dark'] .email-modal-content-side h2,
+[data-theme='dark'] .email-modal-close-btn {
+  color: #000000;
+}
+
+[data-theme='dark'] .email-modal-content-side p {
+  color: #1a1a1a;
+}
+
+[data-theme='dark'] .email-capture-input {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+  .email-modal-layout {
+    flex-direction: column;
+  }
+
+  .email-modal-image-side {
+    height: 250px;
+    flex: none;
+  }
+
+  .email-modal-content-side {
+    padding: 2.5rem;
+  }
+
+  .email-modal-content-side h2 {
+    font-size: 2rem;
+  }
+}

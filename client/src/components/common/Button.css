@@ -55,6 +55,14 @@
 }
 .btn--secondary:hover { background: var(--color-gold); color: var(--color-dark); transform: translateY(-1px); }
 
+/* Alias used by legacy pages for outline-styled actions. */
+.btn--outline {
+  background: transparent;
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+}
+.btn--outline:hover { background: var(--color-gold); color: var(--color-dark); transform: translateY(-1px); }
+
 /* Minimal utility button style. */
 .btn--ghost {
   background: transparent;

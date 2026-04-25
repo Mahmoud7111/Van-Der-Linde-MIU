@@ -1684,6 +1684,16 @@
     );
 }
 
+[data-theme='dark'] .home-configurator__label,
+[data-theme='dark'] .home-configurator__title {
+  color: var(--color-gold);
+}
+
+[data-theme='dark'] .home-configurator__desc,
+[data-theme='dark'] .home-configurator__cta-row a {
+  color: #ffffff;
+}
+
 @media (max-width: 1024px) and (min-width: 769px) {
   /* Tablet keeps two columns but centers the left narrative block vertically. */
   .home-configurator__left {
@@ -2094,19 +2104,28 @@
 }
 
 [data-theme='dark'] .home-heritage__eyebrow,
-[data-theme='dark'] .home-heritage__title,
+[data-theme='dark'] .home-heritage__title {
+  color: var(--color-gold);
+}
+
 [data-theme='dark'] .home-heritage__lead {
-  color: color-mix(in srgb, var(--color-white) 88%, var(--color-gold) 12%);
+  color: #ffffff;
 }
 
 [data-theme='dark'] .home-heritage__cta {
-  color: color-mix(in srgb, var(--color-white) 86%, var(--color-gold) 14%);
+  color: #ffffff;
   border-color: color-mix(in srgb, var(--color-gold) 60%, transparent 40%);
-  background: color-mix(in srgb, var(--color-dark) 70%, transparent 30%);
+  background: color-mix(in srgb, #ffffff 10%, transparent 90%);
 }
 
 [data-theme='dark'] .home-heritage__cta:hover {
-  color: var(--color-white);
+  color: #1a1a1a;
+}
+
+[data-theme='dark'] .home-heritage__eyebrow,
+[data-theme='dark'] .home-heritage__title,
+[data-theme='dark'] .home-heritage__lead {
+  text-shadow: 0 8px 24px color-mix(in srgb, #000000 56%, transparent 44%);
 }
 
 @media (max-width: 768px) {
