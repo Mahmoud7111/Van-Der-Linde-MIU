@@ -1,8 +1,10 @@
-﻿import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FaInstagram, FaTiktok, FaFacebook, FaTwitter } from 'react-icons/fa'
+import { useTheme } from '@/context/ThemeContext'
 import './Footer.css'
 
 export default function Footer() {
+  const { theme } = useTheme()
   const shopLinks = [
     { to: '/shop', label: 'All Watches' },
     { to: '/collections', label: 'Collections' },
@@ -41,7 +43,11 @@ export default function Footer() {
         {/* ── LEFT: BRAND + DESCRIPTION ── */}
         <div className="footer__brand-section">
           <Link to="/" className="footer__logo-link" aria-label="Van Der Linde home">
-            <img src="/Logo2.png" alt="Van Der Linde" className="footer__logo-image" />
+            <img 
+              src={theme === 'dark' ? "/Logo2Dark.png" : "/Logo2.png"} 
+              alt="Van Der Linde" 
+              className="footer__logo-image" 
+            />
           </Link>
           <p className="footer__description">
             Discover your signature timepiece with Van Der Linde&apos;s curated collection of premium watches.

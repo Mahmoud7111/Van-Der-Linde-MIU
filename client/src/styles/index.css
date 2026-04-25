@@ -1,4 +1,4 @@
-﻿/*
+/*
   File: index.css
 
   What this file is:
@@ -35,6 +35,7 @@
 }
 
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+
   html,
   body,
   body * {
@@ -68,6 +69,13 @@ dd {
   Document body baseline:
   Applies brand body typeface, global colors, and smooth text rendering.
 */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 body {
   min-height: 100vh;
   font-family: var(--font-body);

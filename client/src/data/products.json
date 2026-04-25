@@ -40,16 +40,16 @@
   },
   {
     "_id": "watch-004",
-    "name": "Van Der Linde Heritage Slim",
-    "brand": "Van Der Linde",
-    "gender": "men",
-    "price": 1199,
-    "category": "classic",
-    "rating": 4.7,
-    "numReviews": 81,
-    "stock": 19,
-    "images": ["@/assets/images/Watches/Rolex GMT-Master II.png"],
-    "description": "A timeless minimalist case with Roman markers and refined leather strap inspired by mid-century watchmaking."
+    "name": "Panthère de Cartier",
+    "brand": "Cartier",
+    "gender": "women",
+    "price": 4600,
+    "category": "luxury",
+    "rating": 4.9,
+    "numReviews": 112,
+    "stock": 5,
+    "images": ["@/assets/images/Watches/Panthère de Cartier.png"],
+    "description": "A truly wild design. Doubling as a piece of jewelry, the Panthère de Cartier watch is one of the most distinctive Cartier designs."
   },
   {
     "_id": "watch-005",
