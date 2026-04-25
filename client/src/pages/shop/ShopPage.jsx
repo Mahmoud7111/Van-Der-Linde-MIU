@@ -56,12 +56,14 @@ export default function ShopPage() {
             </div>
           </header>
 
-          <div className="shop-page__filters">
-            <ProductFilter />
-          </div>
+          <div className="shop-page__content">
+            <aside className="shop-page__sidebar">
+              <ProductFilter />
+            </aside>
 
-          <div className="shop-page__results">
-            <ProductGrid watches={watches} />
+            <div className="shop-page__results">
+              <ProductGrid watches={watches} />
+            </div>
           </div>
         </div>
       </section>

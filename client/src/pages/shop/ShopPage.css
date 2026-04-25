@@ -81,15 +81,37 @@
   color: color-mix(in srgb, var(--color-dark) 55%, var(--color-muted) 45%);
 }
 
-.shop-page__filters,
+.shop-page__content {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: clamp(var(--space-lg), 3vw, var(--space-2xl));
+  align-items: start;
+}
+
+.shop-page__sidebar {
+  position: sticky;
+  top: var(--space-xl);
+  align-self: start;
+}
+
 .shop-page__results {
-  width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 900px) {
   .shop-page__meta {
     align-items: flex-start;
     text-align: left;
+  }
+}
+
+@media (max-width: 960px) {
+  .shop-page__content {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-page__sidebar {
+    position: static;
   }
 }
 
