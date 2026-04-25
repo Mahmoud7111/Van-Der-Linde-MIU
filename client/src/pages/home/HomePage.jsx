@@ -75,6 +75,7 @@ const FAVORITE_SWITCH_COOLDOWN_MS = 1050
 const FAVORITE_SLOT_TRANSITION = { duration: 1.12, ease: [0.22, 1, 0.36, 1] }
 const FAVORITE_SLOT_EDGE_TRAVEL_PX = 340
 const FAVORITE_SLOT_STAGGER_DELAY_S = 0.08
+const COLLECTION_DRAG_CLICK_THRESHOLD_PX = 16
 
 // Product visuals shown in the quiz teaser rail.
 const QUIZ_WATCHES = [
@@ -112,6 +113,25 @@ const TRUST_STRIP_ITEMS = [
   },
 ]
 
+// Converts collection slug or name into a URL path for the collection page.
+/* 
+Takes a collection object.
+Tries to use its slug property (if it exists and is a string).
+If not, it creates a slug from the collection's name by making it lowercase, replacing spaces and special characters with hyphens, and trimming extra hyphens.
+Returns a URL path like /collections/your-slug or just /collections if no slug is available.
+*/
+const getCollectionPath = (collection) => {
+  const providedSlug = typeof collection?.slug === 'string' ? collection.slug.trim() : ''
+  const fallbackSlug = String(collection?.name || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  const slug = providedSlug || fallbackSlug
+  return slug ? `/collections/${encodeURIComponent(slug)}` : '/collections'
+}
+
 export default function HomePage() {
   // ============================================================================
   // SECTION REFERENCES (observed for in-view animation triggers)
@@ -131,18 +151,9 @@ export default function HomePage() {
   // ============================================================================
 
   // Scroll ref is on the inner scroll container, separate from the section.
-  // Previously both refs were on the same element — the section ref was overwritten.
   const scrollTrackRef = useRef(null)
-
-  // Drag state tracked in refs to avoid unnecessary re-renders during pointer events.
-  const isDraggingRef = useRef(false)
-  const pointerStartXRef = useRef(0)
-  const pointerStartScrollRef = useRef(0)
   const favoriteTransitionTimeoutRef = useRef(null)
   const isFavoriteTransitioningRef = useRef(false)
-
-  // Tracks total drag distance so click-through on cards is suppressed after a real drag.
-  const dragDistanceRef = useRef(0)
 
   // ============================================================================
   // COMPONENT STATE
@@ -265,6 +276,7 @@ export default function HomePage() {
   }
 
   // Three visual slots: previous, active, next.
+  // On mobile, we filter out the side slots to only show the main focused watch.
   const favoriteRailItems = [
     {
       slot: 'left',
@@ -281,7 +293,12 @@ export default function HomePage() {
       product: nextFavorite,
       index: nextFavoriteIndex,
     },
-  ].filter((item) => item.product)
+  ].filter((item) => {
+    if (!item.product) return false
+    // Hide side slots on mobile for a cleaner single-product view
+    if (isMobileReviews && item.slot !== 'center') return false
+    return true
+  })
 
   // ============================================================================
   // FRAMER MOTION VARIANTS
@@ -534,41 +551,9 @@ export default function HomePage() {
   // EVENT HANDLERS
   // ============================================================================
 
-  // ── Pointer drag handlers ──────────────────────────────────────────────────
-  // Supports mouse drag on desktop in addition to native touch/wheel scroll.
+  // ── Scroll management ─────────────────────────────────────────────────────
 
-  const handlePointerDown = (e) => {
-    if (!scrollTrackRef.current) return
 
-    // Capture pointer to keep drag active even if cursor leaves element bounds.
-    isDraggingRef.current = true
-    dragDistanceRef.current = 0
-    pointerStartXRef.current = e.clientX
-    pointerStartScrollRef.current = scrollTrackRef.current.scrollLeft
-    scrollTrackRef.current.setPointerCapture?.(e.pointerId)
-  }
-
-  const handlePointerMove = (e) => {
-    if (!isDraggingRef.current || !scrollTrackRef.current) return
-    const deltaX = e.clientX - pointerStartXRef.current
-    dragDistanceRef.current = Math.abs(deltaX)
-    // Invert deltaX: dragging left (negative delta) increases scrollLeft.
-    scrollTrackRef.current.scrollLeft = pointerStartScrollRef.current - deltaX
-  }
-
-  const handlePointerUp = (e) => {
-    // Shared release handler for up/cancel/leave pathways.
-    isDraggingRef.current = false
-    scrollTrackRef.current?.releasePointerCapture?.(e.pointerId)
-  }
-
-  // Suppress link navigation if the pointer moved more than 8px — it was a drag, not a click.
-  const handleCardClick = (e) => {
-    if (dragDistanceRef.current > 8) {
-      // Cancel click-through if user was dragging horizontally.
-      e.preventDefault()
-    }
-  }
 
   // ============================================================================
   // RENDER
@@ -698,9 +683,8 @@ export default function HomePage() {
             The right-side fade gradient dissolves cleanly into cards sliding underneath.
           */}
           <div
-            className={`home-collections__intro${
-              isCollectionsVisible ? ' home-collections__intro--visible' : ''
-            }`}
+            className={`home-collections__intro${isCollectionsVisible ? ' home-collections__intro--visible' : ''
+              }`}
           >
             {/* Intro copy + utility nav */}
             <p className="home-collections__label">OUR COLLECTIONS</p>
@@ -722,20 +706,13 @@ export default function HomePage() {
           <div
             className="home-collections__cards"
             aria-label="Featured collections carousel"
-            // Drag behavior is intentionally scoped to cards only so intro links remain clickable.
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
-            onPointerLeave={handlePointerUp}
           >
             {/* Mapped collection cards */}
             {featured.map((collection, index) => (
               <article
                 key={collection._id}
-                className={`home-collection-card${
-                  isCollectionsVisible ? ' home-collection-card--visible' : ''
-                }`}
+                className={`home-collection-card${isCollectionsVisible ? ' home-collection-card--visible' : ''
+                  }`}
                 // Stagger: each card animates 100ms after the previous one.
                 style={{ animationDelay: `${(index + 1) * 0.1}s` }}
               >
@@ -756,8 +733,7 @@ export default function HomePage() {
                   <p className="home-collection-card__description">{collection.description}</p>
                   <Link
                     className="home-collection-card__link"
-                    to={`/collections/${collection.slug}`}
-                    onClick={handleCardClick}
+                    to={getCollectionPath(collection)}
                   >
                     Explore <span aria-hidden="true">→</span>
                   </Link>
@@ -1045,9 +1021,8 @@ export default function HomePage() {
         <div className="home-configurator__inner">
           {/* Left side: narrative copy + entry link */}
           <div
-            className={`home-configurator__left${
-              isConfiguratorVisible ? ' home-configurator__left--visible' : ''
-            }`}
+            className={`home-configurator__left${isConfiguratorVisible ? ' home-configurator__left--visible' : ''
+              }`}
           >
             <p className="home-configurator__label">Configure Your</p>
             <h2 className="home-configurator__title">TIME</h2>
@@ -1064,9 +1039,8 @@ export default function HomePage() {
 
           {/* Right side: interactive 3D model */}
           <div
-            className={`home-configurator__right${
-              isConfiguratorVisible ? ' home-configurator__right--visible' : ''
-            }`}
+            className={`home-configurator__right${isConfiguratorVisible ? ' home-configurator__right--visible' : ''
+              }`}
           >
             {/*
               Add this in index.html:
@@ -1225,7 +1199,7 @@ export default function HomePage() {
         </Motion.div>
       </section>
 
-      
+
     </div>
   )
 }

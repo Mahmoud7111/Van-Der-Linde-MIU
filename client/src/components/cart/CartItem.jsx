@@ -1,10 +1,15 @@
 import { useCart } from '@/context/CartContext'
+import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { cn } from '@/utils/cn'
+import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { FiMinus, FiPlus, FiTrash2 } from 'react-icons/fi'
 import './CartItem.css'
 
 export default function CartItem({ item }) {
   const { dispatch } = useCart()
+  const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
 
   // حماية من undefined item
   if (!item) return null
@@ -14,11 +19,13 @@ export default function CartItem({ item }) {
     name = 'Unknown Item',
     price = 0,
     image = '',
+    images = [],
     quantity = 1,
     stock,
   } = item
 
   const stockLimit = Number.isFinite(Number(stock)) ? stock : Infinity
+  const imageUrl = resolveWatchProductImage(images?.[0] || image)
 
   const handleIncrease = () => {
     if (quantity < stockLimit) {
@@ -45,9 +52,9 @@ export default function CartItem({ item }) {
   return (
     <article className="cart-item">
       <div className="cart-item__image-wrap">
-        {image && (
+        {imageUrl && (
           <img
-            src={image}
+            src={imageUrl}
             alt={name}
             loading="lazy"
             className="cart-item__image"
@@ -59,7 +66,7 @@ export default function CartItem({ item }) {
         <h4 className="cart-item__title">{name}</h4>
 
         <div className="cart-item__price">
-          ${Number(price || 0).toFixed(2)}
+          {formatPrice(price)}
         </div>
 
         <div className="cart-item__actions">
@@ -72,7 +79,7 @@ export default function CartItem({ item }) {
               )}
               onClick={handleDecrease}
               disabled={quantity <= 1}
-              aria-label="Decrease quantity"
+              aria-label={t('cart.decreaseQty')}
             >
               <FiMinus aria-hidden="true" />
             </button>
@@ -90,7 +97,7 @@ export default function CartItem({ item }) {
               )}
               onClick={handleIncrease}
               disabled={quantity >= stockLimit}
-              aria-label="Increase quantity"
+              aria-label={t('cart.increaseQty')}
             >
               <FiPlus aria-hidden="true" />
             </button>
@@ -100,7 +107,7 @@ export default function CartItem({ item }) {
             type="button"
             className="cart-item__remove-btn"
             onClick={handleRemove}
-            aria-label="Remove item"
+            aria-label={t('cart.removeItem')}
           >
             <FiTrash2 aria-hidden="true" />
           </button>

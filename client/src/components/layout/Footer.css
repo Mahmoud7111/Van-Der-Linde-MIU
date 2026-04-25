@@ -184,11 +184,28 @@
 	color: var(--footer-muted);
 }
 
-/* ── MOBILE ── */
+/* ── MOBILE & TABLET ── */
 @media (max-width: 1220px) {
 	.footer__container {
 		grid-template-columns: 1fr;
 		gap: var(--space-2xl);
+	}
+
+	.footer__brand-section {
+		align-items: center;
+		text-align: center;
+	}
+
+	.footer__logo-link {
+		justify-content: center;
+	}
+
+	.footer__description {
+		max-width: 600px;
+	}
+
+	.footer__socials {
+		justify-content: center;
 	}
 
 	.footer__columns {

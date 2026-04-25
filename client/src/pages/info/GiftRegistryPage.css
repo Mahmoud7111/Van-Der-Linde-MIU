@@ -1,0 +1,115 @@
+.registry-page {
+  padding: 10rem 2rem 6rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.registry-hero {
+  text-align: center;
+  margin-bottom: 8rem;
+  background-color: var(--color-surface, #f9f9f9);
+  padding: 6rem 2rem;
+  border-radius: var(--radius-md, 8px);
+}
+
+.registry-hero__label {
+  display: block;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-gold, #c9a84c);
+  margin-bottom: 1.5rem;
+}
+
+.registry-hero__title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 200;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 2rem;
+}
+
+.registry-hero__text {
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  color: var(--color-muted, #666);
+  line-height: 1.8;
+}
+
+.registry-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 4rem;
+  margin-bottom: 8rem;
+}
+
+.registry-step {
+  text-align: center;
+}
+
+.registry-step__number {
+  font-size: 3rem;
+  font-weight: 200;
+  color: var(--color-gold, #c9a84c);
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.5;
+}
+
+.registry-step__title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.registry-step__text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-muted, #666);
+}
+
+.registry-cta {
+  background-color: var(--color-dark, #1a1a1a);
+  color: #fff;
+  padding: 6rem 2rem;
+  text-align: center;
+  border-radius: var(--radius-md, 8px);
+}
+
+.registry-cta__title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.registry-cta__text {
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+  opacity: 0.8;
+}
+
+/* Dark Mode */
+[data-theme='dark'] .registry-hero {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='dark'] .registry-hero__text,
+[data-theme='dark'] .registry-step__text {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='dark'] .registry-cta__title,
+[data-theme='dark'] .registry-cta__text {
+  color: #000000;
+}
+
+@media (max-width: 768px) {
+  .registry-page {
+    padding-top: 8rem;
+  }
+}

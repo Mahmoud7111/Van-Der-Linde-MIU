@@ -34,6 +34,14 @@
  * Where it is used:
  * Imported by authService, watchService, and orderService. Components must never call axios directly.
  */
+
+/*
+axiosInstance is used only for real API calls, not for the mock data.
+The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
+and will not use it if USE_MOCK is true (mock mode).
+*/
+
+
 import axios from 'axios'
 import { API_URL } from '@/utils/constants' // Centralized flag to toggle between mock and real services across the app.
 

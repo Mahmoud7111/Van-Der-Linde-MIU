@@ -13,23 +13,86 @@
  * - Admin orders pages call getAll(), getById(), and updateStatus().
  * - Checkout flow calls create().
  */
+
+/*
+axiosInstance is used only for real API calls, not for the mock data.
+The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
+and will not use it if USE_MOCK is true (mock mode).
+*/
+
+
 import api from '@/api/axiosInstance'
 import { USE_MOCK } from '@/utils/constants'
 import orders from '@/data/orders.json'
+import products from '@/data/products.json'
+
+const productImageById = products.reduce((lookup, product) => {
+  if (!product?._id) return lookup
+  lookup[product._id] = product?.images?.[0] || product?.image || ''
+  return lookup
+}, {})
+
+const normalizeOrderItems = (items = []) =>
+  (Array.isArray(items) ? items : []).map((item) => {
+    const productImage = productImageById[item?._id] || ''
+    const normalizedImage = item?.image || item?.images?.[0] || productImage
+    return {
+      ...item,
+      image: normalizedImage,
+      images: Array.isArray(item?.images) && item.images.length > 0
+        ? item.images
+        : normalizedImage
+          ? [normalizedImage]
+          : [],
+    }
+  })
+
+const normalizeShippingAddress = (shippingAddress = {}) => ({
+  fullName: shippingAddress?.fullName || shippingAddress?.name || '',
+  email: shippingAddress?.email || '',
+  phone: shippingAddress?.phone || '',
+  street: shippingAddress?.street || '',
+  city: shippingAddress?.city || '',
+  country: shippingAddress?.country || '',
+  zip: shippingAddress?.zip || shippingAddress?.postalCode || '',
+  notes: shippingAddress?.notes || '',
+})
+
+const resolveOrderTotal = (order = {}) => {
+  const total = Number(order?.totalPrice ?? order?.totalAmount ?? order?.total)
+  return Number.isFinite(total) ? total : 0
+}
+
+const normalizeOrder = (order) => ({
+  ...order,
+  shippingAddress: normalizeShippingAddress(order?.shippingAddress || order?.shipping),
+  totalPrice: resolveOrderTotal(order),
+  items: normalizeOrderItems(order?.items),
+})
+
+const mockOrders = orders.map(normalizeOrder)
 
 // Mock order service preserves async API signatures using Promise.resolve.
 const mock = {
   // User-facing loader for profile/order history routes.
-  getMyOrders: () => Promise.resolve(orders),
+  getMyOrders: () => Promise.resolve(mockOrders),
 
   // Admin-facing list endpoint for full order management view.
-  getAll: () => Promise.resolve(orders),
+  getAll: () => Promise.resolve(mockOrders),
 
   // Detail lookup for one order id.
-  getById: (id) => Promise.resolve(orders.find((order) => order._id === id)),
+  getById: (id) => Promise.resolve(mockOrders.find((order) => order._id === id)),
 
   // Creates a new mock order after checkout and sets default pending status.
-  create: (data) => Promise.resolve({ ...data, _id: `order-${Date.now()}`, status: 'pending' }),
+  create: (data) =>
+    Promise.resolve(
+      normalizeOrder({
+        ...data,
+        _id: `order-${Date.now()}`,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      })
+    ),
 
   // Simulates admin order status update.
   updateStatus: (id, status) => Promise.resolve({ id, status }),

@@ -14,23 +14,32 @@
  * ProductDetailPage, CartSummary, Checkout pages, and order tables call useCurrency().
  */
 import { createContext, useContext, useState } from 'react'
+import { CURRENCIES } from '@/utils/constants'
 import { formatPrice as formatCurrencyPrice } from '@/utils/formatters'
 
 // Create currency context for current currency code and utility methods.
 const CurrencyContext = createContext(null)
 
+const supportedCurrencyCodes = new Set(CURRENCIES.map((item) => item.code))
+
+const normalizeCurrencyCode = (value) => {
+  const normalizedValue = String(value || '').trim().toUpperCase()
+  return supportedCurrencyCodes.has(normalizedValue) ? normalizedValue : 'USD'
+}
+
 // Provider exposes currency selection state and formatting helpers.
 export const CurrencyProvider = ({ children }) => {
   // Restore previous currency choice or default to USD.
-  const [currency, setCurrency] = useState(() => localStorage.getItem('currency') || 'USD')
+  const [currency, setCurrency] = useState(() => normalizeCurrencyCode(localStorage.getItem('currency')))
 
   // Context-level formatter lets components call formatPrice(watch.price) without knowing active currency.
   const formatPrice = (amount) => formatCurrencyPrice(amount, currency)
 
   // Setter updates React state + localStorage so selection persists across refreshes.
   const handleSetCurrency = (nextCurrency) => {
-    setCurrency(nextCurrency)
-    localStorage.setItem('currency', nextCurrency)
+    const normalizedCurrency = normalizeCurrencyCode(nextCurrency)
+    setCurrency(normalizedCurrency)
+    localStorage.setItem('currency', normalizedCurrency)
   }
 
   return (

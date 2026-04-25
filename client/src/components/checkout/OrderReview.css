@@ -146,6 +146,9 @@
   color: var(--color-gold);
   text-decoration: none;
   transition: color var(--transition-fast);
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .order-review__info-edit:hover {
@@ -229,8 +232,19 @@
   margin-top: var(--space-md);
 }
 
+.order-review__footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-md);
+}
+
+.order-review__back-btn {
+  color: var(--color-muted);
+  border-radius: var(--radius-sm);
+}
+
 .order-review__submit-btn {
-  width: 100%;
+  min-width: 220px;
   background-color: var(--color-gold);
   color: var(--color-white);
   padding: var(--space-md) var(--space-lg);
@@ -283,5 +297,14 @@
     width: 100%;
     justify-content: flex-end;
     margin-top: var(--space-xs);
+  }
+
+  .order-review__footer-actions {
+    flex-direction: column-reverse;
+  }
+
+  .order-review__back-btn,
+  .order-review__submit-btn {
+    width: 100%;
   }
 }

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * STUB COMPONENT: Header
  *
  * What this file is:
@@ -17,21 +17,32 @@
  * MobileMenu, sticky behavior, and responsive interactions) is owned by Dev 5.
  */
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useState } from 'react'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import { useTheme } from '@/context/ThemeContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { useScrollDirection } from '@/hooks/useScrollDirection'
+import useMediaQuery from '@/hooks/useMediaQuery'
+import MobileMenu from './MobileMenu'
+import CartOffcanvas from '@/components/cart/CartOffcanvas'
+import DarkModeToggle from '@/components/features/DarkModeToggle'
+import CurrencySwitcher from '@/components/features/CurrencySwitcher'
+import LanguageSwitcher from '@/components/features/LanguageSwitcher'
 import { cn } from '@/utils/cn'
 import {
-  FiDollarSign,
-  FiGlobe,
   FiHeart,
-  FiMoon,
   FiShoppingCart,
   FiUser,
+  FiMenu
 } from 'react-icons/fi'
 import './Header.css'
 
 export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const isMobileOrTablet = useMediaQuery('(max-width: 1080px)')
+
   // Single hook handles both scroll depth (for transparent→solid transition)
   // and scroll direction (for hide/show behavior). Replaces useScrollPosition
   // + a separate useEffect listener that were running two scroll handlers simultaneously.
@@ -45,9 +56,14 @@ export default function Header() {
 
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
-
-  // Reads authenticated user; full header uses this for account menu, logout, and role links.
   const { user } = useAuth()
+  const { theme } = useTheme()
+  const { t } = useLanguage()
+
+  const accountPath = user ? '/account' : '/login'
+  const accountLabel = user ? t('nav.account') : t('nav.login')
+
+
 
   // NavLink className helpers keep JSX clean and apply active state via CSS modifier.
   const navLinkClassName = ({ isActive }) =>
@@ -56,12 +72,7 @@ export default function Header() {
   const iconLinkClassName = ({ isActive }) =>
     `header__icon-control${isActive ? ' header__icon-control--active' : ''}`
 
-  const cartLinkClassName = ({ isActive }) =>
-    `header__icon-control header__icon-control--cart${isActive ? ' header__icon-control--active' : ''}`
-
-  // Account destination and label depend on auth state.
-  const accountPath = user ? '/profile' : '/login'
-  const accountLabel = user ? 'Profile' : 'Login'
+  
 
   return (
     <header
@@ -77,106 +88,119 @@ export default function Header() {
       )}
     >
       <div className="header__inner">
-        {/* Left nav — shop-facing links */}
-        <nav className="header__left header__nav" aria-label="Shop links">
-          <NavLink className={navLinkClassName} to="/shop">
-            SHOP ALL
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/collections">
-            COLLECTIONS
-          </NavLink>
-          <NavLink className={navLinkClassName} to="/gifting">
-            GIFTING
-          </NavLink>
-        </nav>
+        {/* Left container — menu toggle (mobile) + shop-facing links (desktop) */}
+        <div className="header__left">
+          {isMobileOrTablet ? (
+            <button
+              className="header__menu-toggle"
+              onClick={() => setIsMobileMenuOpen(true)}
+              aria-label={t('header.openMenu')}
+            >
+              <FiMenu aria-hidden="true" />
+            </button>
+          ) : (
+            <nav className="header__nav header__desktop-nav" aria-label="Shop links">
+              <NavLink className={navLinkClassName} to="/shop">
+                {t('nav.shopAll')}
+              </NavLink>
+              <NavLink className={navLinkClassName} to="/collections">
+                {t('nav.collections')}
+              </NavLink>
+              <NavLink className={navLinkClassName} to="/gifting">
+                {t('nav.gifting')}
+              </NavLink>
+              <NavLink className={navLinkClassName} to="/quiz">
+                {t('nav.watchQuiz')}
+              </NavLink>
+            </nav>
+          )}
+        </div>
 
         {/* Center brand logo — always links back to homepage */}
         <Link className="header__brand" to="/">
           <img
             className="header__logo"
-            src="/Logo2.png"
+            src={theme === 'dark' ? "/Logo2Dark.png" : "/Logo2.png"}
             alt="Van Der Linde"
             loading="eager"
           />
         </Link>
 
-        <div className="header__right">
-          {/* Right nav — brand/informational links */}
-          <nav className="header__nav header__nav--right" aria-label="Company links">
-            <NavLink className={navLinkClassName} to="/services">
-              SERVICES
-            </NavLink>
-            <NavLink className={navLinkClassName} to="/about">
-              OUR STORY
-            </NavLink>
-            <NavLink className={navLinkClassName} to="/contact">
-              CONTACT
-            </NavLink>
-          </nav>
-
-          {/* Icon controls — utility actions separated from nav links by a divider */}
-          <div className="header__icons-wrap">
-            <span className="header__divider" aria-hidden="true">
-              |
-            </span>
-
-            <div className="header__actions">
-              {/* Cart badge shows live item count from CartContext */}
-              <NavLink
-                aria-label={`Cart with ${totalItems} items`}
-                className={cartLinkClassName}
-                to="/cart"
-              >
-                <FiShoppingCart aria-hidden="true" />
-                <span className="header__pill" aria-hidden="true">
-                  {totalItems}
-                </span>
+        {!isMobileOrTablet && (
+          <div className="header__right">
+            {/* Right nav — brand/informational links */}
+            <nav className="header__nav header__nav--right header__desktop-nav" aria-label="Company links">
+              <NavLink className={navLinkClassName} to="/services">
+                {t('nav.services')}
               </NavLink>
-
-              {/* Account link destination switches based on auth state */}
-              <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
-                <FiUser aria-hidden="true" />
+              <NavLink className={navLinkClassName} to="/about">
+                {t('nav.ourStory')}
               </NavLink>
+              <NavLink className={navLinkClassName} to="/contact">
+                {t('nav.contact')}
+              </NavLink>
+            </nav>
 
-              <NavLink
-                aria-label="Admin dashboard"
-                className="header__icon-control header__icon-control--admin"
-                to="/admin"
-              >
-                <svg
-                  className="header__admin-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+            {/* Icon controls — utility actions separated from nav links by a divider */}
+            <div className="header__icons-wrap">
+              <span className="header__divider" aria-hidden="true">
+                |
+              </span>
+
+              <div className="header__actions">
+                {/* Cart badge shows live item count from CartContext */}
+                <button
+                  type="button"
+                  aria-label={t('header.cartWithItems', { count: totalItems })}
+                  className="header__icon-control header__icon-control--cart"
+                  onClick={() => setIsCartOpen(true)}
                 >
-                  <path d="M3 18h18" />
-                  <path d="M4 18l2-9 6 6 6-8 2 11" />
-                  <circle cx="6" cy="7" r="1.4" />
-                  <circle cx="12" cy="11" r="1.2" />
-                  <circle cx="18" cy="5" r="1.4" />
-                </svg>
-              </NavLink>
+                  <FiShoppingCart aria-hidden="true" />
+                  <span className="header__pill" aria-hidden="true">
+                    {totalItems}
+                  </span>
+                </button>
 
-              <NavLink aria-label="Wishlist" className={iconLinkClassName} to="/wishlist">
-                <FiHeart aria-hidden="true" />
-              </NavLink>
+                 {/* User icon always opens account page. */}
+                <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
+                  <FiUser aria-hidden="true" />
+                </NavLink>
 
+                <NavLink
+                  aria-label={t('nav.admin')}
+                  className="header__icon-control header__icon-control--admin"
+                  to="/admin"
+                >
+                  <svg
+                    className="header__admin-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M3 18h18" />
+                    <path d="M4 18l2-9 6 6 6-8 2 11" />
+                    <circle cx="6" cy="7" r="1.4" />
+                    <circle cx="12" cy="11" r="1.2" />
+                    <circle cx="18" cy="5" r="1.4" />
+                  </svg>
+                </NavLink>
 
-              {/* Language, wishlist, theme, currency — wired up by Dev 5 in full implementation */}
-              <button type="button" className="header__icon-control" aria-label="Language selector">
-                <FiGlobe aria-hidden="true" />
-              </button>
+                <NavLink aria-label={t('nav.wishlist')} className={iconLinkClassName} to="/wishlist">
+                  <FiHeart aria-hidden="true" />
+                </NavLink>
+                <LanguageSwitcher className="header__icon-control" />
 
-              <button type="button" className="header__icon-control" aria-label="Dark mode toggle">
-                <FiMoon aria-hidden="true" />
-              </button>
+                <DarkModeToggle className="header__icon-control" />
 
-              <button type="button" className="header__icon-control" aria-label="Currency switcher">
-                <FiDollarSign aria-hidden="true" />
-              </button>
+                <CurrencySwitcher className="header__icon-control" />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
+      {isMobileOrTablet && (
+        <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      )}
+      <CartOffcanvas isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   )
 }

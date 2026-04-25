@@ -38,7 +38,7 @@ const getStockValue = (watch) => {
 export default function ManageProducts() {
   const data = useLoaderData()
   const { formatPrice } = useCurrency()
-  const watches = Array.isArray(data) ? data : []
+  const watches = useMemo(() => (Array.isArray(data) ? data : []), [data])
   const [catalog, setCatalog] = useState(watches)
   const [formValues, setFormValues] = useState(FORM_DEFAULTS)
   const [formMode, setFormMode] = useState('create')
@@ -197,7 +197,7 @@ export default function ManageProducts() {
       setIsFormOpen(false)
       setEditingId(null)
       setFormMode('create')
-    } catch (error) {
+    } catch {
       setFormStatus({ type: 'error', message: 'Unable to save this watch right now.' })
     } finally {
       setIsSaving(false)
@@ -216,7 +216,7 @@ export default function ManageProducts() {
       await watchService.remove(watch._id)
       setCatalog((prev) => prev.filter((item) => item._id !== watch._id))
       setFormStatus({ type: 'success', message: 'Watch removed from the catalog.' })
-    } catch (error) {
+    } catch {
       setFormStatus({ type: 'error', message: 'Unable to remove that watch right now.' })
     } finally {
       setDeletingId(null)

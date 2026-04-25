@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { cn } from '@/utils/cn'
 import './ProductImageGallery.css'
@@ -7,17 +7,13 @@ export default function ProductImageGallery({ images = [], name = '' }) {
   const safeImages = Array.isArray(images)
     ? images.filter((image) => typeof image === 'string' && image.trim())
     : []
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [activeImage, setActiveImage] = useState('')
   const galleryImages = safeImages.length > 0 ? safeImages : ['']
   const isPlaceholder = safeImages.length === 0
 
-  useEffect(() => {
-    setActiveIndex(0)
-  }, [images])
-
   const labelName = name?.trim() || 'Watch'
-  const activeImage = galleryImages[Math.min(activeIndex, galleryImages.length - 1)]
-  const mainImageUrl = resolveWatchProductImage(activeImage)
+  const selectedImage = galleryImages.includes(activeImage) ? activeImage : galleryImages[0]
+  const mainImageUrl = resolveWatchProductImage(selectedImage)
 
   return (
     <div className="product-gallery" aria-label={`${labelName} gallery`}>
@@ -29,14 +25,14 @@ export default function ProductImageGallery({ images = [], name = '' }) {
       <div className="product-gallery__thumbs" role="list">
         {galleryImages.map((image, index) => {
           const thumbUrl = resolveWatchProductImage(image)
-          const isActive = index === activeIndex
+          const isActive = image === selectedImage
 
           return (
             <button
               key={`${image}-${index}`}
               type="button"
               className={cn('product-gallery__thumb', isActive && 'product-gallery__thumb--active')}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => setActiveImage(image)}
               aria-pressed={isActive}
               aria-label={`${labelName} thumbnail ${index + 1}`}
               disabled={isPlaceholder}

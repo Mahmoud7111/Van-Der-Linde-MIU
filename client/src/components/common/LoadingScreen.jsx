@@ -1,34 +1,10 @@
-import { useEffect, useState } from 'react'
 import './LoadingScreen.css'
 
 export default function LoadingScreen({ isVisible = true }) {
-  const [isActive, setIsActive] = useState(isVisible)
-  const [isExiting, setIsExiting] = useState(false)
-
-  useEffect(() => {
-    if (isVisible) {
-      setIsActive(true)
-      setIsExiting(false)
-      return
-    }
-
-    if (!isActive) {
-      return
-    }
-
-    setIsExiting(true)
-    const timer = setTimeout(() => {
-      setIsActive(false)
-      setIsExiting(false)
-    }, 220)
-
-    return () => clearTimeout(timer)
-  }, [isVisible, isActive])
-
-  if (!isActive) return null
+  if (!isVisible) return null
 
   return (
-    <div className={`loading-screen${isExiting ? ' loading-screen--exit' : ''}`} aria-hidden="true">
+    <div className="loading-screen" aria-hidden="true">
       <div className="loading-screen__content" aria-hidden="true">
         <div className="loading-screen__watch">
           <div className="loading-screen__glow" />

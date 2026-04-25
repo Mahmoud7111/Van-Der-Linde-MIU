@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { orderService } from '../../services/orderService';
+import { useCurrency } from '@/context/CurrencyContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { resolveWatchProductImage } from '@/utils/watchImageResolver';
 import './OrderConfirmationPage.css';
 
 export default function OrderConfirmationPage() {
@@ -8,6 +11,8 @@ export default function OrderConfirmationPage() {
   const orderId = searchParams.get('orderId');
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { formatPrice } = useCurrency();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (orderId) {
@@ -28,48 +33,56 @@ export default function OrderConfirmationPage() {
   }, [orderId]);
 
   if (loading) {
-    return <div className="order-confirmation">Loading...</div>;
+    return <div className="order-confirmation">{t('orderConfirmation.loading')}</div>;
   }
 
   if (!order) {
     return (
       <div className="order-confirmation">
-        <h1>Order Confirmation</h1>
-        <p>Thank you for your order! Your order has been placed successfully.</p>
-        <p>You will receive an email confirmation shortly.</p>
+        <h1>{t('orderConfirmation.title')}</h1>
+        <p>{t('orderConfirmation.thankYou')}</p>
+        <p>{t('orderConfirmation.emailSoon')}</p>
       </div>
     );
   }
 
+  const items = Array.isArray(order?.items) ? order.items : [];
+  const shippingAddress = order?.shippingAddress || order?.shipping || {};
+  const total = Number.isFinite(Number(order?.totalPrice))
+    ? Number(order.totalPrice)
+    : Number(order?.totalAmount || order?.total || 0);
+  const fullName = shippingAddress?.fullName || shippingAddress?.name || '-';
+  const zip = shippingAddress?.zip || shippingAddress?.postalCode || '-';
+
   return (
     <div className="order-confirmation">
-      <h1>Order Confirmation</h1>
-      <p>Thank you for your order! Here are the details:</p>
+      <h1>{t('orderConfirmation.title')}</h1>
+      <p>{t('orderConfirmation.thankYouWithDetails')}</p>
       <div className="order-details">
-        <h2>Order #{order._id}</h2>
+        <h2>{t('orderConfirmation.orderLabel')} #{order._id}</h2>
         <div className="order-items">
-          {order.items.map((item) => (
-            <div key={item._id} className="order-item">
-              <img src={item.image} alt={item.name} />
+          {items.map((item, index) => (
+            <div key={item?._id || item?.id || `item-${index}`} className="order-item">
+              <img src={resolveWatchProductImage(item?.image || item?.images?.[0])} alt={item?.name || 'Watch'} />
               <div>
-                <h3>{item.name}</h3>
-                <p>Quantity: {item.quantity}</p>
-                <p>Price: ${item.price}</p>
+                <h3>{item?.name || 'Watch'}</h3>
+                <p>{t('orderConfirmation.quantity')}: {Number(item?.quantity) || 1}</p>
+                <p>{t('orderConfirmation.price')}: {formatPrice(Number(item?.price) || 0)}</p>
               </div>
             </div>
           ))}
         </div>
         <div className="order-summary">
-          <p>Total: ${order.totalPrice}</p>
-          <p>Status: {order.status}</p>
+          <p>{t('orderConfirmation.total')}: {formatPrice(total)}</p>
+          <p>{t('orderConfirmation.status')}: {order.status}</p>
         </div>
         <div className="shipping-address">
-          <h3>Shipping Address</h3>
-          <p>{order.shippingAddress.fullName}</p>
-          <p>{order.shippingAddress.street}</p>
-          <p>{order.shippingAddress.city}, {order.shippingAddress.country} {order.shippingAddress.zip}</p>
-          <p>{order.shippingAddress.email}</p>
-          <p>{order.shippingAddress.phone}</p>
+          <h3>{t('orderConfirmation.shippingAddress')}</h3>
+          <p>{fullName}</p>
+          <p>{shippingAddress?.street || '-'}</p>
+          <p>{shippingAddress?.city || '-'}, {shippingAddress?.country || '-'} {zip}</p>
+          <p>{shippingAddress?.email || '-'}</p>
+          <p>{shippingAddress?.phone || '-'}</p>
         </div>
       </div>
     </div>

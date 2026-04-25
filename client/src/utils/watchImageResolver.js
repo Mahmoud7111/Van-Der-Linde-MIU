@@ -1,5 +1,4 @@
 import collectionFallbackImage from '@/assets/images/notFound1.svg'
-import watchRolexLadyDatejust from '@/assets/images/Watches/Rolex Lady Datejust.png'
 
 /**
  * Watch image resolution helpers.
@@ -51,9 +50,7 @@ const collectionImageByBaseName = Object.entries(collectionImageAssets).reduce(
 
 // Product-specific overrides for assets that need cleaner alternatives in UI.
 const favoriteImageOverrides = {
-  // This source asset contains decorative horizontal trails in the file itself,
-  // which makes the watch appear cropped/small inside the favorites slots.
-  'watch-004': watchRolexLadyDatejust,
+  // Overrides removed — now uses the dynamic path from products.json
 }
 
 // Resolve a generic product image string to a displayable URL.
