@@ -152,15 +152,28 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
 
     const [showQrModal, setShowQrModal] = useState(false);
 
+    // Detect if the user is on a mobile device or using a mobile inspector
+    const isMobileDevice = () => {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isMobileUA = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(userAgent);
+        
+        // Browser inspectors (like Chrome) don't always spoof the UA correctly, 
+        // so we also check screen width and touch capability.
+        const isSmallScreen = window.innerWidth <= 768;
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        
+        return isMobileUA || (isSmallScreen && isTouch) || (window.innerWidth <= 600);
+    };
+
     const handleArClick = () => {
         const viewer = viewerRef.current;
         if (!viewer) return;
 
-        // Check if AR is supported on this device
-        if (viewer.canActivateAR) {
+        if (isMobileDevice()) {
+            // Mobile/Tablet/Inspector -> trigger AR directly
             viewer.activateAR();
         } else {
-            // On desktop, show QR code modal
+            // Desktop -> show QR code
             setShowQrModal(true);
         }
     };
