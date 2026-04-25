@@ -248,17 +248,6 @@
 	font-size: 1rem;
 }
 
-.header__admin-icon {
-	width: 1.15rem;
-	height: 1.15rem;
-	display: block;
-	fill: none;
-	stroke: currentColor;
-	stroke-width: 1.5;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-}
-
 .header__icon-control--cart {
 	background: color-mix(in srgb, var(--color-gold) 18%, var(--color-white) 82%);
 }
