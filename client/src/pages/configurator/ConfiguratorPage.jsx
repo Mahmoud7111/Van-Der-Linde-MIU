@@ -35,6 +35,13 @@ import classicWatchModel from '@/assets/3D Models/watch.glb'
 // CONFIGURATION OPTIONS
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * MODEL_OPTIONS
+ * Defines the available 3D watches.
+ * - path: The imported .glb file.
+ * - price: The base cost of this specific model.
+ * - cameraOrbit: Custom camera framing to ensure the watch looks its best on load.
+ */
 const MODEL_OPTIONS = [
   { id: 'omega', label: 'Omega Sea Master', path: omegaModel, price: 5200, cameraOrbit: "333deg 84deg auto" },
   { id: 'santos', label: 'Cartier Santos', path: santosModel, price: 6800, cameraOrbit: "333deg 84deg auto" },
@@ -119,7 +126,10 @@ export default function ConfiguratorPage() {
   // Active config panel tab
   const [activePanel, setActivePanel] = useState('model')
 
-  // Computed total price
+  // ─────────────────────────────────────────────────────────────────────────────
+  // PRICE CALCULATION
+  // Sums the base model price + the premiums of each selected component.
+  // ─────────────────────────────────────────────────────────────────────────────
   const totalPrice = BASE_PRICE + 
                      (selectedModel?.price || 0) + 
                      (selectedCase?.price || 0) + 
@@ -183,6 +193,11 @@ export default function ConfiguratorPage() {
                   exit={{    opacity: 0, scale: 0.96, y: -8 }}
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 >
+                  {/* 
+                    3D PREVIEW COMPONENT
+                    Passes all current selections down. The Watch3DModel will
+                    detect changes in these props and update the GLB materials automatically.
+                  */}
                   <Watch3DModel
                     selectedModel={selectedModel}
                     caseOption={selectedCase}
