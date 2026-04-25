@@ -40,13 +40,20 @@ const EmailCaptureModal = () => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="email-modal-overlay">
+        <Motion.div 
+          className="email-modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={handleClose} // Clicking outside closes the modal
+        >
           <Motion.div
             className="email-modal-container"
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 30 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
           >
             <button className="email-modal-close-btn" onClick={handleClose} aria-label="Close modal">
               <FiX />
@@ -110,7 +117,7 @@ const EmailCaptureModal = () => {
               </div>
             </div>
           </Motion.div>
-        </div>
+        </Motion.div>
       )}
     </AnimatePresence>
   );

@@ -178,6 +178,56 @@
   margin-bottom: 1rem;
 }
 
+/* Responsive */
+@media (max-width: 850px) {
+  .email-modal-overlay {
+    padding: 0; /* Full screen on mobile */
+  }
+
+  .email-modal-container {
+    max-width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .email-modal-layout {
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .email-modal-image-side {
+    height: 40vh;
+    flex: none;
+  }
+
+  .email-modal-content-side {
+    padding: 2rem;
+    flex: 1;
+    justify-content: flex-start;
+  }
+
+  .email-modal-content-side h2 {
+    font-size: 1.8rem;
+  }
+
+  .email-modal-close-btn {
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
 /* Dark Mode Overrides */
 [data-theme='dark'] .email-modal-container {
   background: var(--color-dark);
@@ -187,37 +237,26 @@
   background: var(--color-dark);
 }
 
-[data-theme='dark'] .email-modal-content-side h2,
-[data-theme='dark'] .email-modal-close-btn {
-  color: #000000;
+[data-theme='dark'] .email-modal-content-side h2 {
+  color: var(--color-white);
 }
 
 [data-theme='dark'] .email-modal-content-side p {
-  color: #1a1a1a;
+  color: var(--color-muted);
 }
 
 [data-theme='dark'] .email-capture-input {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
-  color: #000000;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-white);
 }
 
-/* Responsive */
+[data-theme='dark'] .email-modal-close-btn {
+  color: var(--color-gold);
+}
+
 @media (max-width: 850px) {
-  .email-modal-layout {
-    flex-direction: column;
-  }
-
-  .email-modal-image-side {
-    height: 250px;
-    flex: none;
-  }
-
-  .email-modal-content-side {
-    padding: 2.5rem;
-  }
-
-  .email-modal-content-side h2 {
-    font-size: 2rem;
+  [data-theme='dark'] .email-modal-close-btn {
+    color: white; /* Maintain white on mobile overlay */
   }
 }

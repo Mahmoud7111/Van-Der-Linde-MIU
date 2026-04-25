@@ -20,6 +20,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useScrollDirection } from '@/hooks/useScrollDirection'
 import useMediaQuery from '@/hooks/useMediaQuery'
@@ -56,6 +57,7 @@ export default function Header() {
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
   const { user } = useAuth()
+  const { theme } = useTheme()
   const { t } = useLanguage()
 
   const accountPath = user ? '/account' : '/login'
@@ -118,7 +120,7 @@ export default function Header() {
         <Link className="header__brand" to="/">
           <img
             className="header__logo"
-            src="/Logo2.png"
+            src={theme === 'dark' ? "/Logo2Dark.png" : "/Logo2.png"}
             alt="Van Der Linde"
             loading="eager"
           />

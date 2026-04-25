@@ -1,17 +1,20 @@
 /**
- * Watch3DModel
- *
- * What this file is:
- * A 3D watch model viewer using the Google model-viewer web component.
- * Loads the watch.glb model and applies styling based on user selections.
- *
- * What it does:
- * - Renders a 3D GLB model of the watch using the model-viewer web component
- * - Auto-rotates and provides interactive orbit controls
- * - Supports camera configuration for proper framing
- *
- * Where it is used:
- * Integrated into ConfiguratorPage as a replacement for the 2D SVG illustration.
+ * Watch3DModel Component
+ * 
+ * CORE FUNCTIONALITY:
+ * This component acts as an interactive 3D wrapper for the watch configurator.
+ * It uses the Google <model-viewer> web component to render GLB files and
+ * provides a custom API to modify materials (colors, textures) in real-time.
+ * 
+ * 3D MATERIAL ENGINE:
+ * - Traverses the model's material tree on every selection change.
+ * - Matches material names (e.g., "strap", "bezel") to apply custom hex colors.
+ * - Supports a "Material Backup" system to restore original textures when 'Original' is selected.
+ * 
+ * AR (AUGMENTED REALITY) SYSTEM:
+ * - Detects device type (Mobile vs Desktop).
+ * - Mobile: Triggers native AR (Quick Look for iOS, Scene Viewer for Android).
+ * - Desktop: Opens a Portal-based Modal with a QR Code for mobile handoff.
  */
 
 import React, { useEffect, useRef, useState } from 'react'
@@ -47,12 +50,15 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
             if (!viewer || !viewer.model || !viewer.model.materials) return;
 
             const materials = viewer.model.materials;
-            
+
             materials.forEach(material => {
                 const name = material.name.toLowerCase();
-                
+
                 if (material.pbrMetallicRoughness) {
-                    // Backup original material properties if not already saved for this model
+                    // --- THE MATERIAL BACKUP SYSTEM ---
+                    // Since model-viewer modifies the GLB in memory, we must save the
+                    // original textures/colors on the first load. This allows the 
+                    // 'Original' color swatch to perfectly restore the designer's intent.
                     if (!originalMaterials.current[name]) {
                         originalMaterials.current[name] = {
                             baseColorFactor: material.pbrMetallicRoughness.baseColorFactor.slice(),
@@ -71,7 +77,7 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
                             material.pbrMetallicRoughness.setRoughnessFactor(original.roughnessFactor);
                         } else {
                             material.pbrMetallicRoughness.setBaseColorFactor(hexToRgba(strapOption.color));
-                            
+
                             if (strapOption.id.includes('leather') || strapOption.id.includes('nato')) {
                                 material.pbrMetallicRoughness.setMetallicFactor(0.0);
                                 material.pbrMetallicRoughness.setRoughnessFactor(0.8);
@@ -80,7 +86,7 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
                                 material.pbrMetallicRoughness.setRoughnessFactor(0.2);
                             }
                         }
-                    } 
+                    }
                     // Update Bezel Material
                     else if (name.includes('bezel') || name.includes('urtavla_primaropaquetext')) {
                         if (bezelOption.color === 'original') {
@@ -91,7 +97,7 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
                             material.pbrMetallicRoughness.setBaseColorFactor(hexToRgba(bezelOption.color));
                             material.pbrMetallicRoughness.setMetallicFactor(0.9);
                             material.pbrMetallicRoughness.setRoughnessFactor(0.2);
-                            
+
                             if (bezelOption.label.includes('Ceramic')) {
                                 material.pbrMetallicRoughness.setMetallicFactor(0.1);
                                 material.pbrMetallicRoughness.setRoughnessFactor(0.05);
@@ -109,7 +115,7 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
                             material.pbrMetallicRoughness.setMetallicFactor(0.0);
                             material.pbrMetallicRoughness.setRoughnessFactor(0.4);
                         }
-                    } 
+                    }
                     // Update Case Material
                     else if (name.includes('case') || name.includes('screws') || name.includes('silver') || name.includes('brushed aluminum') || name.includes('back plate') || name.includes('metal') || name.includes('scene_-_root')) {
                         if (caseOption.color === 'original') {
@@ -121,7 +127,7 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
                             material.pbrMetallicRoughness.setMetallicFactor(0.9);
                             material.pbrMetallicRoughness.setRoughnessFactor(0.2);
                         }
-                    } 
+                    }
                     // Make sure glass is transparent and shiny
                     else if (name.includes('glass')) {
                         material.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1, 0.3]);
@@ -136,7 +142,7 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
         const viewer = viewerRef.current;
         if (viewer) {
             viewer.addEventListener('load', updateMaterials);
-            
+
             // If the model is already loaded (e.g. on prop updates), update immediately
             if (viewer.model && viewer.model.materials) {
                 updateMaterials();
@@ -156,24 +162,28 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
     const isMobileDevice = () => {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const isMobileUA = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(userAgent);
-        
+
         // Browser inspectors (like Chrome) don't always spoof the UA correctly, 
         // so we also check screen width and touch capability.
         const isSmallScreen = window.innerWidth <= 768;
         const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        
+
         return isMobileUA || (isSmallScreen && isTouch) || (window.innerWidth <= 600);
     };
 
+    /**
+     * handleArClick
+     * Manages the "View in AR" experience across different devices.
+     */
     const handleArClick = () => {
         const viewer = viewerRef.current;
         if (!viewer) return;
 
+        // On real mobile devices, we call the native AR engine directly.
+        // On desktops, we show the QR code so the user can scan and switch to mobile.
         if (isMobileDevice()) {
-            // Mobile/Tablet/Inspector -> trigger AR directly
             viewer.activateAR();
         } else {
-            // Desktop -> show QR code
             setShowQrModal(true);
         }
     };
@@ -186,12 +196,17 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
                 auto-rotate="true"
                 auto-rotate-delay="0"
                 camera-controls="true"
+                // camera-orbit: specific to each model to ensure the watch is framed perfectly
                 camera-orbit={selectedModel.cameraOrbit || "245deg 40deg auto"}
                 shadow-intensity="1"
-                exposure="0.85"
-                ar
-                ar-modes="webxr scene-viewer quick-look"
-                ar-scale="auto"
+                exposure="0.85" // High exposure for luxury lighting
+                ar // Enables AR capabilities
+                ar-modes="webxr scene-viewer quick-look" // Order of preference for AR tech
+                ar-scale="auto" // Prevents the watch from appearing as a 2-meter giant
+                ar-placement="floor" // Looks for flat surfaces (tables/floors)
+                interaction-prompt="auto" // Shows a tutorial hand if the user is lost
+                min-camera-orbit="auto auto auto" // Unlocks vertical rotation limits
+                max-camera-orbit="auto auto auto" // Unlocks vertical rotation limits
                 touch-action="pan-y"
                 style={{
                     width: '100%',
@@ -202,24 +217,26 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
             >
             </model-viewer>
 
-            {/* Premium AR Button (Now outside the slot so it's always visible) */}
-            <button 
-                className="cfg-ar-button"
-                onClick={handleArClick}
-            >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 7V5a2 2 0 0 1 2-2h2" />
-                    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-                    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-                    <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
-                    <circle cx="12" cy="12" r="3" />
-                    <path d="M12 7v2" />
-                    <path d="M12 15v2" />
-                    <path d="M17 12h-2" />
-                    <path d="M9 12H7" />
-                </svg>
-                View in AR
-            </button>
+            {/* Premium AR Button (Now only visible on desktop to trigger the QR code) */}
+            {!isMobileDevice() && (
+                <button 
+                    className="cfg-ar-button"
+                    onClick={handleArClick}
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 7V5a2 2 0 0 1 2-2h2" /> {/* Draws the top-left corner of a square */}
+                        <path d="M17 3h2a2 2 0 0 1 2 2v2" /> {/* Draws the top-right corner of a square */}
+                        <path d="M21 17v2a2 2 0 0 1-2 2h-2" /> {/* Draws the bottom-right corner of a square */}
+                        <path d="M7 21H5a2 2 0 0 1-2-2v-2" /> {/* Draws the bottom-left corner of a square */}
+                        <circle cx="12" cy="12" r="3" /> {/* Draws a circle in the center */}
+                        <path d="M12 7v2" /> {/* Draws a vertical line from the center upwards */}
+                        <path d="M12 15v2" /> {/* Draws a vertical line from the center downwards */}
+                        <path d="M17 12h-2" /> {/* Draws a horizontal line from the center to the right */}
+                        <path d="M9 12H7" /> {/* Draws a horizontal line from the center to the left */}
+                    </svg>
+                    View in AR
+                </button>
+            )}
 
             {/* QR Code Modal for Desktop - Rendered via Portal to be on top of everything */}
             {showQrModal && createPortal(
@@ -229,18 +246,19 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
                         <h3 className="cfg-qr-title">Try it in your room</h3>
                         <p className="cfg-qr-desc">Scan this code with your phone camera to view this watch in Augmented Reality.</p>
                         <div className="cfg-qr-code-wrap">
-                            <img 
+                            <img
                                 src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
                                     window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                                    ? 'https://van-der-linde1.vercel.app/configurator'
-                                    : window.location.href
-                                )}`} 
-                                alt="QR Code" 
+                                        ? 'https://van-der-linde1.vercel.app/configurator'
+                                        : window.location.href
+                                )}`}
+                                alt="QR Code"
                                 className="cfg-qr-code"
                             />
                         </div>
                         <div className="cfg-qr-footer">
                             <span>Supported on iOS & Android</span>
+                            <p className="cfg-qr-browser-note">For best results, use Safari (iOS) or Chrome (Android)</p>
                         </div>
                     </div>
                 </div>,
