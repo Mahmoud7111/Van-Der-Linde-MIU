@@ -1,4 +1,4 @@
-﻿/*
+/*
   File: variables.css
 
   What this file is:
@@ -71,7 +71,7 @@
   --z-sticky: 200;
   --z-modal: 1000;
   --z-toast: 1100;
-  --z-cursor: 1200;
+  --z-cursor: 10000;
 
   /*
     Transition timing tokens:

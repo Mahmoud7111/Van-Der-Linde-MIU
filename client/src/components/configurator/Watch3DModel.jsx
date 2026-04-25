@@ -14,7 +14,8 @@
  * Integrated into ConfiguratorPage as a replacement for the 2D SVG illustration.
  */
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 // Helper to convert hex like '#C9A84C' to [r, g, b, a] format expected by model-viewer
 const hexToRgba = (hex) => {
@@ -149,22 +150,89 @@ export default function Watch3DModel({ selectedModel, caseOption, bezelOption, d
         };
     }, [selectedModel, caseOption, bezelOption, dialOption, strapOption]);
 
+    const [showQrModal, setShowQrModal] = useState(false);
+
+    const handleArClick = () => {
+        const viewer = viewerRef.current;
+        if (!viewer) return;
+
+        // Check if AR is supported on this device
+        if (viewer.canActivateAR) {
+            viewer.activateAR();
+        } else {
+            // On desktop, show QR code modal
+            setShowQrModal(true);
+        }
+    };
+
     return (
-        <model-viewer
-            ref={viewerRef}
-            src={selectedModel.path}
-            auto-rotate="true"
-            auto-rotate-delay="0"
-            camera-controls="true"
-            camera-orbit={selectedModel.cameraOrbit || "245deg 40deg auto"}
-            shadow-intensity="1"
-            exposure="0.85"
-            style={{
-                width: '100%',
-                height: '100%',
-                background: 'transparent'
-            }}
-            title={`Watch: ${caseOption.label} case, ${bezelOption.label} bezel, ${dialOption.label} dial, ${strapOption.label} strap`}
-        />
+        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <model-viewer
+                ref={viewerRef}
+                src={selectedModel.path}
+                auto-rotate="true"
+                auto-rotate-delay="0"
+                camera-controls="true"
+                camera-orbit={selectedModel.cameraOrbit || "245deg 40deg auto"}
+                shadow-intensity="1"
+                exposure="0.85"
+                ar
+                ar-modes="webxr scene-viewer quick-look"
+                ar-scale="auto"
+                touch-action="pan-y"
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'transparent'
+                }}
+                title={`Watch: ${caseOption.label} case, ${bezelOption.label} bezel, ${dialOption.label} dial, ${strapOption.label} strap`}
+            >
+            </model-viewer>
+
+            {/* Premium AR Button (Now outside the slot so it's always visible) */}
+            <button 
+                className="cfg-ar-button"
+                onClick={handleArClick}
+            >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                    <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M12 7v2" />
+                    <path d="M12 15v2" />
+                    <path d="M17 12h-2" />
+                    <path d="M9 12H7" />
+                </svg>
+                View in AR
+            </button>
+
+            {/* QR Code Modal for Desktop - Rendered via Portal to be on top of everything */}
+            {showQrModal && createPortal(
+                <div className="cfg-qr-overlay" onClick={() => setShowQrModal(false)}>
+                    <div className="cfg-qr-modal" onClick={e => e.stopPropagation()}>
+                        <button className="cfg-qr-close" onClick={() => setShowQrModal(false)}>&times;</button>
+                        <h3 className="cfg-qr-title">Try it in your room</h3>
+                        <p className="cfg-qr-desc">Scan this code with your phone camera to view this watch in Augmented Reality.</p>
+                        <div className="cfg-qr-code-wrap">
+                            <img 
+                                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                                    window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                                    ? 'https://van-der-linde1.vercel.app/configurator'
+                                    : window.location.href
+                                )}`} 
+                                alt="QR Code" 
+                                className="cfg-qr-code"
+                            />
+                        </div>
+                        <div className="cfg-qr-footer">
+                            <span>Supported on iOS & Android</span>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+        </div>
     )
 }
