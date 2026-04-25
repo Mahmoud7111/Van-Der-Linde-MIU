@@ -92,8 +92,8 @@
 
 .cfg-preview__stage {
   width: 100%;
-  max-width: 300px;
-  aspect-ratio: 220 / 380;
+  max-width: 450px;
+  aspect-ratio: 1 / 1;
   position: relative;
   display: flex;
   align-items: center;
