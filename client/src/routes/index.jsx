@@ -14,7 +14,7 @@
  * Imported by main.jsx and passed into <RouterProvider router={router} />.
  */
 import { lazy } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import PrivateRoute from '@/routes/PrivateRoute'
 import AdminRoute from '@/routes/AdminRoute'
@@ -30,8 +30,6 @@ import ErrorPage from '@/pages/info/ErrorPage.jsx'  // ← regular import, not l
 //! // With lazy — only the visited page's code downloads on first visit, other pages load when visited later.
 const HomePage = lazy(() => import('@/pages/home/HomePage.jsx'))
 const ShopPage = lazy(() => import('@/pages/shop/ShopPage.jsx'))
-const ShopMenPage = lazy(() => import('@/pages/shop/ShopMenPage.jsx'))
-const ShopWomenPage = lazy(() => import('@/pages/shop/ShopWomenPage.jsx'))
 const ProductDetailPage = lazy(() => import('@/pages/product/ProductDetailPage.jsx'))
 
 const CartPage = lazy(() => import('@/pages/cart/CartPage.jsx'))
@@ -48,6 +46,7 @@ const WishlistPage = lazy(() => import('@/pages/account/WishlistPage.jsx'))
 
 const AboutPage = lazy(() => import('@/pages/info/AboutPage.jsx'))
 const CollectionsPage = lazy(() => import('@/pages/info/CollectionsPage.jsx'))
+const CollectionDetailPage = lazy(() => import('@/pages/info/CollectionDetailPage.jsx'))
 const ServicesPage = lazy(() => import('@/pages/info/ServicesPage.jsx'))
 const ContactPage = lazy(() => import('@/pages/info/ContactPage.jsx'))
 const FaqPage = lazy(() => import('@/pages/info/FaqPage.jsx'))
@@ -65,6 +64,21 @@ const ConfiguratorPage = lazy(() => import('@/pages/configurator/ConfiguratorPag
 const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard.jsx'))
 const ManageProducts = lazy(() => import('@/pages/admin/ManageProducts.jsx'))
 const ManageOrders = lazy(() => import('@/pages/admin/ManageOrders.jsx'))
+
+const getShopFilters = (request, defaultGender = 'all') => {
+  const url = new URL(request.url)
+
+  return {
+    category: url.searchParams.get('category') || 'all',
+    search: url.searchParams.get('search') || '',
+    brand: url.searchParams.get('brand') || 'all',
+    gender: url.searchParams.get('gender') || defaultGender,
+    rating: url.searchParams.get('rating') || 'all',
+    minPrice: url.searchParams.get('minPrice') || '',
+    maxPrice: url.searchParams.get('maxPrice') || '',
+    sort: url.searchParams.get('sort') || 'default',
+  }
+}
 
 // Exported router consumed by RouterProvider in main.jsx.
 export const router = createBrowserRouter([
@@ -96,28 +110,30 @@ export const router = createBrowserRouter([
         path: 'shop',                   //<- the URL
         element: <ShopPage />,         //<- the page component rendered at that URL
         loader: ({ request }) => {    // <- data to fetch BEFORE rendering
-          // Read query string directly from loader request URL.
-          const url = new URL(request.url)
-
-          // Build filter object expected by watchService.
-          const filters = {
-            category: url.searchParams.get('category') || 'all',
-            search: url.searchParams.get('search') || '',
-            sort: url.searchParams.get('sort') || 'default',
-          }
-
-          return watchService.getAll(filters)
+          return watchService.getAll(getShopFilters(request))
         },
       },
       {
         path: 'shop/men',
-        element: <ShopMenPage />,
-        loader: () => watchService.getAll({ gender: 'men' }),
+        element: <CollectionDetailPage />,
+        loader: async () => {
+          const [collection, watches] = await Promise.all([
+            collectionService.getBySlug('mens-collection'),
+            watchService.getAll(),
+          ])
+          return { collection, watches }
+        },
       },
       {
         path: 'shop/women',
-        element: <ShopWomenPage />,
-        loader: () => watchService.getAll({ gender: 'women' }),
+        element: <CollectionDetailPage />,
+        loader: async () => {
+          const [collection, watches] = await Promise.all([
+            collectionService.getBySlug('womens-collection'),
+            watchService.getAll(),
+          ])
+          return { collection, watches }
+        },
       },
       {
         path: 'watch/:id',
@@ -158,13 +174,17 @@ export const router = createBrowserRouter([
 
       // Account routes requiring authentication; loaders prefetch user order data before render.
       {
-        path: 'profile',
+        path: 'account',
         element: (
           <PrivateRoute>
             <AccountPage />
           </PrivateRoute>
         ),
         loader: () => orderService.getMyOrders(), // Account page shows recent orders, so we preload them here. In a real app, we might have a separate endpoint for just the recent orders summary to optimize this loader.
+      },
+      {
+        path: 'profile',
+        element: <Navigate to="/account" replace />,
       },
       {
         path: 'orders',
@@ -185,7 +205,22 @@ export const router = createBrowserRouter([
       },
 
       // Informational and marketing pages.
-      { path: 'collections', element: <CollectionsPage /> },
+      {
+        path: 'collections',
+        element: <CollectionsPage />,
+        loader: () => collectionService.getAll(),
+      },
+      {
+        path: 'collections/:slug',
+        element: <CollectionDetailPage />,
+        loader: async ({ params }) => {
+          const [collection, watches] = await Promise.all([
+            collectionService.getBySlug(params.slug),
+            watchService.getAll(),
+          ])
+          return { collection, watches }
+        },
+      },
       { path: 'services', element: <ServicesPage /> },
       { path: 'about', element: <AboutPage /> },
       { path: 'faq', element: <FaqPage /> },

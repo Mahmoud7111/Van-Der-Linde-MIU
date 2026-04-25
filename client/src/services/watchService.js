@@ -12,6 +12,13 @@
  * - Route loaders in routes/index.jsx prefetch watch lists and watch detail data.
  * - Shop, product detail, and admin management screens consume these methods.
  */
+
+/*
+axiosInstance is used only for real API calls, not for the mock data.
+The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
+and will not use it if USE_MOCK is true (mock mode).
+*/
+
 import api from '@/api/axiosInstance'
 import { USE_MOCK } from '@/utils/constants'
 import products from '@/data/products.json'
@@ -32,6 +39,34 @@ const mock = {
     if (filters.search) {
       const normalizedSearch = String(filters.search).toLowerCase().trim()
       result = result.filter((item) => item.name.toLowerCase().includes(normalizedSearch))
+    }
+
+    // Filter by brand when a specific brand is selected.
+    if (filters.brand && filters.brand !== 'all') {
+      result = result.filter((item) => item.brand === filters.brand)
+    }
+
+    // Filter by gender when selected.
+    if (filters.gender && filters.gender !== 'all') {
+      result = result.filter((item) => item.gender === filters.gender)
+    }
+
+    // Filter by minimum rating threshold.
+    if (filters.rating && filters.rating !== 'all') {
+      const minRating = Number.parseFloat(filters.rating)
+      if (!Number.isNaN(minRating)) {
+        result = result.filter((item) => Number(item.rating) >= minRating)
+      }
+    }
+
+    // Filter by price range when provided.
+    const minPrice = Number.parseFloat(filters.minPrice)
+    const maxPrice = Number.parseFloat(filters.maxPrice)
+    if (!Number.isNaN(minPrice)) {
+      result = result.filter((item) => Number(item.price) >= minPrice)
+    }
+    if (!Number.isNaN(maxPrice)) {
+      result = result.filter((item) => Number(item.price) <= maxPrice)
     }
 
     // Apply sorting based on selected option from shop controls.

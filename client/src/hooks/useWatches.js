@@ -1,6 +1,5 @@
-export default function UseWatches() {
-  return null;
-}
+import { useEffect, useState } from 'react'
+import { watchService } from '@/services/watchService'
 
 //! MIGHT DELETE THIS FILE — depends on how we handle data fetching for non-route components. If we can do it all with route loaders + useLoaderData, we won't need this at all. But if we have components that need to fetch their own data inside pages, this is the pattern we'll use.
 //! RelatedWatches section   → needs DIFFERENT data (same category) ← useWatches needed here
@@ -41,3 +40,43 @@ export default function UseWatches() {
  * - pages/product/ProductDetailPage.jsx (RelatedWatches section)
  * - components/product/ProductGrid.jsx (when used outside routes)
  */
+
+export function useWatches(filters = {}) {
+  const [watches, setWatches] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const filtersKey = JSON.stringify(filters)
+
+  useEffect(() => {
+    let isActive = true
+    const parsedFilters = JSON.parse(filtersKey)
+
+    Promise.resolve()
+      .then(() => {
+        if (!isActive) return null
+        setLoading(true)
+        setError(null)
+        return watchService.getAll(parsedFilters)
+      })
+      .then((data) => {
+        if (!isActive || data == null) return
+        setWatches(data)
+      })
+      .catch((err) => {
+        if (!isActive) return
+        setError(err)
+      })
+      .finally(() => {
+        if (!isActive) return
+        setLoading(false)
+      })
+
+    return () => {
+      isActive = false
+    }
+  }, [filtersKey])
+
+  return { watches, loading, error }
+}
+
+export default useWatches

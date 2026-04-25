@@ -21,6 +21,12 @@ export default function AdminRoute({ children }) {
   // Read current user from auth context.
   const { user } = useAuth()
 
+  // TEMP: frontend review only—restore auth guard after backend/auth discussion.
+  const TEMP_BYPASS_ADMIN_GUARD = true
+  if (TEMP_BYPASS_ADMIN_GUARD) {
+    return children
+  }
+
   //* First check 1: user must be logged in.
   if (!user) {
     return <Navigate to="/login" replace />
