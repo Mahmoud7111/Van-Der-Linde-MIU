@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion as Motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import PageTransition from '@/components/common/PageTransition'
 import Badge from '@/components/common/Badge'
@@ -7,13 +8,30 @@ import Button from '@/components/common/Button'
 import { getInitials } from '@/utils/formatters'
 import './AccountPage.css'
 
+const fadeContainer = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.08,
+    },
+  },
+}
+
+const fadeItem = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0 },
+}
+
 export default function AccountPage() {
+  // Get current user and auth actions
   // auth context provides the current user plus actions to update auth profile state
   const { user, updateProfile, logout } = useAuth()
   // used to decide what to show: member UI or guest UI
   const isAuthenticated = Boolean(user)
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  // Form state for editable fields
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -109,8 +127,8 @@ export default function AccountPage() {
           </header>
 
           {isAuthenticated ? (
-            <div className="account-page__grid">
-              <article className="account-card">
+            <Motion.div className="account-page__grid" variants={fadeContainer} initial="hidden" animate="show">
+              <Motion.article className="account-card" variants={fadeItem}>
                 <h2 className="account-card__title">Profile Details</h2>
                 <div className="account-profile-form">
                   <div className="account-card__rows">
@@ -180,9 +198,9 @@ export default function AccountPage() {
                     </Button>
                   </div>
                 </div>
-              </article>
+              </Motion.article>
 
-              <article className="account-card">
+              <Motion.article className="account-card" variants={fadeItem}>
                 <h2 className="account-card__title">Quick Actions</h2>
                 <div className="account-actions">
                   <Link className="account-link-btn" to="/orders">
@@ -201,10 +219,10 @@ export default function AccountPage() {
                     Logout
                   </Button>
                 </div>
-              </article>
-            </div>
+              </Motion.article>
+            </Motion.div>
           ) : (
-            <article className="account-card account-card--guest">
+            <Motion.article className="account-card account-card--guest" variants={fadeItem} initial="hidden" animate="show">
               <h2 className="account-card__title">Welcome</h2>
               <p className="account-card__guest-copy">
                 Sign in to view your orders, wishlist, and account details.
@@ -217,7 +235,7 @@ export default function AccountPage() {
                   Register
                 </Link>
               </div>
-            </article>
+            </Motion.article>
           )}
         </div>
       </section>

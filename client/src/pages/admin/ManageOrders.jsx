@@ -1,5 +1,6 @@
 import { useLoaderData, Link } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
+import { motion as Motion } from 'framer-motion'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import { useCurrency } from '@/context/CurrencyContext'
@@ -7,6 +8,21 @@ import { orderService } from '@/services/orderService'
 import { formatDate } from '@/utils/formatters'
 import { ORDER_STATUS } from '@/utils/constants'
 import './ManageOrders.css'
+
+const fadeContainer = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.08,
+    },
+  },
+}
+
+const fadeItem = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0 },
+}
 
 function getStatusVariant(status) {
   const s = (status || '').toLowerCase()
@@ -222,28 +238,28 @@ export default function ManageOrders() {
                 High-level progress across pending, delivered, and revenue milestones.
               </p>
             </div>
-            <div className="admin-orders__summary">
-              <article className="admin-orders__summary-card">
+            <Motion.div className="admin-orders__summary" variants={fadeContainer} initial="hidden" animate="show">
+              <Motion.article className="admin-orders__summary-card" variants={fadeItem}>
                 <p className="admin-orders__summary-label">Total orders</p>
                 <p className="admin-orders__summary-value">{summary.total}</p>
                 <p className="admin-orders__summary-meta">All-time orders</p>
-              </article>
-              <article className="admin-orders__summary-card">
+              </Motion.article>
+              <Motion.article className="admin-orders__summary-card" variants={fadeItem}>
                 <p className="admin-orders__summary-label">Pending</p>
                 <p className="admin-orders__summary-value">{summary.pending}</p>
                 <p className="admin-orders__summary-meta">Awaiting fulfillment</p>
-              </article>
-              <article className="admin-orders__summary-card">
+              </Motion.article>
+              <Motion.article className="admin-orders__summary-card" variants={fadeItem}>
                 <p className="admin-orders__summary-label">Delivered</p>
                 <p className="admin-orders__summary-value">{summary.delivered}</p>
                 <p className="admin-orders__summary-meta">Completed journeys</p>
-              </article>
-              <article className="admin-orders__summary-card">
+              </Motion.article>
+              <Motion.article className="admin-orders__summary-card" variants={fadeItem}>
                 <p className="admin-orders__summary-label">Revenue</p>
                 <p className="admin-orders__summary-value">{formatPrice(summary.revenue)}</p>
                 <p className="admin-orders__summary-meta">Gross sales volume</p>
-              </article>
-            </div>
+              </Motion.article>
+            </Motion.div>
           </section>
 
           <section className="admin-orders__section" aria-labelledby="admin-orders-table">
@@ -325,13 +341,13 @@ export default function ManageOrders() {
                   </tr>
                 </thead>
 
-                <tbody>
+                <Motion.tbody variants={fadeContainer} initial="hidden" animate="show">
                   {filteredOrders.length === 0 ? (
-                    <tr>
+                    <Motion.tr variants={fadeItem}>
                       <td className="admin-orders__empty" colSpan={6}>
                         No orders match the current filters.
                       </td>
-                    </tr>
+                    </Motion.tr>
                   ) : (
                     filteredOrders.map((order) => {
                       const id = order?._id || order?.id || '-'
@@ -342,7 +358,7 @@ export default function ManageOrders() {
                       const total = order?.totalPrice ?? order?.total ?? 0
 
                       return (
-                        <tr key={id}>
+                        <Motion.tr key={id} variants={fadeItem}>
                           <td className="admin-orders__id">#{String(id).slice(-8)}</td>
                           <td className="admin-orders__date">{formatDate(date) || '-'}</td>
                           <td>
@@ -362,11 +378,11 @@ export default function ManageOrders() {
                               </Link>
                             </div>
                           </td>
-                        </tr>
+                        </Motion.tr>
                       )
                     })
                   )}
-                </tbody>
+                </Motion.tbody>
               </table>
             </div>
           </section>
