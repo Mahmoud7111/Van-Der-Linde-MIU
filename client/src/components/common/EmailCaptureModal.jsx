@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiMail, FiCheckCircle } from 'react-icons/fi';
 import Button from './Button';
+import Badge from './Badge';
 import watchImage from '@/assets/images/Photos/About.png';
 import './EmailCaptureModal.css';
 
@@ -70,7 +71,9 @@ const EmailCaptureModal = () => {
               <div className="email-modal-content-side">
                 {!isSubmitted ? (
                   <div className="email-modal-form-content">
-                    <span className="email-modal-badge">The Private Circle</span>
+                    <div className="email-modal-badge-wrapper">
+                      <Badge variant="primary">The Private Circle</Badge>
+                    </div>
                     <h2>Unlock Exclusive <br /> Privileges</h2>
                     <p>
                       Join our inner circle for priority access to new collections,

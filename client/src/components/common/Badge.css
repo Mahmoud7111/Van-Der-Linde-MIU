@@ -13,6 +13,8 @@
 	text-transform: uppercase;
 	line-height: 1;
 	white-space: nowrap;
+	/* Smooth transition for all animatable properties using global timing variable */
+	transition: all var(--transition-normal);
 }
 
 .badge--sm {

@@ -79,6 +79,7 @@
 }
 
 /* Content Side */
+/* Right/left content panel inside email modal */
 .email-modal-content-side {
   flex: 1;
   padding: 4rem;
@@ -88,12 +89,11 @@
   background: var(--color-surface);
 }
 
-.email-modal-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.3em;
-  color: var(--color-gold);
+
+/* Wrapper for badge element (spacing control) */
+/* Wrapper for badge element (spacing control) */
+
+.email-modal-badge-wrapper {
   margin-bottom: 1.5rem;
 }
 
