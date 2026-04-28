@@ -153,6 +153,8 @@
   font-size: 13px;
   color: #2b2924;
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .auth-vdl-input::placeholder {
