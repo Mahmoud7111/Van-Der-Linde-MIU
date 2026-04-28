@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import PageTransition from '@/components/common/PageTransition'
@@ -8,8 +8,17 @@ import { getInitials } from '@/utils/formatters'
 import './AccountPage.css'
 
 export default function AccountPage() {
-  const { user, logout } = useAuth()
-  const isAuthenticated = Boolean(user)
+  //auth context provides the current user plus actions to update  auth profile state
+  const { user, updateProfile, logout } = useAuth()
+  // used to deciede what to show member ui or guest ui  const isAuthenticated = Boolean(user)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+  })
 
   const fullName = useMemo(() => {
     const first = user?.firstName || ''
@@ -19,6 +28,51 @@ export default function AccountPage() {
   }, [user])
 
   const initials = useMemo(() => getInitials(fullName) || 'GU', [fullName])
+
+  useEffect(() => {
+    setFormData({
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+    })
+    setIsEditing(false)
+  }, [user])
+
+  const handleFieldChange = (event) => {
+    const { name, value } = event.target
+    setFormData((current) => ({ ...current, [name]: value }))
+  }
+
+  const handleEdit = () => {
+    setFormData({
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+    })
+    setIsEditing(true)
+  }
+
+  const handleSave = async () => {
+    setIsSaving(true)
+
+    try {
+      await updateProfile(formData)
+      setIsEditing(false)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handlePrimaryAction = async () => {
+    if (isEditing) {
+      await handleSave()
+      return
+    }
+
+    handleEdit()
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -57,22 +111,72 @@ export default function AccountPage() {
             <div className="account-page__grid">
               <article className="account-card">
                 <h2 className="account-card__title">Profile Details</h2>
-                <div className="account-card__rows">
-                  <div className="account-row">
-                    <span>First Name</span>
-                    <strong>{user?.firstName || '-'}</strong>
+                <div className="account-profile-form">
+                  <div className="account-card__rows">
+                    <label className="account-field">
+                      <span>First Name</span>
+                      {isEditing ? (
+                        <input
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleFieldChange}
+                          className="account-input"
+                          autoComplete="given-name"
+                        />
+                      ) : (
+                        <strong>{user?.firstName || '-'}</strong>
+                      )}
+                    </label>
+                    <label className="account-field">
+                      <span>Last Name</span>
+                      {isEditing ? (
+                        <input
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleFieldChange}
+                          className="account-input"
+                          autoComplete="family-name"
+                        />
+                      ) : (
+                        <strong>{user?.lastName || '-'}</strong>
+                      )}
+                    </label>
+                    <label className="account-field">
+                      <span>Email</span>
+                      {isEditing ? (
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleFieldChange}
+                          className="account-input"
+                          autoComplete="email"
+                        />
+                      ) : (
+                        <strong>{user?.email || '-'}</strong>
+                      )}
+                    </label>
+                    <label className="account-field">
+                      <span>Phone</span>
+                      {isEditing ? (
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleFieldChange}
+                          className="account-input"
+                          autoComplete="tel"
+                        />
+                      ) : (
+                        <strong>{user?.phone || '-'}</strong>
+                      )}
+                    </label>
                   </div>
-                  <div className="account-row">
-                    <span>Last Name</span>
-                    <strong>{user?.lastName || '-'}</strong>
-                  </div>
-                  <div className="account-row">
-                    <span>Email</span>
-                    <strong>{user?.email || '-'}</strong>
-                  </div>
-                  <div className="account-row">
-                    <span>Phone</span>
-                    <strong>{user?.phone || '-'}</strong>
+
+                  <div className="account-profile-actions">
+                    <Button type="button" onClick={handlePrimaryAction} isLoading={isSaving}>
+                      {isEditing ? 'Save Changes' : 'Edit'}
+                    </Button>
                   </div>
                 </div>
               </article>

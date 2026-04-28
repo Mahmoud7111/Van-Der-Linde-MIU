@@ -6,7 +6,7 @@
  *
  * What it does:
  * - Restores session on refresh by validating stored token with `authService.getMe()`.
- * - Exposes login, register, and logout helpers.
+ * - Exposes login, register, update profile, and logout helpers.
  * - Prevents flash of wrong auth UI by rendering children only after initial check completes.
  *
  * Where it is used:
@@ -18,9 +18,10 @@ import { authService } from '@/services/authService'
 
 // Create auth context for user, loading state, and auth methods.
 const AuthContext = createContext(null)
-
+// Wraps the app and manages authentication lifecycle
 // Provider wraps app and controls auth lifecycle globally.
 export const AuthProvider = ({ children }) => {
+  // Stores current logged-in user (null = not authenticated)
   // Current authenticated user; null means not logged in.
   const [user, setUser] = useState(null)
 
@@ -86,6 +87,13 @@ export const AuthProvider = ({ children }) => {
     return result
   }
 
+  // Profile update action used by the account page.
+  const updateProfile = async (data) => {
+    const result = await authService.updateProfile(data)
+    setUser(result.user || result)
+    return result
+  }
+
   // Logout action used by header/account menus.
   const logout = async () => {
     try {
@@ -100,7 +108,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     // Block child rendering during initial auth restore to avoid wrong-route flash.
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   )
