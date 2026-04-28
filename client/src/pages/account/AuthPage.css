@@ -136,15 +136,15 @@
   flex-direction: column;
   gap: 8px;
 }
-
+/* Small uppercase label used above inputs */
 .auth-vdl-label {
-  font-size: 11px;
-  letter-spacing: 0.13em;
-  color: #6f695f;
+  font-size: 11px;/* Compact text size */
+  letter-spacing: 0.13em;/* Spaced-out letters for readability */
+  color: #6f695f;/* Muted text color */
   font-weight: 700;
   text-transform: uppercase;
 }
-
+/* Standard input field styling for auth forms */
 .auth-vdl-input {
   height: 42px;
   border: 1px solid #dfd6c8;
@@ -337,6 +337,40 @@
   top: 0;
   color: #ccb468;
   font-weight: 700;
+}
+
+/* Error alert */
+.auth-vdl-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.auth-vdl-alert--error {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #991b1b;
+}
+
+.auth-vdl-alert__icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.auth-vdl-alert__text {
+  flex: 1;
+}
+
+[data-theme='dark'] .auth-vdl-alert--error {
+  background: color-mix(in srgb, var(--color-error) 12%, var(--color-surface) 88%);
+  border-color: color-mix(in srgb, var(--color-error) 28%, transparent 72%);
+  color: color-mix(in srgb, var(--color-error) 92%, var(--color-dark) 8%);
 }
 
 /* responsive */

@@ -17,6 +17,7 @@ export default function RegisterPage() {
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   const {
     register,
@@ -40,6 +41,7 @@ export default function RegisterPage() {
   })
 
   const onSubmit = async (values) => {
+    setServerError('')
     try {
       const payload = {
         firstName: values.firstName?.trim(),
@@ -61,6 +63,7 @@ export default function RegisterPage() {
         error?.response?.data?.message ||
         error?.message ||
         'Could not create account'
+      setServerError(message)
       toast.error(message)
     }
   }
@@ -103,6 +106,12 @@ export default function RegisterPage() {
             </div>
 
             <form className="auth-vdl-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+              {serverError && (
+                <div className="auth-vdl-alert auth-vdl-alert--error" role="alert">
+                  <span className="auth-vdl-alert__icon">⚠</span>
+                  <span className="auth-vdl-alert__text">{serverError}</span>
+                </div>
+              )}
               <div className="auth-vdl-field">
                 <label htmlFor="firstName" className="auth-vdl-label">FIRST NAME</label>
                 <input
