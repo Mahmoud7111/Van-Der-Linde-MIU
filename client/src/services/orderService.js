@@ -71,31 +71,87 @@ const normalizeOrder = (order) => ({
 })
 
 const mockOrders = orders.map(normalizeOrder)
+/**
+ * Retrieve persisted orders from localStorage
+ * - Used to simulate backend order history
+ * - Returns empty array if nothing exists or parsing fails
+ */
+// Helper to get persisted user orders from localStorage (created during checkout).
+const getPersistedUserOrders = () => {
+  try {
+    const stored = localStorage.getItem('mock-user-orders')
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+/**
+ * Save user orders to localStorage
+ * - Used after checkout or order updates
+ * - Silently fails if storage is unavailable
+ */
+// Helper to save user orders to localStorage.
+const persistUserOrders = (userOrders) => {
+  try {
+    localStorage.setItem('mock-user-orders', JSON.stringify(userOrders))
+  } catch {
+    // Silent fail on storage errors
+  }
+}
 
 // Mock order service preserves async API signatures using Promise.resolve.
 const mock = {
   // User-facing loader for profile/order history routes.
-  getMyOrders: () => Promise.resolve(mockOrders),
+  // Returns both static demo orders and any orders created during this session.
+  getMyOrders: () => {
+    const userCreatedOrders = getPersistedUserOrders()
+    const allOrders = [...mockOrders, ...userCreatedOrders]
+    return Promise.resolve(allOrders)
+  },
 
   // Admin-facing list endpoint for full order management view.
-  getAll: () => Promise.resolve(mockOrders),
+  // Includes both static and user-created orders.
+  getAll: () => {
+    const userCreatedOrders = getPersistedUserOrders()
+    const allOrders = [...mockOrders, ...userCreatedOrders]
+    return Promise.resolve(allOrders)
+  },
 
   // Detail lookup for one order id.
-  getById: (id) => Promise.resolve(mockOrders.find((order) => order._id === id)),
+  getById: (id) => {
+    const userCreatedOrders = getPersistedUserOrders()
+    const allOrders = [...mockOrders, ...userCreatedOrders]
+    return Promise.resolve(allOrders.find((order) => order._id === id))
+  },
 
-  // Creates a new mock order after checkout and sets default pending status.
-  create: (data) =>
-    Promise.resolve(
-      normalizeOrder({
-        ...data,
-        _id: `order-${Date.now()}`,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      })
-    ),
+  // Creates a new mock order after checkout and persists it to localStorage.
+  create: (data) => {
+    const newOrder = normalizeOrder({
+      ...data,
+      _id: `order-${Date.now()}`,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    })
+    
+    // Persist the new order so it shows up in getMyOrders and order history.
+    const userOrders = getPersistedUserOrders()
+    userOrders.push(newOrder)
+    persistUserOrders(userOrders)
+    
+    return Promise.resolve(newOrder)
+  },
 
   // Simulates admin order status update.
-  updateStatus: (id, status) => Promise.resolve({ id, status }),
+  updateStatus: (id, status) => {
+    // Also update persisted user orders if it exists there.
+    const userOrders = getPersistedUserOrders()
+    const orderIndex = userOrders.findIndex((o) => o._id === id)
+    if (orderIndex !== -1) {
+      userOrders[orderIndex].status = status
+      persistUserOrders(userOrders)
+    }
+    return Promise.resolve({ id, status })
+  },
 }
 
 // Real order service mapped to backend Express routes.
