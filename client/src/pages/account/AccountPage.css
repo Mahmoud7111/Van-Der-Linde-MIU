@@ -1,14 +1,15 @@
+/* Main account page wrapper */
 .account-page {
   min-height: 100vh;
   background: var(--color-surface);
   padding: 28px 16px 40px;
 }
-
+/* Centered container with max width */
 .account-page__container {
   width: min(1100px, 100%);
   margin: 0 auto;
 }
-
+/* Header section with user info */
 .account-page__header {
   background: color-mix(in srgb, var(--color-surface) 70%, var(--color-white) 30%);
   border: 1px solid var(--color-border);
@@ -17,7 +18,7 @@
   gap: 16px;
   align-items: center;
 }
-
+/* Circular avatar with initials */
 .account-page__avatar {
   width: 64px;
   height: 64px;
@@ -85,21 +86,54 @@
   gap: 10px;
 }
 
-.account-row {
+.account-field {
   display: flex;
   justify-content: space-between;
   gap: 10px;
   border-bottom: 1px dashed var(--color-border);
   padding-bottom: 8px;
   font-size: 13px;
+  align-items: center;
 }
 
-.account-row span {
+.account-field span {
   color: var(--color-muted);
+  flex: 0 0 auto;
 }
 
-.account-row strong {
+.account-field strong {
   color: var(--color-dark);
+  text-align: right;
+  word-break: break-word;
+}
+
+.account-input {
+  width: min(100%, 260px);
+  margin-left: auto;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  color: var(--color-dark);
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13px;
+}
+
+.account-input:focus {
+  outline: 2px solid color-mix(in srgb, var(--color-gold) 45%, transparent 55%);
+  outline-offset: 1px;
+  border-color: var(--color-gold);
+}
+
+.account-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-profile-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .account-actions {
@@ -160,5 +194,17 @@
   .account-page__header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .account-field {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .account-field strong,
+  .account-input {
+    width: 100%;
+    margin-left: 0;
+    text-align: left;
   }
 }

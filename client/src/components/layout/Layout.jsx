@@ -18,7 +18,7 @@
  * ! routes/index.jsx tells the router: put all pages inside Layout
  */
 import { Suspense, useCallback, useEffect, useState } from 'react'
-import { Outlet, useNavigation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigation } from 'react-router-dom'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import EmailCaptureModal from '@/components/common/EmailCaptureModal'
@@ -35,10 +35,13 @@ import Chatbot from '@/components/features/Chatbot'
 export default function Layout() {
   // Router navigation state tells us when loaders or route transitions are in progress.
   const navigation = useNavigation()
+  const location = useLocation() // Provides current route info (pathname, search, etc.)
 
   // Loading bar appears whenever router is fetching/transitioning to a new route.
   const isLoading = navigation.state === 'loading'
   const [isSuspending, setIsSuspending] = useState(false)
+  const authPaths = ['/login', '/register']
+  const isAuthPage = authPaths.includes(location.pathname)
 
   const handleSuspenseStart = useCallback(() => setIsSuspending(true), [])
   const handleSuspenseEnd = useCallback(() => setIsSuspending(false), [])
@@ -53,8 +56,10 @@ export default function Layout() {
       <ClockHandCursor />
       <LoadingScreen isVisible={showLoader} />
 
-      {/* Shared top navigation across all pages. */}
-      <Header />
+      {!isAuthPage && (
+        /* Shared top navigation across all pages except the login screen. */
+        <Header />
+      )}
 
       {/*
         Main content area expands to fill vertical space.
@@ -84,8 +89,10 @@ export default function Layout() {
         </Suspense> 
       </main>
 
-      {/* Shared footer across all pages. */}
-      <Footer />
+      {!isAuthPage && (
+        /* Shared footer across all pages except the login screen. */
+        <Footer />
+      )}
 
       {/* Floating Chatbot button and window */}
       <Chatbot />

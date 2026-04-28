@@ -27,14 +27,18 @@ import mockAdmin from '@/data/admin.json'
 
 // Real auth service maps frontend actions to backend Express routes.
 const real = {
+  // Authenticate user and return { user, token }
   // POST /auth/login authenticates credentials and returns `{ user, token }`.
   login: (data) => api.post('/auth/login', data).then((response) => response.data),
-
+  // Register new user and return { user, token }
   // POST /auth/register creates account and returns `{ user, token }`.
   register: (data) => api.post('/auth/register', data).then((response) => response.data),
-
+  // Get current logged-in user from JWT
   // GET /auth/me returns current authenticated user profile from JWT context.
   getMe: () => api.get('/auth/me').then((response) => response.data),
+
+  // PATCH /auth/me updates the authenticated user's profile.
+  updateProfile: (data) => api.patch('/auth/me', data).then((response) => response.data),
 
   // POST /auth/logout invalidates session/token server-side when implemented.
   logout: () => api.post('/auth/logout').then((response) => response.data),
@@ -191,6 +195,45 @@ const mock = {
     }
 
     return Promise.resolve(toPublicUser(currentUser))
+  },
+  updateProfile: (data) => {
+    const users = readMockUsers()
+    const currentUserId = getCurrentMockUserId()
+
+    if (!currentUserId) {
+      return Promise.reject(new Error('No authenticated user found'))
+    }
+
+    const currentIndex = users.findIndex((user) => user._id === currentUserId)
+
+    if (currentIndex === -1) {
+      return Promise.reject(new Error('No authenticated user found'))
+    }
+
+    const normalizedEmail = normalizeEmail(data?.email)
+    const emailConflict = users.some(
+      (user) => user._id !== currentUserId && normalizeEmail(user.email) === normalizedEmail,
+    )
+
+    if (emailConflict) {
+      return Promise.reject(new Error('Email is already in use'))
+    }
+
+    const currentUser = users[currentIndex]
+    const nextUser = {
+      ...currentUser,
+      firstName: data?.firstName ?? currentUser.firstName ?? '',
+      lastName: data?.lastName ?? currentUser.lastName ?? '',
+      email: normalizedEmail || currentUser.email,
+      phone: data?.phone ?? currentUser.phone ?? '',
+    }
+
+    nextUser.name = `${nextUser.firstName || ''} ${nextUser.lastName || ''}`.trim() || nextUser.name || 'User'
+
+    users[currentIndex] = nextUser
+    writeMockUsers(users)
+
+    return Promise.resolve({ user: toPublicUser(nextUser) })
   },
   logout: () => {
     setCurrentMockUserId(null)
