@@ -8,9 +8,10 @@ import { getInitials } from '@/utils/formatters'
 import './AccountPage.css'
 
 export default function AccountPage() {
-  //auth context provides the current user plus actions to update  auth profile state
+  // auth context provides the current user plus actions to update auth profile state
   const { user, updateProfile, logout } = useAuth()
-  // used to deciede what to show member ui or guest ui  const isAuthenticated = Boolean(user)
+  // used to decide what to show: member UI or guest UI
+  const isAuthenticated = Boolean(user)
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({

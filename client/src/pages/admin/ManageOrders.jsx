@@ -1,4 +1,4 @@
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, Link } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
@@ -7,6 +7,15 @@ import { orderService } from '@/services/orderService'
 import { formatDate } from '@/utils/formatters'
 import { ORDER_STATUS } from '@/utils/constants'
 import './ManageOrders.css'
+
+function getStatusVariant(status) {
+  const s = (status || '').toLowerCase()
+  if (s === 'delivered') return 'success'
+  if (s === 'processing' || s === 'pending') return 'warning'
+  if (s === 'cancelled' || s === 'failed') return 'danger'
+  if (s === 'shipped') return 'info'
+  return 'default'
+}
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All statuses' },
@@ -307,71 +316,56 @@ export default function ManageOrders() {
               <table className="admin-orders__table">
                 <thead>
                   <tr>
-                    <th scope="col">Order</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Total</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Actions</th>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {filteredOrders.length === 0 && (
+                  {filteredOrders.length === 0 ? (
                     <tr>
                       <td className="admin-orders__empty" colSpan={6}>
                         No orders match the current filters.
                       </td>
                     </tr>
-                  )}
-                  {filteredOrders.map((order, index) => {
-                    const status = String(order?.status ?? '').toLowerCase()
-                    const itemCount = getItemCount(order)
-                    const itemLabel = itemCount === 1 ? '1 item' : `${itemCount} items`
-                    const paymentLabel = order?.isPaid ? 'Paid' : 'Payment pending'
-                    const statusLabel = getStatusLabel(status)
-                    const statusTone = getStatusTone(status)
+                  ) : (
+                    filteredOrders.map((order) => {
+                      const id = order?._id || order?.id || '-'
+                      const date = order?.createdAt || order?.date
+                      const status = order?.status || 'pending'
+                      const itemsCount =
+                        order?.items?.length ?? order?.products?.length ?? order?.totalItems ?? 0
+                      const total = order?.totalPrice ?? order?.total ?? 0
 
-                    return (
-                      <tr key={order?._id ?? `order-${index}`}>
-                        <th scope="row">
-                          <div className="admin-orders__order">
-                            <p className="admin-orders__order-id">{order?._id ?? 'Order ID'}</p>
-                            <p className="admin-orders__order-meta">
-                              {itemLabel} · {paymentLabel}
-                            </p>
-                          </div>
-                        </th>
-                        <td className="admin-orders__cell">
-                          <p className="admin-orders__customer">{getCustomerName(order)}</p>
-                          {getCustomerEmail(order) && (
-                            <span className="admin-orders__customer-email">{getCustomerEmail(order)}</span>
-                          )}
-                        </td>
-                        <td className="admin-orders__cell">{getOrderDate(order)}</td>
-                        <td className="admin-orders__cell">{formatPrice(getOrderTotal(order))}</td>
-                        <td className="admin-orders__cell">
-                          <span className={`admin-orders__status admin-orders__status--${statusTone}`}>
-                            {statusLabel}
-                          </span>
-                        </td>
-                        <td className="admin-orders__cell">
-                          <div className="admin-orders__actions">
-                            <Button variant="secondary" size="sm" onClick={() => handleViewOrder(order)}>
-                              View
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleUpdateStatus(order)}
-                              disabled={isUpdating}
-                            >
-                              {isUpdating ? 'Updating...' : 'Update'}
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  })}
+                      return (
+                        <tr key={id}>
+                          <td className="admin-orders__id">#{String(id).slice(-8)}</td>
+                          <td className="admin-orders__date">{formatDate(date) || '-'}</td>
+                          <td>
+                            <Badge variant={getStatusVariant(status)} size="sm">
+                              {status}
+                            </Badge>
+                          </td>
+                          <td className="admin-orders__items">{itemsCount}</td>
+                          <td className="admin-orders__total">{formatPrice(total)}</td>
+                          <td>
+                            <div className="admin-orders__actions">
+                              <Link to={`/order-confirmation?orderId=${id}`} className="admin-orders__link-btn">
+                                Details
+                              </Link>
+                              <Link to="/contact" className="admin-orders__link-btn">
+                                Help
+                              </Link>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
