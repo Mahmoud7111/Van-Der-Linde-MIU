@@ -98,6 +98,43 @@
   min-width: 0;
 }
 
+.shop-page__pagination {
+  margin-top: clamp(var(--space-lg), 3vw, var(--space-xl));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.shop-page__pagination-status {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-dark) 60%, var(--color-muted) 40%);
+}
+
+.shop-page__pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.shop-page__pagination-pages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.shop-page__pagination-button.btn--sm {
+  padding: 0.42rem 0.7rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
 @media (max-width: 900px) {
   .shop-page__meta {
     align-items: flex-start;
@@ -113,6 +150,10 @@
   .shop-page__sidebar {
     position: static;
   }
+
+  .shop-page__pagination-controls {
+    justify-content: space-between;
+  }
 }
 
 @media (max-width: 768px) {
@@ -126,5 +167,14 @@
 
   .shop-page__title {
     font-size: clamp(1.8rem, 7vw, 2.6rem);
+  }
+
+  .shop-page__pagination-controls {
+    gap: var(--space-xs);
+  }
+
+  .shop-page__pagination-button.btn--sm {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.62rem;
   }
 }
