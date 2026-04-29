@@ -237,3 +237,25 @@
     width: 100%;
   }
 }
+
+@media (max-width: 767px) {
+  .product-card__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: var(--space-xs);
+  }
+
+  .product-card__action {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .product-card .product-card__actions .product-card__action.btn--sm {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.56rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    border-radius: var(--radius-md);
+  }
+}
