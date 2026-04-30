@@ -40,11 +40,11 @@ export const ORDER_STATUS = {
 
 // Currency options shown in currency switcher and interpreted by CurrencyContext.
 export const CURRENCIES = [
-  { code: 'USD', symbol: '$', label: 'US Dollar' },
-  { code: 'EUR', symbol: '€', label: 'Euro' },
-  { code: 'EGP', symbol: 'E£', label: 'Egyptian Pound' },
-  { code: 'SAR', symbol: 'Rs', label: 'Saudi Riyal' },
-  { code: 'AED', symbol: 'ED£', label: 'UAE Dirham' },
+  { code: 'USD', symbol: '$', label: 'US Dollar', rate: 1 },
+  { code: 'EUR', symbol: '€', label: 'Euro', rate: 0.93 },
+  { code: 'EGP', symbol: 'E£', label: 'Egyptian Pound', rate: 47.8 },
+  { code: 'SAR', symbol: 'Rs', label: 'Saudi Riyal', rate: 3.75 },
+  { code: 'AED', symbol: 'ED£', label: 'UAE Dirham', rate: 3.67 },
 ]
 
 // Language options used by LanguageContext to set `lang`, `dir`, and translation lookup key.

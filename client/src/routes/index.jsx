@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Application router configuration using createBrowserRouter.
  *
  * What this file is:
@@ -197,11 +197,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'wishlist',
-        element: (
-          <PrivateRoute>
-            <WishlistPage />
-          </PrivateRoute>
-        ),
+        element: <WishlistPage />,
       },
 
       // Informational and marketing pages.

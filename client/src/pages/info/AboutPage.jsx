@@ -9,8 +9,8 @@ import recognitionImage from '@/assets/images/Photos/Royal Recognition.jpg'
 import './AboutPage.css'
 
 export default function AboutPage() {
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
+  const fadeInDown = {
+    hidden: { opacity: 0, y: -30 },
     visible: {
       opacity: 1,
       y: 0,
@@ -29,7 +29,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={fadeInUp}
+            variants={fadeInDown}
           >
             ➤ SINCE 1875
           </Motion.span>
@@ -38,7 +38,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
+            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
           >
             A Legacy since <span className="modern-num">1875</span>
           </Motion.h1>
@@ -47,7 +47,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.4 } } }}
+            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.4 } } }}
           >
             151 Years of Watchmaking Excellence
           </Motion.p>
@@ -63,7 +63,7 @@ export default function AboutPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              variants={fadeInUp}
+              variants={fadeInDown}
             >
               A Tradition of Excellence
             </Motion.h2>
@@ -71,7 +71,7 @@ export default function AboutPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
+              variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
             >
               Founded on the principles of classic horology, Van Der Linde has always stood for more than just telling time. We believe a watch is an heirloom, a statement of character, and a testament to the art of mechanical engineering.
             </Motion.p>
@@ -79,7 +79,7 @@ export default function AboutPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.3 } } }}
+              variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.3 } } }}
             >
               For generations, our master watchmakers have blended traditional Swiss techniques with modern innovation to create timepieces that are as reliable as they are beautiful. Every dial, every gear, and every strap is meticulously selected and assembled by hand.
             </Motion.p>
@@ -98,7 +98,7 @@ export default function AboutPage() {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               variants={{
-                hidden: { opacity: 0, y: 40 },
+                hidden: { opacity: 0, y: -40 },
                 visible: {
                   opacity: 1,
                   y: 0,
@@ -123,7 +123,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
+            variants={fadeInDown}
           >
             The Art of Watchmaking
           </Motion.h2>
@@ -133,7 +133,7 @@ export default function AboutPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
+              variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
             >
               <h3>Precision Engineering</h3>
               <p>Our movements are crafted to exact tolerances, ensuring unparalleled accuracy and longevity. Each caliber undergoes rigorous testing before it ever reaches your wrist.</p>
@@ -143,7 +143,7 @@ export default function AboutPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.4 } } }}
+              variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.4 } } }}
             >
               <h3>Finest Materials</h3>
               <p>From aerospace-grade titanium and 18k gold to scratch-resistant sapphire crystal, we source only the finest materials to ensure your timepiece withstands the test of time.</p>
@@ -153,7 +153,7 @@ export default function AboutPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.6 } } }}
+              variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.6 } } }}
             >
               <h3>Timeless Design</h3>
               <p>We reject fleeting trends in favor of enduring aesthetics. A Van Der Linde watch is designed to look as striking today as it will fifty years from now.</p>
@@ -170,7 +170,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
+            variants={fadeInDown}
           >
             <img src={beginningImage} alt="The Beginning of Van Der Linde" className="about-milestone__image" />
           </Motion.div>
@@ -179,7 +179,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
+            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
           >
             <h2 className="about-milestone__heading">Our Humble Origins</h2>
             <p>
@@ -197,7 +197,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
+            variants={fadeInDown}
           >
             <h2 className="about-milestone__heading">The Automatic Revolution</h2>
             <p>
@@ -209,7 +209,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
+            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
           >
             <img src={movementImage} alt="Automatic Movement Innovation" className="about-milestone__image" />
           </Motion.div>
@@ -224,7 +224,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
+            variants={fadeInDown}
           >
             <img src={recognitionImage} alt="Royal Recognition" className="about-milestone__image" />
           </Motion.div>
@@ -233,7 +233,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
+            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
           >
             <h2 className="about-milestone__heading">A Royal Legacy</h2>
             <p>
@@ -249,7 +249,7 @@ export default function AboutPage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        variants={fadeInUp}
+        variants={fadeInDown}
       >
         <h2 className="about-cta__title">Experience the Collection</h2>
         <p className="about-cta__text">Discover the perfect timepiece that speaks to your legacy.</p>

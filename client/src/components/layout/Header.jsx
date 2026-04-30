@@ -50,9 +50,13 @@ export default function Header() {
 
   const location = useLocation()
 
-  // Homepage gets special treatment: header starts transparent over the hero
+  // Pages with a hero section get special treatment: header starts transparent over the hero
   // and becomes solid after the user scrolls 80px past the top.
-  const isHomePage = location.pathname === '/'
+  const isHeroPage =
+    location.pathname === '/' ||
+    location.pathname === '/collections' ||
+    location.pathname.startsWith('/collections/') ||
+    location.pathname === '/about';
 
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
@@ -72,16 +76,16 @@ export default function Header() {
   const iconLinkClassName = ({ isActive }) =>
     `header__icon-control${isActive ? ' header__icon-control--active' : ''}`
 
-  
+
 
   return (
     <header
       className={cn(
         'header',
         // Fixed positioning + transparent background on homepage hero only.
-        isHomePage && 'header--home',
+        isHeroPage && 'header--home',
         // Transparent state clears background/shadow while user is inside the hero area.
-        isHomePage && scrollY < 80 && 'header--transparent',
+        isHeroPage && scrollY < 80 && 'header--transparent',
         // Hide header when scrolling down; reveal when scrolling up or near the top.
         // The scrollY > 24 guard prevents hiding the header on tiny accidental scrolls.
         isHidden && scrollY > 24 && 'header--hidden'
@@ -161,7 +165,7 @@ export default function Header() {
                   </span>
                 </button>
 
-                 {/* User icon always opens account page. */}
+                {/* User icon always opens account page. */}
                 <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
                   <FiUser aria-hidden="true" />
                 </NavLink>

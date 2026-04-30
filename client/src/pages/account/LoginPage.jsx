@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+// Triggering HMR re-scan
 import toast from 'react-hot-toast'
 
 import { loginSchema } from '@/utils/validators'

@@ -1,6 +1,7 @@
 import { motion as Motion } from 'framer-motion'
 import { Link, useLoaderData } from 'react-router-dom'
 import { resolveCollectionCoverImage } from '@/utils/watchImageResolver'
+import heroVideo from '@/assets/videos/A.Lange & Söhne 1815 RATTRAPANTE PERPETUAL CALENDAR.mp4'
 import './CollectionsPage.css'
 
 export default function CollectionsPage() {
@@ -14,24 +15,36 @@ export default function CollectionsPage() {
 
   return (
     <div className="collections-page">
-      <header className="collections-page__header">
-        <Motion.h1
-          className="collections-page__title"
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
+      <section className="collections-hero">
+        <video
+          className="collections-hero__video"
+          autoPlay
+          muted
+          loop
+          playsInline
         >
-          Our Collections
-        </Motion.h1>
-        <Motion.p
-          className="collections-page__subtitle"
-          initial="hidden"
-          animate="visible"
-          variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
-        >
-          Discover our curated ranges of exceptional timepieces, each defined by distinct design philosophies and masterful craftsmanship.
-        </Motion.p>
-      </header>
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+        <div className="collections-hero__overlay"></div>
+        <div className="collections-hero__content">
+          <Motion.h1
+            className="collections-hero__title"
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+          >
+            Our Collections
+          </Motion.h1>
+          <Motion.p
+            className="collections-hero__subtitle"
+            initial="hidden"
+            animate="visible"
+            variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
+          >
+            Discover our curated ranges of exceptional timepieces, each defined by distinct design philosophies and masterful craftsmanship.
+          </Motion.p>
+        </div>
+      </section>
 
       <div className="collections-list">
         {collections.map((collection, index) => (

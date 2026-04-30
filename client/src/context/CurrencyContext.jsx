@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Currency context for global price display behavior.
  *
  * What this file is:
@@ -33,7 +33,12 @@ export const CurrencyProvider = ({ children }) => {
   const [currency, setCurrency] = useState(() => normalizeCurrencyCode(localStorage.getItem('currency')))
 
   // Context-level formatter lets components call formatPrice(watch.price) without knowing active currency.
-  const formatPrice = (amount) => formatCurrencyPrice(amount, currency)
+  const formatPrice = (amount) => {
+    const currencyObj = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0]
+    const rate = currencyObj.rate || 1
+    const convertedAmount = amount * rate
+    return formatCurrencyPrice(convertedAmount, currency)
+  }
 
   // Setter updates React state + localStorage so selection persists across refreshes.
   const handleSetCurrency = (nextCurrency) => {

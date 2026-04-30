@@ -24,15 +24,20 @@ export default function ProductCard({ watch, className = '' }) {
   const reviewCount = Number(watch.numReviews)
   const hasReviews = Number.isFinite(reviewCount) && reviewCount > 0
   const isOutOfStock = Number.isFinite(Number(watch.stock)) && Number(watch.stock) <= 0
-  const isSaved = isWishlisted(watch._id)
+  const watchId = watch._id || watch.id
+  const isSaved = isWishlisted(watchId)
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+    e?.stopPropagation()
     dispatch({ type: 'ADD', payload: watch })
   }
 
-  const handleToggleWishlist = () => {
+  const handleToggleWishlist = (e) => {
+    e?.stopPropagation()
+    e?.preventDefault()
+    
     if (isSaved) {
-      removeFromWishlist(watch._id)
+      removeFromWishlist(watchId)
       return
     }
     addToWishlist(watch)

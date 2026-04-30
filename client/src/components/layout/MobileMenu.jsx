@@ -31,8 +31,8 @@ export default function MobileMenu({ isOpen, onClose }) {
 
   const menu = (
     <>
-      <div 
-        className={cn('mobile-menu__backdrop', isOpen && 'mobile-menu__backdrop--open')} 
+      <div
+        className={cn('mobile-menu__backdrop', isOpen && 'mobile-menu__backdrop--open')}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -43,7 +43,7 @@ export default function MobileMenu({ isOpen, onClose }) {
             <FiX aria-hidden="true" />
           </button>
         </div>
-        
+
         <div className="mobile-menu__content">
           <nav className="mobile-menu__nav" aria-label="Mobile navigation">
             <NavLink className={navLinkClassName} to="/shop" onClick={onClose}>{t('nav.shopAll')}</NavLink>
@@ -55,7 +55,7 @@ export default function MobileMenu({ isOpen, onClose }) {
             <NavLink className={navLinkClassName} to="/about" onClick={onClose}>{t('nav.ourStory')}</NavLink>
             <NavLink className={navLinkClassName} to="/contact" onClick={onClose}>{t('nav.contact')}</NavLink>
           </nav>
-          
+
           <div className="mobile-menu__footer">
             <div className="mobile-menu__actions">
               <NavLink aria-label={t('header.cartWithItems', { count: totalItems })} className="mobile-menu__icon-control mobile-menu__icon-control--cart" to="/cart" onClick={onClose}>
@@ -78,7 +78,7 @@ export default function MobileMenu({ isOpen, onClose }) {
                 <FiHeart aria-hidden="true" />
               </NavLink>
             </div>
-            
+
             <div className="mobile-menu__utilities">
               <LanguageSwitcher className="mobile-menu__utility-btn" showLabel={true} />
               <DarkModeToggle className="mobile-menu__utility-btn" showLabel={true} />

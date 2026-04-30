@@ -2,15 +2,15 @@ import { useState } from 'react'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Button from '@/components/common/Button'
-import { 
-  FiBriefcase, 
-  FiAward, 
-  FiActivity, 
-  FiCpu, 
-  FiDollarSign, 
-  FiMinus, 
-  FiZap, 
-  FiClock 
+import {
+  FiBriefcase,
+  FiAward,
+  FiActivity,
+  FiCpu,
+  FiDollarSign,
+  FiMinus,
+  FiZap,
+  FiClock
 } from 'react-icons/fi'
 import { useCurrency } from '@/context/CurrencyContext'
 import { watchService } from '@/services/watchService'
@@ -60,7 +60,7 @@ export default function WatchQuizPage() {
   const handleAnswer = (questionId, value) => {
     const newAnswers = { ...answers, [questionId]: value }
     setAnswers(newAnswers)
-    
+
     if (step < QUESTIONS.length) {
       setStep(step + 1)
     } else {
@@ -71,31 +71,31 @@ export default function WatchQuizPage() {
   const showResults = async (finalAnswers) => {
     setLoading(true)
     setStep(QUESTIONS.length + 1)
-    
+
     try {
       const allWatches = await watchService.getAll()
       const watchList = Array.isArray(allWatches) ? allWatches : []
-      
+
       // Advanced scoring logic for better matching
       const scoredWatches = watchList.map((watch) => {
         let score = 0
-        
+
         // 1. Category match (High weight)
         if (finalAnswers.category && watch?.category === finalAnswers.category) {
           score += 10
         }
-        
+
         // 2. Price match (Medium weight)
         const price = Number(watch?.price) || 0
         if (finalAnswers.priceRange === 'low' && price < 1000) score += 5
         else if (finalAnswers.priceRange === 'mid' && price >= 1000 && price <= 2000) score += 5
         else if (finalAnswers.priceRange === 'high' && price > 2000) score += 5
-        
+
         // 3. Style match (Medium weight)
         const desc = String(watch?.description || '').toLowerCase()
         const name = String(watch?.name || '').toLowerCase()
         const style = finalAnswers.style
-        
+
         if (style === 'minimalist') {
           if (desc.includes('minimalist') || desc.includes('slim') || desc.includes('clean') || name.includes('slim')) {
             score += 7
@@ -109,7 +109,7 @@ export default function WatchQuizPage() {
             score += 7
           }
         }
-        
+
         return { ...watch, quizScore: score }
       })
 
@@ -144,7 +144,7 @@ export default function WatchQuizPage() {
       <div className="quiz-container">
         <AnimatePresence mode="wait">
           {step === 0 && (
-            <Motion.div 
+            <Motion.div
               key="welcome"
               className="quiz-welcome"
               initial="hidden"
@@ -161,7 +161,7 @@ export default function WatchQuizPage() {
           )}
 
           {step > 0 && step <= QUESTIONS.length && (
-            <Motion.div 
+            <Motion.div
               key={`question-${step}`}
               className="quiz-step"
               initial="hidden"
@@ -171,8 +171,8 @@ export default function WatchQuizPage() {
             >
               <div className="quiz-step__progress">
                 <div className="progress-bar">
-                  <div 
-                    className="progress-bar__fill" 
+                  <div
+                    className="progress-bar__fill"
                     style={{ width: `${(step / QUESTIONS.length) * 100}%` }}
                   ></div>
                 </div>
@@ -180,7 +180,7 @@ export default function WatchQuizPage() {
               </div>
 
               <h2 className="quiz-step__question">{QUESTIONS[step - 1].question}</h2>
-              
+
               <div className="quiz-options">
                 {QUESTIONS[step - 1].options.map((option) => (
                   <button
@@ -197,7 +197,7 @@ export default function WatchQuizPage() {
           )}
 
           {step > QUESTIONS.length && (
-            <Motion.div 
+            <Motion.div
               key="results"
               className="quiz-results"
               initial="hidden"
@@ -207,7 +207,7 @@ export default function WatchQuizPage() {
             >
               <h2 className="quiz-results__title">Our Recommendations</h2>
               <p className="quiz-results__subtitle">Based on your preferences, we think you'll love these timepieces.</p>
-              
+
               {loading ? (
                 <div className="loader">Analyzing your style...</div>
               ) : (
@@ -216,20 +216,21 @@ export default function WatchQuizPage() {
                     const watchId = watch?._id || watch?.id
 
                     return (
-                    <div key={watchId || `${watch?.name || 'watch'}-${index}`} className="result-card">
-                      <img 
-                        src={resolveWatchProductImage(watch?.images?.[0] || watch?.image)} 
-                        alt={watch?.name || 'Watch'} 
-                        className="result-card__image" 
-                      />
-                      <h3 className="result-card__name">{watch?.name || 'Van Der Linde Watch'}</h3>
-                      <span className="result-card__price">{formatPrice(Number(watch?.price) || 0)}</span>
-                      <Button to={watchId ? `/watch/${watchId}` : '/shop'} variant="outline" size="sm">View Details</Button>
-                    </div>
-                  )})}
+                      <div key={watchId || `${watch?.name || 'watch'}-${index}`} className="result-card">
+                        <img
+                          src={resolveWatchProductImage(watch?.images?.[0] || watch?.image)}
+                          alt={watch?.name || 'Watch'}
+                          className="result-card__image"
+                        />
+                        <h3 className="result-card__name">{watch?.name || 'Van Der Linde Watch'}</h3>
+                        <span className="result-card__price">{formatPrice(Number(watch?.price) || 0)}</span>
+                        <Button to={watchId ? `/watch/${watchId}` : '/shop'} variant="outline" size="sm">View Details</Button>
+                      </div>
+                    )
+                  })}
                 </div>
               )}
-              
+
               <div className="quiz-navigation">
                 <Button onClick={handleRestart} variant="outline">Restart Quiz</Button>
                 <Button to="/shop" variant="primary">Shop All Collection</Button>

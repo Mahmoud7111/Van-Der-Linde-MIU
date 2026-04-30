@@ -1,7 +1,5 @@
 .watch-quiz-page {
   min-height: 100vh;
-  background-color: var(--color-background, #ffffff);
-  color: var(--color-text, #1a1a1a);
   padding: 4rem 2rem;
   display: flex;
   flex-direction: column;
@@ -193,10 +191,6 @@
 }
 
 /* Dark Mode */
-[data-theme='dark'] .watch-quiz-page {
-  background-color: var(--color-background, #0f0f0f);
-  color: #ffffff;
-}
 
 [data-theme='dark'] .quiz-welcome__title,
 [data-theme='dark'] .quiz-step__question,
@@ -222,7 +216,7 @@
   .quiz-options {
     grid-template-columns: 1fr;
   }
-  
+
   .quiz-option {
     padding: 1.5rem;
   }

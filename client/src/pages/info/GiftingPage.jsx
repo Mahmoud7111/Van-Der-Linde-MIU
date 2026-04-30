@@ -113,7 +113,12 @@ export default function GiftingPage() {
             Discover our curated collection of timepieces presented in elegant, handcrafted gift packaging for your most cherished moments.
           </Motion.p>
           <Motion.div variants={fadeInUp} style={{ marginTop: '2.5rem' }}>
-            <Button onClick={() => { setIsModalOpen(true); setCurrentStep(1); }} variant="primary">Create Your Gift</Button>
+            <span 
+              className="gifting-hero__link" 
+              onClick={() => document.getElementById('gift-collections')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Create Your Gift
+            </span>
           </Motion.div>
         </Motion.div>
       </section>
@@ -141,7 +146,13 @@ export default function GiftingPage() {
             <img src={craftImage} alt="Personalized Gift" className="gift-image" />
             <h3>Personalized Timepiece Gift</h3>
             <p className="gift-description">A curated selection with custom engraving, luxury wrap, and a personalized message.</p>
-            <div className="gift-item__cta">Customize Now</div>
+            <div 
+              className="gift-item__cta" 
+              onClick={() => { setIsModalOpen(true); setCurrentStep(1); }}
+              style={{ cursor: 'pointer' }}
+            >
+              Customize Your Gift
+            </div>
           </Motion.div>
         </div>
       </section>
@@ -412,52 +423,7 @@ export default function GiftingPage() {
         )}
       </AnimatePresence>
 
-      {/* Services Section (Old) */}
-      <section className="gifting-services-info">
-        <div className="gifting-services__container">
-          <Motion.div
-            className="gifting-services__header"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-          >
-            <h2 className="gifting-services__title">Our Signature Services</h2>
-          </Motion.div>
 
-          <Motion.div
-            className="gifting-services__grid"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={staggerContainer}
-          >
-            <Motion.div className="gifting-service-card" variants={fadeInUp}>
-              <span className="gifting-service-card__icon"><FiPenTool /></span>
-              <h3 className="gifting-service-card__title">Personalized Engraving</h3>
-              <p className="gifting-service-card__text">
-                Add a lasting message, initials, or a significant date to the caseback of your chosen timepiece for a truly unique touch.
-              </p>
-            </Motion.div>
-
-            <Motion.div className="gifting-service-card" variants={fadeInUp}>
-              <span className="gifting-service-card__icon"><FiGift /></span>
-              <h3 className="gifting-service-card__title">Luxury Gift Wrapping</h3>
-              <p className="gifting-service-card__text">
-                Each timepiece is housed in our signature wooden box and wrapped in premium textured paper with a hand-tied silk ribbon.
-              </p>
-            </Motion.div>
-
-            <Motion.div className="gifting-service-card" variants={fadeInUp}>
-              <span className="gifting-service-card__icon"><FiMail /></span>
-              <h3 className="gifting-service-card__title">Bespoke Message Cards</h3>
-              <p className="gifting-service-card__text">
-                Include a personalized, hand-written note on our heavyweight cream stationery to convey your sentiments with elegance.
-              </p>
-            </Motion.div>
-          </Motion.div>
-        </div>
-      </section>
 
       {/* Corporate Gifting Section */}
       <section className="gifting-corporate">
