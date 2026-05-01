@@ -617,6 +617,10 @@
   color: var(--color-dark);
 }
 
+.home-collections__mobile-nav {
+  display: none;
+}
+
 /* ── Responsive ────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
@@ -660,6 +664,62 @@
     touch-action: pan-y;
     padding: 0 var(--space-lg) var(--space-xl);
     gap: var(--space-md);
+    /* Hide scrollbar while maintaining scroll functionality */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .home-collections__cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-collections__mobile-nav {
+    display: flex;
+    position: absolute;
+    top: 60%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    justify-content: space-between;
+    padding: 0 var(--space-xs);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .home-collections__nav-btn {
+    pointer-events: auto;
+    /* Reset dimensions to match global home-favorites-nav exactly */
+    width: 2.6rem;
+    height: 2.6rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Visibility transition */
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.9);
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease,
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background-color var(--transition-normal),
+      color var(--transition-normal),
+      border-color var(--transition-normal);
+  }
+
+  .home-collections__nav-btn--visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+
+  .home-collections__nav-btn--left {
+    /* Inherits radius-full from global .btn style */
+  }
+
+  .home-collections__nav-btn--right {
+    /* Inherits radius-full from global .btn style */
   }
 
   .home-collections__arrows {
@@ -1693,6 +1753,7 @@
 
 
 @media (prefers-reduced-motion: reduce) {
+
   /* Accessibility: disable decorative floating animation. */
   .home-configurator__model-wrap {
     animation: none;
