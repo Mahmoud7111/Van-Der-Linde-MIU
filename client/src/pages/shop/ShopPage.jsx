@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLoaderData, useSearchParams } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import Button from '@/components/common/Button'
 import PageTransition from '@/components/common/PageTransition'
 import ProductFilter from '@/components/product/ProductFilter'
 import ProductGrid from '@/components/product/ProductGrid'
+import useMediaQuery from '@/hooks/useMediaQuery'
 import { CATEGORIES } from '@/utils/constants'
+import longinesHeader from '@/assets/Models/longines-header.avif'
 import './ShopPage.css'
 
 const ITEMS_PER_PAGE = 6
@@ -21,6 +24,8 @@ export default function ShopPage() {
   const data = useLoaderData()
   const [searchParams, setSearchParams] = useSearchParams()
   const previousFilterSignature = useRef('')
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const isMobile = useMediaQuery('(max-width: 960px)')
 
   const watches = Array.isArray(data) ? data : []
   const category = searchParams.get('category') || 'all'
@@ -95,24 +100,100 @@ export default function ShopPage() {
     <PageTransition>
       <section className="shop-page">
         <div className="shop-page__inner">
-          <header className="shop-page__header">
-            <div className="shop-page__heading">
-              <p className="shop-page__eyebrow">The Collection</p>
-              <h1 className="shop-page__title">Shop Van Der Linde Watches</h1>
-              <p className="shop-page__subtitle">
-                Precision engineering, refined silhouettes, and modern heritage.
-              </p>
+          <div className="shop-page__hero">
+            <img
+              className="shop-page__hero-image"
+              src={longinesHeader}
+              alt="Longines watch"
+              loading="eager"
+            />
+            <div className="shop-page__hero-overlay" aria-hidden="true" />
+            <div className="shop-page__hero-content">
+              <header className="shop-page__header">
+                <div className="shop-page__heading">
+                  <p className="shop-page__eyebrow">The Collection</p>
+                  <h1 className="shop-page__title">Shop Van Der Linde Watches</h1>
+                  <p className="shop-page__subtitle">
+                    Precision engineering, refined silhouettes, and modern heritage.
+                  </p>
+                </div>
+                <div className="shop-page__meta">
+                  <div className="shop-page__actions">
+                    {isMobile && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="shop-page__filter-toggle"
+                        onClick={() => setIsFilterOpen(true)}
+                      >
+                        <span className="shop-page__filter-icon">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M4 6h16M4 12h16m-7 6h7" />
+                          </svg>
+                        </span>
+                        Filter By
+                      </Button>
+                    )}
+                    <span className="shop-page__count">{watches.length} Watches</span>
+                  </div>
+                  <p className="shop-page__summary">{summaryText}</p>
+                </div>
+              </header>
             </div>
-            <div className="shop-page__meta">
-              <span className="shop-page__count">{watches.length} Watches</span>
-              <p className="shop-page__summary">{summaryText}</p>
-            </div>
-          </header>
+          </div>
 
           <div className="shop-page__content">
-            <aside className="shop-page__sidebar">
-              <ProductFilter />
-            </aside>
+            {!isMobile && (
+              <aside className="shop-page__sidebar">
+                <ProductFilter />
+              </aside>
+            )}
+
+            <AnimatePresence>
+              {isMobile && isFilterOpen && (
+                <>
+                  <motion.div
+                    className="shop-page__filter-overlay"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setIsFilterOpen(false)}
+                  />
+                  <motion.aside
+                    className="shop-page__filter-drawer"
+                    initial={{ x: '-100%' }}
+                    animate={{ x: 0 }}
+                    exit={{ x: '-100%' }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                  >
+                    <div className="shop-page__drawer-header">
+                      <h2 className="shop-page__drawer-title">Filters</h2>
+                      <button
+                        className="shop-page__drawer-close"
+                        onClick={() => setIsFilterOpen(false)}
+                        aria-label="Close filters"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="shop-page__drawer-content">
+                      <ProductFilter />
+                      <div className="shop-page__drawer-footer">
+                        <Button
+                          variant="home-action-solid"
+                          className="shop-page__drawer-apply"
+                          onClick={() => setIsFilterOpen(false)}
+                        >
+                          Apply Filters
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.aside>
+                </>
+              )}
+            </AnimatePresence>
 
             <div className="shop-page__results">
               <ProductGrid watches={paginatedWatches} />
