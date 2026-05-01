@@ -1,15 +1,15 @@
 .admin-products {
   width: 100%;
-  padding: clamp(var(--space-xl), 6vw, var(--space-2xl)) 0;
+  padding: 0;
 }
 
 .admin-products__inner {
-  width: min(1200px, 100%);
-  margin: 0 auto;
-  padding: 0 clamp(var(--space-md), 4vw, var(--space-xl));
+  width: 100%;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: clamp(var(--space-lg), 5vw, var(--space-2xl));
+  gap: clamp(var(--space-lg), 4vw, var(--space-xl));
 }
 
 .admin-products__header {
@@ -285,6 +285,60 @@
 
 .admin-products__table tbody tr + tr {
   border-top: 1px solid color-mix(in srgb, var(--color-gold) 16%, transparent 84%);
+}
+
+.admin-products__pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-top: var(--space-md);
+}
+
+.admin-products__pagination-info {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--color-dark) 70%, var(--color-muted) 30%);
+}
+
+.admin-products__pagination-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.admin-products__pagination-btn {
+  border: 1px solid color-mix(in srgb, var(--color-gold) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--color-white) 94%, transparent 6%);
+  color: var(--color-dark);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+.admin-products__pagination-btn:hover {
+  border-color: var(--color-gold);
+  background: color-mix(in srgb, var(--color-gold) 20%, transparent 80%);
+}
+
+.admin-products__pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-products__pagination-page--active {
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+  color: var(--color-dark);
 }
 
 .admin-products__product {

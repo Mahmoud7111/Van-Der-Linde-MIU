@@ -3,13 +3,12 @@ import { useEffect, useMemo, useState } from 'react'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import StarRating from '@/components/common/StarRating'
+import AdminShell from '@/components/admin/AdminShell'
 import { useCurrency } from '@/context/CurrencyContext'
 import { watchService } from '@/services/watchService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
-import { CATEGORIES } from '@/utils/constants'
+import { CATEGORIES, LOW_STOCK_THRESHOLD } from '@/utils/constants'
 import './ManageProducts.css'
-
-const LOW_STOCK_THRESHOLD = 5
 const FORM_DEFAULTS = {
   name: '',
   brand: 'Van Der Linde',
@@ -20,6 +19,7 @@ const FORM_DEFAULTS = {
   image: '',
   description: '',
 }
+const PAGE_SIZE = 6
 const GENDER_OPTIONS = [
   { value: 'men', label: 'Men' },
   { value: 'women', label: 'Women' },
@@ -51,10 +51,15 @@ export default function ManageProducts() {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     setCatalog(watches)
   }, [watches])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, categoryFilter, stockFilter])
 
   const summary = useMemo(() => {
     let inStockCount = 0
@@ -103,6 +108,31 @@ export default function ManageProducts() {
     })
   }, [catalog, search, categoryFilter, stockFilter])
 
+  const totalPages = Math.max(1, Math.ceil(filteredWatches.length / PAGE_SIZE))
+  const pageNumbers = useMemo(
+    () => Array.from({ length: totalPages }, (_, index) => index + 1),
+    [totalPages]
+  )
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
+
+  const paginatedWatches = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE
+    return filteredWatches.slice(startIndex, startIndex + PAGE_SIZE)
+  }, [filteredWatches, currentPage])
+
+  const canGoPrevious = currentPage > 1
+  const canGoNext = currentPage < totalPages
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return
+    setCurrentPage(page)
+  }
+
   const openCreateForm = () => {
     setFormMode('create')
     setEditingId(null)
@@ -126,6 +156,14 @@ export default function ManageProducts() {
     })
     setIsFormOpen(true)
     setFormStatus(null)
+    setTimeout(() => {
+      const scrollContainer = document.querySelector('.admin-shell__main')
+      if (scrollContainer) {
+        scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }, 10)
   }
 
   const handleFormChange = (event) => {
@@ -237,30 +275,31 @@ export default function ManageProducts() {
 
   return (
     <PageTransition>
-      <section className="admin-products">
-        <div className="admin-products__inner">
-          <header className="admin-products__header">
-            <p className="admin-products__eyebrow">Admin Console</p>
-            <div className="admin-products__heading">
-              <h1 className="admin-products__title">Manage Watch Catalog</h1>
-              <p className="admin-products__subtitle">
-                Oversee inventory, pricing, and presentation for every Van Der Linde timepiece.
-              </p>
-            </div>
-            <div className="admin-products__header-actions">
-              <Button variant="primary" onClick={openCreateForm}>
-                Add new watch
-              </Button>
-              <Button variant="secondary" onClick={handleExport}>
-                Export catalog
-              </Button>
-            </div>
-            {formStatus && (
-              <p className={`admin-products__status-message admin-products__status-message--${formStatus.type}`}>
-                {formStatus.message}
-              </p>
-            )}
-          </header>
+      <AdminShell>
+        <section className="admin-products">
+          <div className="admin-products__inner">
+            <header className="admin-products__header">
+              <p className="admin-products__eyebrow">Admin Console</p>
+              <div className="admin-products__heading">
+                <h1 className="admin-products__title">Manage Watch Catalog</h1>
+                <p className="admin-products__subtitle">
+                  Oversee inventory, pricing, and presentation for every Van Der Linde timepiece.
+                </p>
+              </div>
+              <div className="admin-products__header-actions">
+                <Button variant="primary" onClick={openCreateForm}>
+                  Add new watch
+                </Button>
+                <Button variant="secondary" onClick={handleExport}>
+                  Export catalog
+                </Button>
+              </div>
+              {formStatus && (
+                <p className={`admin-products__status-message admin-products__status-message--${formStatus.type}`}>
+                  {formStatus.message}
+                </p>
+              )}
+            </header>
 
           {isFormOpen && (
             <section className="admin-products__section" aria-labelledby="admin-products-editor">
@@ -531,7 +570,7 @@ export default function ManageProducts() {
                       </td>
                     </tr>
                   )}
-                  {filteredWatches.map((watch) => {
+                  {paginatedWatches.map((watch) => {
                     const stockValue = getStockValue(watch)
                     const isOutOfStock = stockValue !== null && stockValue <= 0
                     const isLowStock = stockValue !== null && stockValue > 0 && stockValue <= LOW_STOCK_THRESHOLD
@@ -598,9 +637,51 @@ export default function ManageProducts() {
                 </tbody>
               </table>
             </div>
+
+            {filteredWatches.length > 0 && (
+              <div className="admin-products__pagination" role="navigation" aria-label="Pagination">
+                <span className="admin-products__pagination-info">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <div className="admin-products__pagination-controls">
+                  <button
+                    type="button"
+                    className="admin-products__pagination-btn"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={!canGoPrevious}
+                  >
+                    Previous
+                  </button>
+                  {pageNumbers.map((page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      className={
+                        page === currentPage
+                          ? 'admin-products__pagination-btn admin-products__pagination-page admin-products__pagination-page--active'
+                          : 'admin-products__pagination-btn admin-products__pagination-page'
+                      }
+                      onClick={() => handlePageChange(page)}
+                      aria-current={page === currentPage ? 'page' : undefined}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="admin-products__pagination-btn"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={!canGoNext}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
           </section>
-        </div>
-      </section>
+          </div>
+        </section>
+      </AdminShell>
     </PageTransition>
   )
 }

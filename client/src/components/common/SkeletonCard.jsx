@@ -17,3 +17,5 @@ export default function SkeletonCard() {
     </article>
   )
 }
+
+// This component is a placeholder for loading content and does not contain any interactive elements or real data. It uses ARIA attributes to indicate that it is a loading state and provides a screen reader message for accessibility.

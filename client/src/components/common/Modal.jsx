@@ -1,3 +1,17 @@
+/*
+  - Modal
+
+  A reusable dialog component that can be used throughout the application. It handles opening and closing, keyboard accessibility (closing on Escape key), and prevents background scrolling when open. The modal content is centered and can be styled with additional classes passed via the className prop.
+
+  - Props
+
+    - isOpen: boolean -  Controls the visibility of the modal.
+    - onClose: function -  Callback function called when the modal should close.
+    - children: ReactNode -  The content to display inside the modal.
+    - title: string -  Optional title displayed in the modal header.
+    - className: string -  Optional additional CSS classes for the modal
+*/
+
 import { useEffect } from 'react'
 import { FiX } from 'react-icons/fi'
 import { cn } from '@/utils/cn'
@@ -34,3 +48,4 @@ export default function Modal({ isOpen, onClose, children, title, className }) {
     </div>
   )
 }
+

@@ -38,6 +38,9 @@ export const ORDER_STATUS = {
   CANCELLED: 'cancelled',
 }
 
+// Stock threshold used to flag low inventory items across admin views.
+export const LOW_STOCK_THRESHOLD = 5
+
 // Currency options shown in currency switcher and interpreted by CurrencyContext.
 export const CURRENCIES = [
   { code: 'USD', symbol: '$', label: 'US Dollar' },
