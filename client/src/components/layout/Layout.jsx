@@ -29,6 +29,7 @@ import LoadingScreen from '@/components/common/LoadingScreen'
 import './Layout.css'
 
 // Chatbot floating button and window
+import { cn } from '@/utils/cn'
 import Chatbot from '@/components/features/Chatbot'
 
 // Root layout component for all application routes.
@@ -65,7 +66,10 @@ export default function Layout() {
         Main content area expands to fill vertical space.
         `flex: 1` keeps footer pushed to the bottom on short pages.
       */}
-      <main className="layout__main">
+      <main className={cn(
+        "layout__main",
+        location.pathname !== '/' && "layout__main--padded"
+      )}>
         {/*
           Suspense is required because route elements are lazy-loaded with React.lazy in routes/index.jsx.
           Until the chunk resolves, this fallback is shown.

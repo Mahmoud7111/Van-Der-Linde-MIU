@@ -1,0 +1,233 @@
+/* Results panel — drops from below the header */
+.sov__backdrop {
+  position: fixed;
+  top: var(--sov-top, 115px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1999;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+}
+
+.sov__panel {
+  position: fixed;
+  /* Position right below the header.
+     The header measures ~115px expanded and ~56px scrolled.
+     We measure it in JS and pass it as a CSS variable from the Header component,
+     but a sensible fallback covers both states. */
+  top: var(--sov-top, 115px);
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background: color-mix(in srgb, var(--color-surface) 94%, #ffffff 6%);
+  max-height: calc(100vh - var(--sov-top, 115px));
+  overflow-y: auto;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  border-top: 1px solid color-mix(in srgb, var(--color-dark) 8%, transparent 92%);
+}
+
+.sov__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+/* Top bar */
+.sov__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.sov__title {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.sov__subtitle {
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+}
+
+.sov__close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.sov__close:hover {
+  color: #1a1a1a;
+}
+
+/* Search input */
+.sov__search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: color-mix(in srgb, var(--color-dark) 5%, #ffffff 95%);
+  border: 1px solid color-mix(in srgb, var(--color-dark) 12%, transparent 88%);
+  border-radius: 9999px;
+  padding: 0.65rem 0.95rem;
+  margin-bottom: 1.15rem;
+}
+
+.sov__search-icon {
+  font-size: 1rem;
+  color: color-mix(in srgb, var(--color-dark) 55%, var(--color-muted) 45%);
+  flex-shrink: 0;
+}
+
+.sov__search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.95rem;
+  color: var(--color-dark);
+  min-width: 0;
+}
+
+.sov__search-input::placeholder {
+  color: color-mix(in srgb, var(--color-dark) 45%, transparent 55%);
+}
+
+.sov__search-clear {
+  background: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: color-mix(in srgb, var(--color-dark) 45%, transparent 55%);
+  cursor: pointer;
+  padding: 0;
+}
+
+.sov__search-clear:hover {
+  color: var(--color-dark);
+}
+
+/* Empty state */
+.sov__empty {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.sov__empty-box {
+  background: rgba(0, 0, 0, 0.03);
+  padding: 2.5rem 4rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.sov__empty-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.sov__empty-hint {
+  color: #888;
+  font-size: 0.875rem;
+}
+
+/* Results */
+.sov__results {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.sov__cat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #999;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.sov__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.sov__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.sov__item:hover {
+  background: rgba(255, 255, 255, 0.65);
+  transform: translateY(-2px);
+}
+
+.sov__img {
+  width: 64px;
+  height: 64px;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sov__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.sov__name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 0.2rem;
+}
+
+.sov__price {
+  font-size: 0.85rem;
+  color: #8a7a5f;
+}
+
+@media (max-width: 720px) {
+  .sov__inner {
+    padding: 1.5rem 1.25rem 2.25rem;
+  }
+
+  .sov__top {
+    margin-bottom: 1.5rem;
+  }
+
+  .sov__title {
+    font-size: 1.5rem;
+  }
+
+  .sov__search {
+    padding: 0.6rem 0.85rem;
+  }
+
+  .sov__grid {
+    grid-template-columns: 1fr;
+  }
+}

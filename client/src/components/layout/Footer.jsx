@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FaInstagram, FaTiktok, FaFacebook, FaTwitter } from 'react-icons/fa'
+import { FiPhone, FiMapPin } from 'react-icons/fi'
 import { useTheme } from '@/context/ThemeContext'
 import './Footer.css'
 
@@ -115,7 +116,7 @@ export default function Footer() {
             <h3 className="footer__column-title">Get in Touch</h3>
             <div className="footer__contact-item">
               <span className="footer__contact-icon-box">
-                <span className="footer__contact-icon">☎</span>
+                <FiPhone className="footer__contact-icon" />
               </span>
               <div>
                 <p className="footer__contact-label">Phone</p>
@@ -124,7 +125,7 @@ export default function Footer() {
             </div>
             <div className="footer__contact-item">
               <span className="footer__contact-icon-box">
-                <span className="footer__contact-icon">📍</span>
+                <FiMapPin className="footer__contact-icon" />
               </span>
               <div>
                 <p className="footer__contact-label">Address</p>

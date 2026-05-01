@@ -2,3 +2,15 @@
 	flex: 1;
 	min-height: 100%;
 }
+
+.layout__main--padded {
+	/* Push content down to avoid being covered by the fixed solid header.
+	   Standard header height is approx 130px. */
+	padding-top: 130px;
+}
+
+@media (max-width: 1080px) {
+	.layout__main--padded {
+		padding-top: 80px; /* Slimmer header on mobile */
+	}
+}

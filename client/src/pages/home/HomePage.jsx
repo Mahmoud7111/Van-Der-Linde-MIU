@@ -152,6 +152,7 @@ export default function HomePage() {
 
   // Scroll ref is on the inner scroll container, separate from the section.
   const scrollTrackRef = useRef(null)
+  const collectionsCardsRef = useRef(null)
   const favoriteTransitionTimeoutRef = useRef(null)
   const isFavoriteTransitioningRef = useRef(false)
 
@@ -171,6 +172,10 @@ export default function HomePage() {
 
   // Configurator reveal toggle.
   const [isConfiguratorVisible, setIsConfiguratorVisible] = useState(false)
+
+  // Collections scroll navigation visibility (mobile).
+  const [canScrollCollectionsLeft, setCanScrollCollectionsLeft] = useState(false)
+  const [canScrollCollectionsRight, setCanScrollCollectionsRight] = useState(true)
 
   // Reviews pagination state.
   const [activeReviewPage, setActiveReviewPage] = useState(0)
@@ -530,6 +535,39 @@ export default function HomePage() {
     return () => observer.disconnect()
   }, [])
 
+  // Synchronize mobile scroll button visibility with the horizontal cards container.
+  useEffect(() => {
+    const container = collectionsCardsRef.current
+    if (!container) return undefined
+
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = container
+
+      // If the container hasn't calculated dimensions yet, skip update to preserve default "visible" state.
+      if (scrollWidth === 0) return
+
+      // Using a 10px buffer to avoid flickering on sub-pixel rounding or minor layout offsets.
+      setCanScrollCollectionsLeft(scrollLeft > 10)
+      setCanScrollCollectionsRight(scrollLeft < scrollWidth - clientWidth - 10)
+    }
+
+    container.addEventListener('scroll', handleScroll, { passive: true })
+
+    // Initial check with a small delay to ensure layout and scrollWidth are ready.
+    const timer = setTimeout(handleScroll, 200)
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+      clearTimeout(timer)
+    }
+  }, [featured])
+
+  // Always restore State 1 on mount so the section starts from the composed baseline.
+  useEffect(() => {
+    if (scrollTrackRef.current) scrollTrackRef.current.scrollLeft = 0
+    if (collectionsCardsRef.current) collectionsCardsRef.current.scrollLeft = 0
+  }, [])
+
   // Cleanup pending timers to avoid stale state updates on unmount.
   useEffect(() => {
     // Ensure no pending timeout updates state after unmount.
@@ -552,6 +590,19 @@ export default function HomePage() {
   // ============================================================================
 
   // ── Scroll management ─────────────────────────────────────────────────────
+
+  const scrollCollections = (direction) => {
+    // On desktop, scrollTrackRef handles the drag/sticky logic.
+    // On mobile, collectionsCardsRef is the horizontal container.
+    const container = collectionsCardsRef.current
+    if (!container) return
+
+    const scrollAmount = container.offsetWidth * 0.8
+    container.scrollBy({
+      left: direction * scrollAmount,
+      behavior: 'smooth',
+    })
+  }
 
 
 
@@ -705,6 +756,7 @@ export default function HomePage() {
           */}
           <div
             className="home-collections__cards"
+            ref={collectionsCardsRef}
             aria-label="Featured collections carousel"
           >
             {/* Mapped collection cards */}
@@ -741,6 +793,31 @@ export default function HomePage() {
               </article>
             ))}
           </div>
+        </div>
+
+        {/* 
+          Mobile-only scroll buttons.
+          Replaces the native scrollbar for a more premium interaction model.
+        */}
+        <div className="home-collections__mobile-nav">
+          <Button
+            variant="home-favorites-nav"
+            className={`home-collections__nav-btn home-collections__nav-btn--left${canScrollCollectionsLeft ? ' home-collections__nav-btn--visible' : ''
+              }`}
+            onClick={() => scrollCollections(-1)}
+            aria-label="Scroll collections left"
+          >
+            ←
+          </Button>
+          <Button
+            variant="home-favorites-nav"
+            className={`home-collections__nav-btn home-collections__nav-btn--right${canScrollCollectionsRight ? ' home-collections__nav-btn--visible' : ''
+              }`}
+            onClick={() => scrollCollections(1)}
+            aria-label="Scroll collections right"
+          >
+            →
+          </Button>
         </div>
       </section>
       {/* ── END COLLECTIONS ── */}
