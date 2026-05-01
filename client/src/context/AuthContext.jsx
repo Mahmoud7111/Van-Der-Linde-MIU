@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Authentication context.
  *
  * What this file is:
@@ -15,6 +15,8 @@
  */
 import { createContext, useContext, useEffect, useState } from 'react'
 import { authService } from '@/services/authService'
+
+import toast from 'react-hot-toast' 
 
 // Create auth context for user, loading state, and auth methods.
 const AuthContext = createContext(null)
@@ -69,6 +71,7 @@ export const AuthProvider = ({ children }) => {
 
     // Push authenticated user into global context.
     setUser(result.user)
+    toast.success('Successfully logged in!')
 
     return result
   }
@@ -83,6 +86,7 @@ export const AuthProvider = ({ children }) => {
 
     // Set newly created user in context.
     setUser(result.user)
+    toast.success('Registration successful!')
 
     return result
   }
@@ -91,6 +95,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (data) => {
     const result = await authService.updateProfile(data)
     setUser(result.user || result)
+    toast.success('Profile updated successfully.')
     return result
   }
 
@@ -103,6 +108,7 @@ export const AuthProvider = ({ children }) => {
       // Always clear local auth state regardless of remote logout outcome.
       localStorage.removeItem('token')
       setUser(null)
+      toast.success('Logged out successfully.')
     }
   }
 

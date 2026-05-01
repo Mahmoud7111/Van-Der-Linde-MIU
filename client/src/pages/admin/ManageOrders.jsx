@@ -12,6 +12,9 @@ import { formatDate } from '@/utils/formatters'
 import { ORDER_STATUS } from '@/utils/constants'
 import './ManageOrders.css'
 
+import toast from 'react-hot-toast'
+
+
 const fadeContainer = {
   hidden: {},
   show: {
@@ -161,7 +164,6 @@ export default function ManageOrders() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedOrder, setSelectedOrder] = useState(null)
-  const [statusMessage, setStatusMessage] = useState(null)
   const [isUpdating, setIsUpdating] = useState(false)
 
   useEffect(() => {
@@ -261,19 +263,15 @@ export default function ManageOrders() {
     const nextStatus = overrideStatus ?? getNextStatus(order.status)
 
     setIsUpdating(true)
-    setStatusMessage(null)
 
     try {
       await orderService.updateStatus(order._id, nextStatus)
       setOrderList((prev) =>
         prev.map((item) => (item._id === order._id ? { ...item, status: nextStatus } : item))
       )
-      setStatusMessage({
-        type: 'success',
-        message: `Order ${order._id} updated to ${getStatusLabel(nextStatus)}.`,
-      })
+      toast.success(`Order ${order._id} updated to ${getStatusLabel(nextStatus)}.`)
     } catch {
-      setStatusMessage({ type: 'error', message: 'Unable to update order status right now.' })
+      toast.error('Unable to update order status right now.')
     } finally {
       setIsUpdating(false)
     }
@@ -282,7 +280,7 @@ export default function ManageOrders() {
   const handleCreateShipment = (order) => {
     const targetOrder = order ?? selectedOrder
     if (!targetOrder) {
-      setStatusMessage({ type: 'error', message: 'Select an order to create a shipment.' })
+      toast.error('Select an order to create a shipment.')
       return
     }
 
@@ -298,7 +296,7 @@ export default function ManageOrders() {
     link.download = 'van-der-linde-orders.json'
     link.click()
     URL.revokeObjectURL(url)
-    setStatusMessage({ type: 'success', message: 'Order ledger exported.' })
+    toast.success('Order ledger exported.')
   }
 
   return (
@@ -319,11 +317,6 @@ export default function ManageOrders() {
                   Export ledger
                 </Button>
               </div>
-              {statusMessage && (
-                <p className={`admin-orders__status-message admin-orders__status-message--${statusMessage.type}`}>
-                  {statusMessage.message}
-                </p>
-              )}
             </header>
 
             <section className="admin-orders__section" aria-labelledby="admin-orders-summary">
@@ -484,7 +477,7 @@ export default function ManageOrders() {
                                 </select>
                                 <button
                                   className="admin-orders__action-btn admin-orders__action-btn--delete"
-                                  onClick={() => setStatusMessage({ type: 'error', message: 'Delete not implemented' })}
+                                  onClick={() => toast.error('Delete not implemented')}
                                   title="Delete order"
                                 >
                                   <FiX />

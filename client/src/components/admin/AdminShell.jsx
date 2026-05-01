@@ -17,7 +17,6 @@ import './AdminShell.css'
 
 const primaryNavItems = [
   { label: 'Dashboard', to: '/admin' },
-
 ]
 
 const managementNavItems = [

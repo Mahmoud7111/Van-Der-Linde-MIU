@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useCart } from '@/context/CartContext'
 import { orderService } from '@/services/orderService'
+import toast from 'react-hot-toast'
 import Button from '@/components/common/Button'
 import ShippingForm from '@/components/checkout/ShippingForm'
 import PaymentForm from '@/components/checkout/PaymentForm'
@@ -32,7 +33,6 @@ export default function CheckoutPage() {
   const [shippingData, setShippingData] = useState(null)
   const [paymentData, setPaymentData] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [error, setError] = useState(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
   const safeCart = Array.isArray(cart) ? cart : []
@@ -61,7 +61,6 @@ export default function CheckoutPage() {
     if (isCartEmpty) return
 
     setIsProcessing(true)
-    setError(null)
 
     try {
       const normalizedShippingData = normalizeShippingData(shippingData || {})
@@ -79,9 +78,10 @@ export default function CheckoutPage() {
 
       await orderService.create(orderPayload)
       dispatch({ type: 'CLEAR' })
+      toast.success('Order placed successfully!')
       setIsSuccess(true)
     } catch (err) {
-      setError(err.message || 'Failed to process order. Please try again.')
+      toast.error(err.message || 'Failed to process order. Please try again.')
     } finally {
       setIsProcessing(false)
     }
@@ -126,8 +126,6 @@ export default function CheckoutPage() {
   return (
     <main className="checkout-page">
       <CheckoutSteps currentStep={step} steps={CHECKOUT_STEPS} onStepChange={setStep} />
-
-      {error && <div className="checkout-page__error">{error}</div>}
 
       <div className="checkout-page__content">
         {step === 1 && (

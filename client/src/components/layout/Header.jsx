@@ -19,6 +19,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { useCart } from '@/context/CartContext'
+import { useWishlist } from '@/context/WishlistContext'
 import { useAuth } from '@/context/AuthContext'
 import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
@@ -56,6 +57,7 @@ export default function Header() {
 
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
+  const { totalItems: wishlistCount } = useWishlist()
   const { user } = useAuth()
   const { theme } = useTheme()
   const { t } = useLanguage()
@@ -72,7 +74,6 @@ export default function Header() {
   const iconLinkClassName = ({ isActive }) =>
     `header__icon-control${isActive ? ' header__icon-control--active' : ''}`
 
-  
 
   return (
     <header
@@ -166,9 +167,20 @@ export default function Header() {
                   <FiUser aria-hidden="true" />
                 </NavLink>
 
-                <NavLink aria-label={t('nav.wishlist')} className={iconLinkClassName} to="/wishlist">
+                <NavLink 
+
+                  aria-label={t('nav.wishlist')} 
+                  className={({ isActive }) => cn(iconLinkClassName({ isActive }), 'header__icon-control--wishlist')} 
+                  to="/wishlist"
+                >
                   <FiHeart aria-hidden="true" />
+                  
+                  <span className="header__pill" aria-hidden="true">
+                    {wishlistCount}
+                  </span>
+
                 </NavLink>
+
                 <LanguageSwitcher className="header__icon-control" />
 
                 <DarkModeToggle className="header__icon-control" />

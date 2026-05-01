@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Wishlist context for saved watches.
  *
  * What this file is:
@@ -13,6 +13,8 @@
  * and WishlistPage reads the current list to render saved products.
  */
 import { createContext, useContext, useState } from 'react'
+import toast from 'react-hot-toast' //Used for user notification
+
 
 // Create wishlist context for list state and mutation helpers.
 const WishlistContext = createContext(null)
@@ -37,12 +39,13 @@ export const WishlistProvider = ({ children }) => {
     setWishlist(list)
     localStorage.setItem('wishlist', JSON.stringify(list))
   }
- // Read canonical identifier across backend and mock shapes.
+
+  // Read canonical identifier across backend and mock shapes.
   const getItemId = (item) => item?._id || item?.id
 
   // Add selected watch object to wishlist and persist immediately.
   const addToWishlist = (watch) => {
-     const watchId = getItemId(watch)
+    const watchId = getItemId(watch)
 
     // Skip duplicates so wishlist count/cards remain stable.
     if (watchId && wishlist.some((item) => getItemId(item) === watchId)) {
@@ -50,11 +53,14 @@ export const WishlistProvider = ({ children }) => {
     }
 
     save([...wishlist, watch])
+    toast.success('Added to wishlist')
+
   }
 
   // Remove item by Mongo-style `_id` and persist updated list.
   const removeFromWishlist = (id) => {
     save(wishlist.filter((item) => getItemId(item) !== id))
+    toast.success('Removed from wishlist')
   }
 
   // Check helper used by ProductCard to decide filled vs outlined heart icon state.
@@ -65,6 +71,7 @@ export const WishlistProvider = ({ children }) => {
     <WishlistContext.Provider
       value={{
         wishlist,
+        totalItems: wishlist.length,
         addToWishlist,
         removeFromWishlist,
         isWishlisted,
@@ -73,16 +80,18 @@ export const WishlistProvider = ({ children }) => {
       {children}
     </WishlistContext.Provider>
   )
+
 }
 
 // Custom hook for concise wishlist access.
 export const useWishlist = () => {
-  const context = useContext(WishlistContext)
+  const context = useContext(WishlistContext) 
 
-  // Fail fast if the hook is used outside provider scope.
+  // Fail fast if the hook is used outside provider scope. 
   if (!context) {
     throw new Error('useWishlist must be used within WishlistProvider')
   }
 
   return context
 }
+
