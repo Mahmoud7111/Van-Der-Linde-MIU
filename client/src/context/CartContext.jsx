@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Cart context powered by useReducer.
  *
  * What this file is:
@@ -13,7 +13,9 @@
  * `dispatch` is used by ProductCard, ProductDetailPage, and CartItem.
  * `totalItems` is displayed in Header cart badge.
  */
+
 import { createContext, useContext, useEffect, useReducer } from 'react'
+import toast from 'react-hot-toast' 
 
 // Create cart context for reducer state and computed totals.
 const CartContext = createContext(null)
@@ -92,8 +94,16 @@ const getInitialCart = () => {
 
 // Provider exposes cart state, dispatcher, and computed totals.
 export const CartProvider = ({ children }) => {
-  // Initialize reducer state from localStorage so cart survives page refresh.
-  const [cart, dispatch] = useReducer(cartReducer, [], getInitialCart)
+  const [cart, baseDispatch] = useReducer(cartReducer, [], getInitialCart)
+
+  const dispatch = (action) => {
+    baseDispatch(action)
+    if (action.type === 'ADD') {
+      toast.success('Added to cart')
+    } else if (action.type === 'REMOVE') {
+      toast.success('Removed from cart')
+    }
+  }
 
   useEffect(() => {
     // Persist every cart update to localStorage.

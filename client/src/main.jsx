@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Frontend entry point for Van Der Linde React application.
  *
  * What this file is:
@@ -15,6 +15,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import { router } from '@/routes'
 
 import { ThemeProvider } from '@/context/ThemeContext'
@@ -52,6 +53,38 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <CartProvider>       {/*<- 5th: cart context above wishlist in case of shared behavior or cross-context interactions AND  cart needs auth context available above it*/} 
               <WishlistProvider> {/*<- 6th: innermost provider, but still above RouterProvider so all pages can access wishlist context*/}
                 <RouterProvider router={router} />
+
+                <Toaster 
+                  position="bottom-right"
+                  toastOptions={{
+                    style: {
+                      background: 'var(--color-surface)',
+                      color: 'var(--color-dark)',
+                      border: '1px solid color-mix(in srgb, var(--color-gold) 40%, transparent 60%)',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      letterSpacing: '0.02em',
+                      borderRadius: 'var(--radius-md)',
+                      boxShadow: '0 12px 28px color-mix(in srgb, var(--color-dark) 15%, transparent 85%)',
+                      padding: '12px 16px',
+                    },
+                    success: {
+                      iconTheme: {
+                        primary: 'var(--color-success)',
+                        secondary: 'var(--color-surface)',
+                      },
+                    },
+                    error: {
+                      iconTheme: {
+                        primary: 'var(--color-error)',
+                        secondary: 'var(--color-surface)',
+                      },
+                    },
+                  }} 
+                  
+                />
+                
               </WishlistProvider>
             </CartProvider>
           </AuthProvider>

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useLoaderData, Link } from 'react-router-dom'
 import { useMemo } from 'react'
 import PageTransition from '@/components/common/PageTransition'
@@ -13,6 +14,50 @@ import craftHorse from '@/assets/images/Marquee/horse.png'
 import craftSwiss from '@/assets/images/Marquee/SwissMade.png'
 import craftKey from '@/assets/images/Marquee/key.png'
 import './CollectionDetailPage.css'
+
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const sectionRevealProps = prefersReducedMotion
+  ? {}
+  : {
+      initial: { opacity: 0, y: 40 },
+      whileInView: { opacity: 1, y: 0 },
+      viewport: { once: true, amount: 0.2 },
+      transition: { duration: 0.6, ease: 'easeOut' },
+    }
+
+const craftContainerProps = prefersReducedMotion
+  ? {}
+  : {
+      variants: {
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.08,
+            delayChildren: 0.08,
+          },
+        },
+      },
+      initial: 'hidden',
+      whileInView: 'visible',
+      viewport: { once: true, amount: 0.2 },
+    }
+
+const craftItemProps = prefersReducedMotion
+  ? {}
+  : {
+      variants: {
+        hidden: { opacity: 0, y: 24 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.5, ease: 'easeOut' },
+        },
+      },
+    }
 
 const CRAFT_FEATURES = [
   {
@@ -102,7 +147,7 @@ export default function CollectionDetailPage() {
           </div>
         </section>
 
-        <section className="collection-section collection-story" aria-labelledby="collection-story">
+        <motion.section className="collection-section collection-story" aria-labelledby="collection-story" {...sectionRevealProps}>
           <div className="collection-section__inner collection-story__layout">
             <div className="collection-story__content">
               <p className="collection-section__eyebrow">Collection Story</p>
@@ -123,9 +168,9 @@ export default function CollectionDetailPage() {
               <img className="collection-story__image" src={storyImage} alt={`${collectionName} editorial`} />
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="collection-section collection-signature" aria-labelledby="collection-signature">
+        <motion.section className="collection-section collection-signature" aria-labelledby="collection-signature" {...sectionRevealProps}>
           <div className="collection-section__inner">
             <div className="collection-section__header">
               <div>
@@ -140,9 +185,9 @@ export default function CollectionDetailPage() {
             </div>
             <ProductGrid watches={curatedWatches} />
           </div>
-        </section>
+        </motion.section>
 
-        <section className="collection-section collection-craft" id="craft" aria-labelledby="collection-craft">
+        <motion.section className="collection-section collection-craft" id="craft" aria-labelledby="collection-craft" {...sectionRevealProps}>
           <div className="collection-section__inner">
             <div className="collection-section__header">
               <div>
@@ -155,19 +200,19 @@ export default function CollectionDetailPage() {
                 Every component is selected to deliver longevity, refinement, and mechanical clarity.
               </p>
             </div>
-            <div className="collection-craft__grid">
+            <motion.div className="collection-craft__grid" {...craftContainerProps}>
               {CRAFT_FEATURES.map((feature) => (
-                <article key={feature.title} className="collection-craft__card">
+                <motion.article key={feature.title} className="collection-craft__card" {...craftItemProps}>
                   <img className="collection-craft__icon" src={feature.icon} alt="" aria-hidden="true" />
                   <h3 className="collection-craft__title">{feature.title}</h3>
                   <p className="collection-craft__body">{feature.description}</p>
-                </article>
+                </motion.article>
               ))}
-            </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="collection-section collection-motion" aria-labelledby="collection-motion">
+        <motion.section className="collection-section collection-motion" aria-labelledby="collection-motion" {...sectionRevealProps}>
           <div className="collection-section__inner collection-motion__layout">
             <div className="collection-motion__content">
               <p className="collection-section__eyebrow">Gallery</p>
@@ -189,9 +234,9 @@ export default function CollectionDetailPage() {
               <img className="collection-motion__poster" src={galleryPoster} alt="" aria-hidden="true" />
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="collection-section collection-cta" aria-label="Collection call to action">
+        <motion.section className="collection-section collection-cta" aria-label="Collection call to action" {...sectionRevealProps}>
           <div className="collection-section__inner collection-cta__inner">
             <div>
               <p className="collection-section__eyebrow">Ready to explore</p>
@@ -209,7 +254,7 @@ export default function CollectionDetailPage() {
               </Button>
             </div>
           </div>
-        </section>
+        </motion.section>
       </div>
     </PageTransition>
   )

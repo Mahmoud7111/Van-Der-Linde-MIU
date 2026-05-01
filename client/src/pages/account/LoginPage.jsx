@@ -18,6 +18,7 @@ export default function LoginPage() {
   const from = location.state?.from?.pathname || '/'
 
   const [showPassword, setShowPassword] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   const {
     register,
@@ -34,6 +35,7 @@ export default function LoginPage() {
   })
 
   const onSubmit = async ({ email, password }) => {
+    setServerError('')
     try {
       await login(email.trim(), password)
       toast.success('Welcome back!')
@@ -43,6 +45,7 @@ export default function LoginPage() {
         error?.response?.data?.message ||
         error?.message ||
         'Invalid email or password'
+      setServerError(message)
       toast.error(message)
     }
   }
@@ -85,6 +88,12 @@ export default function LoginPage() {
             </div>
 
             <form className="auth-vdl-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+              {serverError && (
+                <div className="auth-vdl-alert auth-vdl-alert--error" role="alert">
+                  <span className="auth-vdl-alert__icon">⚠</span>
+                  <span className="auth-vdl-alert__text">{serverError}</span>
+                </div>
+              )}
               <div className="auth-vdl-field">
                 <label htmlFor="email" className="auth-vdl-label">
                   EMAIL

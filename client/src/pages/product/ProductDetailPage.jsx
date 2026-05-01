@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { FiHeart } from 'react-icons/fi'
 import { useLoaderData } from 'react-router-dom'
 import PageTransition from '@/components/common/PageTransition'
@@ -12,6 +13,11 @@ import { useCurrency } from '@/context/CurrencyContext'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { cn } from '@/utils/cn'
 import './ProductDetailPage.css'
+
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 export default function ProductDetailPage() {
   const watch = useLoaderData()
@@ -56,6 +62,22 @@ export default function ProductDetailPage() {
     addToWishlist(watch)
   }
 
+  const imageMotionProps = prefersReducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0, scale: 0.92, y: 20 },
+        animate: { opacity: 1, scale: 1, y: 0 },
+        transition: { duration: 0.7, ease: 'easeOut' },
+      }
+
+  const infoMotionProps = prefersReducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0, y: 15 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.6, ease: 'easeOut', delay: 0.2 },
+      }
+
   return (
     <PageTransition>
       <section className={cn('product-detail', isOutOfStock && 'product-detail--sold-out')}>
@@ -79,15 +101,15 @@ export default function ProductDetailPage() {
 
           <div className="product-detail__layout">
             <div className="product-detail__gallery">
-              <div className="product-detail__image-frame">
+              <motion.div className="product-detail__image-frame" {...imageMotionProps}>
                 <img className="product-detail__image" src={imageUrl} alt={watch.name ?? 'Watch'} />
-              </div>
+              </motion.div>
               <div className="product-detail__gallery-panel">
                 <ProductImageGallery images={watch.images ?? []} name={watch.name} />
               </div>
             </div>
 
-            <div className="product-detail__info">
+            <motion.div className="product-detail__info" {...infoMotionProps}>
               <div className="product-detail__price-row">
                 <span className="product-detail__price">{formatPrice(watch.price ?? 0)}</span>
                 {hasRating && (
@@ -125,7 +147,7 @@ export default function ProductDetailPage() {
                   {isSaved ? 'Saved' : 'Save to Wishlist'}
                 </Button>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           <section className="product-detail__reviews">

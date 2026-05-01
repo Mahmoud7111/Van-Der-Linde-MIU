@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Authentication context.
  *
  * What this file is:
@@ -6,7 +6,7 @@
  *
  * What it does:
  * - Restores session on refresh by validating stored token with `authService.getMe()`.
- * - Exposes login, register, and logout helpers.
+ * - Exposes login, register, update profile, and logout helpers.
  * - Prevents flash of wrong auth UI by rendering children only after initial check completes.
  *
  * Where it is used:
@@ -16,11 +16,14 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { authService } from '@/services/authService'
 
+import toast from 'react-hot-toast' 
+
 // Create auth context for user, loading state, and auth methods.
 const AuthContext = createContext(null)
-
+// Wraps the app and manages authentication lifecycle
 // Provider wraps app and controls auth lifecycle globally.
 export const AuthProvider = ({ children }) => {
+  // Stores current logged-in user (null = not authenticated)
   // Current authenticated user; null means not logged in.
   const [user, setUser] = useState(null)
 
@@ -68,6 +71,7 @@ export const AuthProvider = ({ children }) => {
 
     // Push authenticated user into global context.
     setUser(result.user)
+    toast.success('Successfully logged in!')
 
     return result
   }
@@ -82,7 +86,16 @@ export const AuthProvider = ({ children }) => {
 
     // Set newly created user in context.
     setUser(result.user)
+    toast.success('Registration successful!')
 
+    return result
+  }
+
+  // Profile update action used by the account page.
+  const updateProfile = async (data) => {
+    const result = await authService.updateProfile(data)
+    setUser(result.user || result)
+    toast.success('Profile updated successfully.')
     return result
   }
 
@@ -95,12 +108,13 @@ export const AuthProvider = ({ children }) => {
       // Always clear local auth state regardless of remote logout outcome.
       localStorage.removeItem('token')
       setUser(null)
+      toast.success('Logged out successfully.')
     }
   }
 
   return (
     // Block child rendering during initial auth restore to avoid wrong-route flash.
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   )

@@ -7,6 +7,11 @@
   background-color: var(--color-background, #fff);
   color: var(--color-text, #1a1a1a);
   text-align: center;
+  cursor: auto;
+}
+
+.error-page * {
+  cursor: auto;
 }
 
 .error-page__content {
