@@ -221,11 +221,11 @@
 }
 
 [data-theme='dark'] .home-trust__title {
-  color: color-mix(in srgb, var(--color-white) 88%, var(--color-gold) 12%);
+  color: #ffffff;
 }
 
 [data-theme='dark'] .home-trust__subtitle {
-  color: color-mix(in srgb, var(--color-white) 72%, var(--color-muted) 28%);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 @media (max-width: 1024px) {
@@ -1691,13 +1691,14 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
 
+@media (prefers-reduced-motion: reduce) {
   /* Accessibility: disable decorative floating animation. */
   .home-configurator__model-wrap {
     animation: none;
   }
 }
+
 
 /* ── HOME REVIEWS ───────────────────────────────────────────────────────── */
 
