@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "_id": "col-001",
     "name": "Heritage",
@@ -6,7 +6,7 @@
     "coverImage": "@/assets/Models/TonySoprano.jpg",
     "slug": "heritage"
   },
-    {
+  {
     "_id": "col-002",
     "name": "Casual & Everyday",
     "description": "Timeless designs that seamlessly integrate into daily life, combining functionality with subtle style.",
@@ -14,18 +14,18 @@
     "slug": "casual-everyday"
   },
   {
-    "_id": "col-003",
-    "name": "Sport Elite",
-    "description": "Performance-first timepieces built for motion, endurance, and bold presence.",
-    "coverImage": "@/assets/Models/Cartier Tank.jpg",
-    "slug": "sport-elite"
-  },
-  {
     "_id": "col-004",
     "name": "Noir Series",
     "description": "Dark-toned luxury watches with refined contrast and understated aggression.",
-    "coverImage": "@/assets/Models/Patek Philippe Grand Master Chime Jay Z.jpg",
+    "coverImage": "@/assets/Models/Henry-Cavill-Longines.jpg",
     "slug": "noir-series"
+  },
+  {
+    "_id": "col-003",
+    "name": "Sport Elite",
+    "description": "Performance-first timepieces built for motion, endurance, and bold presence.",
+    "coverImage": "@/assets/Models/sport1.png",
+    "slug": "sport-elite"
   },
   {
     "_id": "col-005",

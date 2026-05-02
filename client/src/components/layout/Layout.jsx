@@ -70,7 +70,12 @@ export default function Layout() {
       <main
         className={cn(
           'layout__main',
-          location.pathname !== '/' && !isAdminRoute && 'layout__main--padded'
+          location.pathname !== '/' && 
+          location.pathname !== '/shop/men' && 
+          location.pathname !== '/shop/women' && 
+          !location.pathname.startsWith('/collections/') && 
+          !isAdminRoute && 
+          'layout__main--padded'
         )}
       >
         {/*

@@ -65,7 +65,10 @@ export default function Header() {
   // and becomes solid after the user scrolls 80px past the top.
   const isHomePage = location.pathname === '/'
   const isShopPage = location.pathname === '/shop'
-  const isHeroPage = isHomePage || isShopPage
+  const isMenShop = location.pathname === '/shop/men'
+  const isWomenShop = location.pathname === '/shop/women'
+  const isCollectionDetail = location.pathname.startsWith('/collections/')
+  const isHeroPage = isHomePage || isShopPage || isMenShop || isWomenShop || isCollectionDetail
 
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
