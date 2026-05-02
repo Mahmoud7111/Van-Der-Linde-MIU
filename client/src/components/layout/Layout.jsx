@@ -43,6 +43,7 @@ export default function Layout() {
   const [isSuspending, setIsSuspending] = useState(false)
   const authPaths = ['/login', '/register']
   const isAuthPage = authPaths.includes(location.pathname)
+  const isAdminRoute = location.pathname.startsWith('/admin')
 
   const handleSuspenseStart = useCallback(() => setIsSuspending(true), [])
   const handleSuspenseEnd = useCallback(() => setIsSuspending(false), [])
@@ -57,7 +58,7 @@ export default function Layout() {
       <ClockHandCursor />
       <LoadingScreen isVisible={showLoader} />
 
-      {!isAuthPage && (
+      {!isAuthPage && !isAdminRoute && (
         /* Shared top navigation across all pages except the login screen. */
         <Header />
       )}
@@ -66,10 +67,17 @@ export default function Layout() {
         Main content area expands to fill vertical space.
         `flex: 1` keeps footer pushed to the bottom on short pages.
       */}
-      <main className={cn(
-        "layout__main",
-        location.pathname !== '/' && "layout__main--padded"
-      )}>
+      <main
+        className={cn(
+          'layout__main',
+          location.pathname !== '/' && 
+          location.pathname !== '/shop/men' && 
+          location.pathname !== '/shop/women' && 
+          !location.pathname.startsWith('/collections/') && 
+          !isAdminRoute && 
+          'layout__main--padded'
+        )}
+      >
         {/*
           Suspense is required because route elements are lazy-loaded with React.lazy in routes/index.jsx.
           Until the chunk resolves, this fallback is shown.
@@ -93,7 +101,7 @@ export default function Layout() {
         </Suspense> 
       </main>
 
-      {!isAuthPage && (
+      {!isAuthPage && !isAdminRoute && (
         /* Shared footer across all pages except the login screen. */
         <Footer />
       )}

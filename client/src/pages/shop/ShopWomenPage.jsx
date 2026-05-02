@@ -1,12 +1,18 @@
+import { useState } from 'react'
 import { useLoaderData, useSearchParams } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import Button from '@/components/common/Button'
 import PageTransition from '@/components/common/PageTransition'
 import ProductFilter from '@/components/product/ProductFilter'
 import ProductGrid from '@/components/product/ProductGrid'
+import useMediaQuery from '@/hooks/useMediaQuery'
 import './ShopPage.css'
 
 export default function ShopWomenPage() {
   const data = useLoaderData()
   const [searchParams] = useSearchParams()
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const isMobile = useMediaQuery('(max-width: 960px)')
 
   const watches = Array.isArray(data) ? data : []
   const search = (searchParams.get('search') || '').trim()
@@ -50,14 +56,79 @@ export default function ShopWomenPage() {
               </p>
             </div>
             <div className="shop-page__meta">
-              <span className="shop-page__count">{watches.length} Watches</span>
+              <div className="shop-page__actions">
+                {isMobile && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="shop-page__filter-toggle"
+                    onClick={() => setIsFilterOpen(true)}
+                  >
+                    <span className="shop-page__filter-icon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 6h16M4 12h16m-7 6h7" />
+                      </svg>
+                    </span>
+                    Filter By
+                  </Button>
+                )}
+                <span className="shop-page__count">{watches.length} Watches</span>
+              </div>
               <p className="shop-page__summary">{summaryText}</p>
             </div>
           </header>
 
-          <div className="shop-page__filters">
-            <ProductFilter defaultGender="women" />
-          </div>
+          {!isMobile && (
+            <div className="shop-page__filters">
+              <ProductFilter defaultGender="women" />
+            </div>
+          )}
+
+          <AnimatePresence>
+            {isMobile && isFilterOpen && (
+              <>
+                <motion.div
+                  className="shop-page__filter-overlay"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsFilterOpen(false)}
+                />
+                <motion.aside
+                  className="shop-page__filter-drawer"
+                  initial={{ x: '-100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '-100%' }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                >
+                  <div className="shop-page__drawer-header">
+                    <h2 className="shop-page__drawer-title">Filters</h2>
+                    <button
+                      className="shop-page__drawer-close"
+                      onClick={() => setIsFilterOpen(false)}
+                      aria-label="Close filters"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="shop-page__drawer-content">
+                    <ProductFilter defaultGender="women" />
+                    <div className="shop-page__drawer-footer">
+                      <Button
+                        variant="home-action-solid"
+                        className="shop-page__drawer-apply"
+                        onClick={() => setIsFilterOpen(false)}
+                      >
+                        Apply Filters
+                      </Button>
+                    </div>
+                  </div>
+                </motion.aside>
+              </>
+            )}
+          </AnimatePresence>
 
           <div className="shop-page__results">
             <ProductGrid watches={watches} />

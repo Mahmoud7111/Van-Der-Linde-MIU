@@ -115,17 +115,7 @@ export default function CollectionDetailPage() {
       <div className="collection-detail">
         <section className="collection-hero">
           <div className="collection-hero__media" aria-hidden="true">
-            <video
-              className="collection-hero__video"
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster={collectionHeroPoster}
-            >
-              <source src={heroVideo} type="video/mp4" />
-            </video>
-            <img className="collection-hero__poster" src={collectionHeroPoster} alt="" aria-hidden="true" />
+            <img className="collection-hero__image" src={collectionHeroPoster} alt={collectionName} />
           </div>
           <div className="collection-hero__overlay" aria-hidden="true" />
 
@@ -134,7 +124,7 @@ export default function CollectionDetailPage() {
             <h1 className="collection-hero__title">{collectionName}</h1>
             <p className="collection-hero__description">{collectionDescription}</p>
             <div className="collection-hero__actions">
-              <Button to="/shop" variant="primary">
+              <Button href="#signature" variant="primary">
                 Shop Collection
               </Button>
               <Button href="#craft" variant="secondary">
@@ -170,7 +160,7 @@ export default function CollectionDetailPage() {
           </div>
         </motion.section>
 
-        <motion.section className="collection-section collection-signature" aria-labelledby="collection-signature" {...sectionRevealProps}>
+        <motion.section className="collection-section collection-signature" id="signature" aria-labelledby="collection-signature" {...sectionRevealProps}>
           <div className="collection-section__inner">
             <div className="collection-section__header">
               <div>

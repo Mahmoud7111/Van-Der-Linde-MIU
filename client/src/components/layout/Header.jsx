@@ -61,9 +61,14 @@ export default function Header() {
 
   const location = useLocation()
 
-  // Homepage gets special treatment: header starts transparent over the hero
+  // Homepage and Shop All get special treatment: header starts transparent over the hero
   // and becomes solid after the user scrolls 80px past the top.
   const isHomePage = location.pathname === '/'
+  const isShopPage = location.pathname === '/shop'
+  const isMenShop = location.pathname === '/shop/men'
+  const isWomenShop = location.pathname === '/shop/women'
+  const isCollectionDetail = location.pathname.startsWith('/collections/')
+  const isHeroPage = isHomePage || isShopPage || isMenShop || isWomenShop || isCollectionDetail
 
   // Reads total item count; full header uses this in cart badge and mini cart triggers.
   const { totalItems } = useCart()
@@ -129,8 +134,8 @@ export default function Header() {
         ref={headerRef}
         className={cn(
           'header',
-          // Transparent state clears background/shadow while user is at the top of the page on the home hero.
-          isHomePage && scrollY < 80 && !isSearchOpen && 'header--transparent',
+          // Transparent state clears background/shadow while user is at the top of the page on hero pages.
+          isHeroPage && scrollY < 80 && !isSearchOpen && 'header--transparent',
           // Hide header when scrolling down; reveal when scrolling up or near the top.
           // The scrollY > 24 guard prevents hiding the header on tiny accidental scrolls.
           isHidden && scrollY > 24 && 'header--hidden',

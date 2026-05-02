@@ -4,7 +4,6 @@ import { useLoaderData } from 'react-router-dom'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import StarRating from '@/components/common/StarRating'
-import ProductImageGallery from '@/components/product/ProductImageGallery'
 import ReviewCard from '@/components/product/ReviewCard'
 import ReviewForm from '@/components/product/ReviewForm'
 import { useCart } from '@/context/CartContext'
@@ -104,9 +103,6 @@ export default function ProductDetailPage() {
               <motion.div className="product-detail__image-frame" {...imageMotionProps}>
                 <img className="product-detail__image" src={imageUrl} alt={watch.name ?? 'Watch'} />
               </motion.div>
-              <div className="product-detail__gallery-panel">
-                <ProductImageGallery images={watch.images ?? []} name={watch.name} />
-              </div>
             </div>
 
             <motion.div className="product-detail__info" {...infoMotionProps}>

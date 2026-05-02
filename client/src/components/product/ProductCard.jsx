@@ -9,7 +9,7 @@ import StarRating from '@/components/common/StarRating'
 import Button from '@/components/common/Button'
 import './ProductCard.css'
 
-export default function ProductCard({ watch, className = '' }) {
+export default function ProductCard({ watch, viewMode = 'grid', className = '' }) {
   const { dispatch } = useCart()
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist()
   const { formatPrice } = useCurrency()
@@ -39,7 +39,7 @@ export default function ProductCard({ watch, className = '' }) {
   }
 
   return (
-    <article className={cn('product-card', isOutOfStock && 'product-card--sold-out', className)}>
+    <article className={cn('product-card', isOutOfStock && 'product-card--sold-out', `product-card--${viewMode}`, className)}>
       <div className="product-card__media">
         <Link className="product-card__media-link" to={productPath} aria-label={`View ${watch.name}`}>
           <img className="product-card__image" src={imageUrl} alt={watch.name} loading="lazy" />
@@ -54,6 +54,18 @@ export default function ProductCard({ watch, className = '' }) {
         >
           <FiHeart aria-hidden="true" fill={isSaved ? 'currentColor' : 'none'} />
         </button>
+
+        <div className="product-card__actions">
+          <Button
+            className="product-card__action"
+            onClick={handleAddToCart}
+            variant="primary"
+            size="sm"
+            disabled={isOutOfStock}
+          >
+            Add to Cart
+          </Button>
+        </div>
       </div>
 
       <div className="product-card__content">
@@ -72,21 +84,6 @@ export default function ProductCard({ watch, className = '' }) {
               {hasReviews && <span className="product-card__reviews">({reviewCount})</span>}
             </div>
           )}
-        </div>
-
-        <div className="product-card__actions">
-          <Button className="product-card__action" to={productPath} variant="secondary" size="sm">
-            View Details
-          </Button>
-          <Button
-            className="product-card__action"
-            onClick={handleAddToCart}
-            variant="primary"
-            size="sm"
-            disabled={isOutOfStock}
-          >
-            Add to Cart
-          </Button>
         </div>
       </div>
     </article>
