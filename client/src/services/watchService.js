@@ -1,30 +1,10 @@
-﻿/**
- * Watch service (mock + real implementations).
- *
- * What this file is:
- * A data access layer for watch catalog operations.
- *
- * What it does:
- * Exposes methods used by route loaders and admin pages to list, fetch, create,
- * update, and remove watches.
- *
- * Where it is used:
- * - Route loaders in routes/index.jsx prefetch watch lists and watch detail data.
- * - Shop, product detail, and admin management screens consume these methods.
- */
-
-/*
-axiosInstance is used only for real API calls, not for the mock data.
-The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
-and will not use it if USE_MOCK is true (mock mode).
-*/
-
-import api from '@/api/axiosInstance'
-import { USE_MOCK } from '@/utils/constants'
 import products from '@/data/products.json'
 
-// Mock service for frontend-first development with realistic async behavior.
-const mock = {
+/**
+ * Watch service using local JSON for mock data.
+ * All real API calls and Axios dependencies have been removed.
+ */
+export const watchService = {
   // Called by home/shop route loaders to prefetch product grid data before render.
   getAll: (filters = {}) => {
     // Copy source array first so sorting operations do not mutate imported JSON data.
@@ -105,23 +85,4 @@ const mock = {
   remove: (id) => Promise.resolve({ id }),
 }
 
-// Real service for production API integration.
-const real = {
-  // GET /watches with query params for filters/search/sort.
-  getAll: (filters = {}) => api.get('/watches', { params: filters }).then((response) => response.data),
-
-  // GET /watches/:id returns one watch document by Mongo id.
-  getById: (id) => api.get(`/watches/${id}`).then((response) => response.data),
-
-  // POST /watches creates a new watch (admin action).
-  create: (data) => api.post('/watches', data).then((response) => response.data),
-
-  // PUT /watches/:id updates existing watch (admin action).
-  update: (id, data) => api.put(`/watches/${id}`, data).then((response) => response.data),
-
-  // DELETE /watches/:id removes watch (admin action).
-  remove: (id) => api.delete(`/watches/${id}`).then((response) => response.data),
-}
-
-// Single service export consumed by loaders/pages; behavior controlled by USE_MOCK flag.
-export const watchService = USE_MOCK ? mock : real
+export default watchService;

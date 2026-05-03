@@ -1,55 +1,5 @@
-﻿/**
- * Authentication service (mock + real implementations).
- *
- * What this file is:
- * A service abstraction for all auth-related API operations.
- *
- * What it does:
- * Provides both mock and real async implementations behind one `authService` export,
- * selected by the USE_MOCK flag.
- *
- * Where it is used:
- * AuthContext calls login/register/getMe/logout.
- * Forgot/Reset password pages can call forgotPassword/resetPassword.
- */
-
-/*
-axiosInstance is used only for real API calls, not for the mock data.
-The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
-and will not use it if USE_MOCK is true (mock mode).
-*/
-
-
-import api from '@/api/axiosInstance'
-import { USE_MOCK } from '@/utils/constants'
 import mockUser from '@/data/user.json'
 import mockAdmin from '@/data/admin.json'
-
-// Real auth service maps frontend actions to backend Express routes.
-const real = {
-  // Authenticate user and return { user, token }
-  // POST /auth/login authenticates credentials and returns `{ user, token }`.
-  login: (data) => api.post('/auth/login', data).then((response) => response.data),
-  // Register new user and return { user, token }
-  // POST /auth/register creates account and returns `{ user, token }`.
-  register: (data) => api.post('/auth/register', data).then((response) => response.data),
-  // Get current logged-in user from JWT
-  // GET /auth/me returns current authenticated user profile from JWT context.
-  getMe: () => api.get('/auth/me').then((response) => response.data),
-
-  // PATCH /auth/me updates the authenticated user's profile.
-  updateProfile: (data) => api.patch('/auth/me', data).then((response) => response.data),
-
-  // POST /auth/logout invalidates session/token server-side when implemented.
-  logout: () => api.post('/auth/logout').then((response) => response.data),
-
-  // POST /auth/forgot-password triggers password reset email flow.
-  forgotPassword: (data) =>
-    api.post('/auth/forgot-password', data).then((response) => response.data),
-
-  // POST /auth/reset-password submits new password token payload.
-  resetPassword: (data) => api.post('/auth/reset-password', data).then((response) => response.data),
-}
 
 const MOCK_USERS_STORAGE_KEY = 'mock-auth-users'
 const MOCK_CURRENT_USER_ID_KEY = 'mock-auth-current-user-id'
@@ -132,7 +82,11 @@ const setCurrentMockUserId = (userId) => {
 
 const getCurrentMockUserId = () => localStorage.getItem(MOCK_CURRENT_USER_ID_KEY)
 
-const mock = {
+/**
+ * Authentication service using local storage for mock data.
+ * All real API calls and Axios dependencies have been removed.
+ */
+export const authService = {
   login: ({ email, password }) => {
     const users = readMockUsers()
     writeMockUsers(users)
@@ -243,5 +197,4 @@ const mock = {
   resetPassword: () => Promise.resolve({ message: 'Password reset' }),
 }
 
-// Single export consumed by context/pages; switches automatically between mock and real modes.
-export const authService = USE_MOCK ? mock : real
+export default authService;

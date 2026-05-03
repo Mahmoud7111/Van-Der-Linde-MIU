@@ -1,28 +1,3 @@
-﻿/**
- * Order service (mock + real implementations).
- *
- * What this file is:
- * Service abstraction for order retrieval and order state mutations.
- *
- * What it does:
- * Supports user order history flows and admin order management flows through
- * one shared API with mock and real backends.
- *
- * Where it is used:
- * - `profile` and `orders` route loaders call getMyOrders().
- * - Admin orders pages call getAll(), getById(), and updateStatus().
- * - Checkout flow calls create().
- */
-
-/*
-axiosInstance is used only for real API calls, not for the mock data.
-The exported watchService will use axiosInstance if USE_MOCK is false (real mode),
-and will not use it if USE_MOCK is true (mock mode).
-*/
-
-
-import api from '@/api/axiosInstance'
-import { USE_MOCK } from '@/utils/constants'
 import orders from '@/data/orders.json'
 import products from '@/data/products.json'
 
@@ -74,9 +49,7 @@ const mockOrders = orders.map(normalizeOrder)
 /**
  * Retrieve persisted orders from localStorage
  * - Used to simulate backend order history
- * - Returns empty array if nothing exists or parsing fails
  */
-// Helper to get persisted user orders from localStorage (created during checkout).
 const getPersistedUserOrders = () => {
   try {
     const stored = localStorage.getItem('mock-user-orders')
@@ -88,9 +61,7 @@ const getPersistedUserOrders = () => {
 /**
  * Save user orders to localStorage
  * - Used after checkout or order updates
- * - Silently fails if storage is unavailable
  */
-// Helper to save user orders to localStorage.
 const persistUserOrders = (userOrders) => {
   try {
     localStorage.setItem('mock-user-orders', JSON.stringify(userOrders))
@@ -99,8 +70,11 @@ const persistUserOrders = (userOrders) => {
   }
 }
 
-// Mock order service preserves async API signatures using Promise.resolve.
-const mock = {
+/**
+ * Order service using local storage for mock data.
+ * All real API calls and Axios dependencies have been removed.
+ */
+export const orderService = {
   // User-facing loader for profile/order history routes.
   // Returns both static demo orders and any orders created during this session.
   getMyOrders: () => {
@@ -154,24 +128,4 @@ const mock = {
   },
 }
 
-// Real order service mapped to backend Express routes.
-const real = {
-  // GET /orders/mine returns current authenticated user's orders.
-  getMyOrders: () => api.get('/orders/mine').then((response) => response.data),
-
-  // GET /orders returns all orders (admin-only route on backend).
-  getAll: () => api.get('/orders').then((response) => response.data),
-
-  // GET /orders/:id returns one order detail.
-  getById: (id) => api.get(`/orders/${id}`).then((response) => response.data),
-
-  // POST /orders creates order from checkout payload.
-  create: (data) => api.post('/orders', data).then((response) => response.data),
-
-  // PUT /orders/:id/status updates order status (admin action).
-  updateStatus: (id, status) =>
-    api.put(`/orders/${id}/status`, { status }).then((response) => response.data),
-}
-
-// Shared export used by loaders/pages; toggles between mock and real via USE_MOCK.
-export const orderService = USE_MOCK ? mock : real
+export default orderService;
