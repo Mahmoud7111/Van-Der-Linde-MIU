@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     // Call auth service (mock or real), expecting `{ user, token }` response shape.
     const result = await authService.login({ email, password })
 
-    // Persist JWT for future API calls via axios interceptor.
+    // Persist JWT for future session restoration.
     localStorage.setItem('token', result.token)
 
     // Push authenticated user into global context.
