@@ -1,0 +1,1 @@
+// Connects the backend to MongoDB.
