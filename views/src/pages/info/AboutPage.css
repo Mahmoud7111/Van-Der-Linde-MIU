@@ -1,0 +1,315 @@
+.about-page {
+  color: var(--color-text, #1a1a1a);
+}
+
+/* Hero Section */
+.about-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  text-align: left;
+  background-size: cover;
+  background-position: center;
+  padding: 4rem clamp(2rem, 8vw, 6rem);
+}
+
+.about-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.about-hero__content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+}
+
+.about-hero__label {
+  display: block;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-gold, #9a7b4f);
+  margin-bottom: 1rem;
+}
+
+.about-hero__title {
+  font-size: 3.5rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.modern-num {
+  font-family: Arial sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.about-hero__subtitle {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  color: #ffffff;
+  max-width: 800px;
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 300;
+}
+
+/* Heritage Section */
+.about-heritage {
+  padding: 6rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-heritage__inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-heritage__text {
+  width: 100%;
+}
+
+.about-heritage__heading {
+  font-size: 2.2rem;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  color: var(--color-dark, #1a1a1a);
+}
+
+.about-heritage__text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--color-muted, #666);
+  margin-bottom: 1.5rem;
+}
+
+/* Craftsmanship Image Section */
+.about-craft-image {
+  position: relative;
+  max-width: 1200px;
+  margin: 4rem auto 0;
+  padding: 0 2rem;
+}
+
+.about-craft-image__wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.about-craft__main-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.about-craft-image__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.about-craft-image__content {
+  max-width: 800px;
+}
+
+.about-craft-image__headline {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1.5rem;
+  color: var(--color-gold, #c9a84c);
+}
+
+.about-craft-image__text {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.6;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Craft Section */
+.about-craft {
+  background-color: var(--color-surface, #f9f9f9);
+  padding: 6rem 2rem;
+}
+
+.about-craft__content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-craft__title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 4rem;
+  color: var(--color-dark, #1a1a1a);
+}
+
+.about-craft__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+}
+
+.about-craft__card {
+  text-align: center;
+  padding: 2rem;
+}
+
+.about-craft__card h3 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  color: var(--color-gold, #9a7b4f);
+}
+
+.about-craft__card p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-muted, #666);
+}
+
+/* Milestone Sections (Beginning, Movement, Recognition) */
+.about-milestone {
+  padding: 6rem 2rem;
+  background-color: var(--color-background, #ffffff);
+}
+
+.about-milestone:nth-child(even) {
+  background-color: var(--color-surface, #f9f9f9);
+}
+
+.about-milestone__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6rem;
+}
+
+.about-milestone__image-wrapper {
+  flex: 1;
+}
+
+.about-milestone__image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  filter: grayscale(100%);
+  transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+
+.about-milestone__image:hover {
+  filter: grayscale(0%);
+  transform: scale(1.03);
+}
+
+.about-milestone__text {
+  flex: 1;
+}
+
+.about-milestone__heading {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  color: var(--color-dark, #1a1a1a);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.about-milestone__text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--color-muted, #666);
+}
+
+/* CTA Section */
+.about-cta {
+  padding: 8rem 2rem;
+  text-align: center;
+}
+
+.about-cta__title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: var(--color-dark, #1a1a1a);
+}
+
+.about-cta__text {
+  font-size: 1.1rem;
+  color: var(--color-muted, #666);
+  margin-bottom: 3rem;
+}
+
+/* Dark Mode Support */
+[data-theme='dark'] .about-page {
+  color: var(--color-text, #f5f5f5);
+}
+
+[data-theme='dark'] .about-hero {
+  /* removed background color override since it has an image now */
+}
+
+[data-theme='dark'] .about-heritage__heading,
+[data-theme='dark'] .about-craft__title,
+[data-theme='dark'] .about-milestone__heading,
+[data-theme='dark'] .about-cta__title {
+  color: var(--color-gold, #9a7b4f);
+}
+
+[data-theme='dark'] .about-heritage__text p,
+[data-theme='dark'] .about-craft__card p,
+[data-theme='dark'] .about-milestone__text p,
+[data-theme='dark'] .about-cta__text {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme='dark'] .about-craft,
+[data-theme='dark'] .about-milestone {
+  background-color: color-mix(in srgb, var(--color-surface) 95%, #000 5%);
+}
+
+@media (max-width: 900px) {
+  .about-heritage__inner,
+  .about-milestone__inner {
+    flex-direction: column !important;
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-hero__title {
+    font-size: 2.5rem;
+  }
+
+  .about-heritage {
+    padding: 4rem 1rem;
+  }
+}

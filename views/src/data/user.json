@@ -1,0 +1,13 @@
+﻿{
+  "_id": "user-001",
+  "name": "Van Der Linde Customer",
+  "email": "user@vanderlindewatches.com",
+  "password": "123456",
+  "role": "user",
+  "address": {
+    "street": "110 Heritage Street",
+    "city": "Cairo",
+    "country": "Egypt",
+    "zip": "11372"
+  }
+}

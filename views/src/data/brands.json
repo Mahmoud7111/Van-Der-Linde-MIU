@@ -1,0 +1,23 @@
+﻿[
+  {
+    "_id": "brand-001",
+    "name": "Van Der Linde",
+    "logo": "/images/brands/Van Der Linde-logo.svg",
+    "description": "Core luxury watch line focused on premium materials and timeless design language.",
+    "slug": "Van Der Linde"
+  },
+  {
+    "_id": "brand-002",
+    "name": "Van Der Linde Noir",
+    "logo": "/images/brands/Van Der Linde-noir-logo.svg",
+    "description": "Sub-brand specializing in modern dark-finish aesthetics and urban chronographs.",
+    "slug": "Van Der Linde-noir"
+  },
+  {
+    "_id": "brand-003",
+    "name": "Van Der Linde Sport",
+    "logo": "/images/brands/Van Der Linde-sport-logo.svg",
+    "description": "Sub-brand engineered for active wear, durability, and high-visibility instrumentation.",
+    "slug": "Van Der Linde-sport"
+  }
+]

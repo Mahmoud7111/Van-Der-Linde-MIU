@@ -1,0 +1,84 @@
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 18%, transparent 82%);
+  background: color-mix(in srgb, var(--color-white) 94%, transparent 6%);
+  box-shadow: 0 16px 30px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+}
+
+.skeleton-card__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skeleton-card__media {
+  aspect-ratio: 4 / 5;
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--color-gold) 8%);
+}
+
+.skeleton-card__content {
+  padding: clamp(var(--space-md), 2vw, var(--space-lg));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.skeleton-card__line {
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-muted) 20%, transparent 80%);
+}
+
+.skeleton-card__line--long {
+  height: 18px;
+  width: 80%;
+}
+
+.skeleton-card__line--price {
+  height: 14px;
+  width: 40%;
+}
+
+.skeleton-card__actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.skeleton-card__button {
+  flex: 1;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-muted) 20%, transparent 80%);
+}
+
+.skeleton-card__shimmer {
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--color-surface) 80%, transparent 20%) 8%,
+    color-mix(in srgb, var(--color-white) 94%, transparent 6%) 18%,
+    color-mix(in srgb, var(--color-surface) 80%, transparent 20%) 33%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+[data-theme='dark'] .skeleton-card {
+  border-color: color-mix(in srgb, var(--color-gold) 28%, transparent 72%);
+  background: color-mix(in srgb, var(--color-white) 6%, transparent 94%);
+  box-shadow: 0 16px 30px color-mix(in srgb, #000000 35%, transparent 65%);
+}
+
+[data-theme='dark'] .skeleton-card__line,
+[data-theme='dark'] .skeleton-card__button {
+  background: color-mix(in srgb, var(--color-muted) 24%, transparent 76%);
+}

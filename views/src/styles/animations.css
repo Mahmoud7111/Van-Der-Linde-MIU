@@ -1,0 +1,153 @@
+﻿/*
+  File: animations.css
+
+  What this file is:
+  Project-wide CSS keyframes and utility animation hooks.
+
+  What it does:
+  Defines reusable keyframes for CSS-only animation cases while Framer Motion handles
+  most component-level motion logic.
+
+  Where it is used:
+  Imported globally from main.jsx and referenced by loaders, skeletons, route transitions,
+  and lightweight UI feedback states.
+*/
+
+/* Used by simple reveal states in static blocks such as hero text fallbacks and alert entries. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Used when elements should rise into place, such as cards or panels rendered after data load. */
+@keyframes slideUp { /* will not be used (may use Framer Motion) */
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Helpers to avoid snapping back at the end of fade/slide animations. */
+.anim-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.anim-slide-up {
+  animation: slideUp 0.4s ease forwards;
+}
+
+/* Used for horizontal entrance (e.g., drawers, side notices, or contextual banners). */
+@keyframes slideInRight { /*will not be used (will use  Framer Motion (still didn't decide))*/
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Used by SkeletonCard shimmer placeholders while async data is loading. */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Used by Loader component for circular loading indicators. */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Used for subtle attention cues on badges/status pills without hard movement. */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.82;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.badge--live { /*Without infinite it pulses once and stops, which looks broken*/
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Used by Layout route transition bar shown while navigation loaders are pending. */
+@keyframes loadingBar {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(-10%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+/* For number counters, price reveals, or stat callouts */
+@keyframes countUp { /*we use this for animated counters*/
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* For dark overlay behind mobile drawer / cart sidebar */
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 0.5; }
+}
+
+/*
+  Utility class used by skeleton placeholders:
+  We use a single .skeleton class for all loading placeholders to keep the shimmer effect consistent across the app.
+  Apply this to any placeholder block to get branded shimmering loading feedback.
+*/
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-white) 88%, var(--color-dark) 12%) 25%,
+    color-mix(in srgb, var(--color-white) 72%, var(--color-gold) 28%) 37%,
+    color-mix(in srgb, var(--color-white) 88%, var(--color-dark) 12%) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.3s linear infinite;
+}
+
+[data-theme="dark"] .skeleton {
+  background-image: linear-gradient( /*we used background-image instead of background because  the background shorthand, which resets all background sub-properties including background-size*/
+    90deg,
+    color-mix(in srgb, var(--color-dark) 88%, var(--color-white) 12%) 25%,
+    color-mix(in srgb, var(--color-dark) 72%, var(--color-gold) 28%) 37%,
+    color-mix(in srgb, var(--color-dark) 88%, var(--color-white) 12%) 63%
+  );
+}
