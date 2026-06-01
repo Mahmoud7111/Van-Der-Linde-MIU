@@ -133,10 +133,10 @@ export default function WatchQuizPage() {
     setResults([])
   }
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
+  const fadeInDown = {
+    hidden: { opacity: 0, y: -50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+    exit: { opacity: 0, y: 20, transition: { duration: 0.3 } }
   }
 
   return (
@@ -150,7 +150,7 @@ export default function WatchQuizPage() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              variants={fadeInUp}
+              variants={fadeInDown}
             >
               <h1 className="quiz-welcome__title">Find Your Perfect <br /> Timepiece</h1>
               <p className="quiz-welcome__subtitle">
@@ -167,7 +167,7 @@ export default function WatchQuizPage() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              variants={fadeInUp}
+              variants={fadeInDown}
             >
               <div className="quiz-step__progress">
                 <div className="progress-bar">
@@ -203,7 +203,7 @@ export default function WatchQuizPage() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              variants={fadeInUp}
+              variants={fadeInDown}
             >
               <h2 className="quiz-results__title">Our Recommendations</h2>
               <p className="quiz-results__subtitle">Based on your preferences, we think you'll love these timepieces.</p>
