@@ -1,0 +1,1 @@
+// /watches: public GET, admin-only POST/PUT/DELETE

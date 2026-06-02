@@ -21,6 +21,8 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  // Ensure Vite resolves from the frontend folder even if started elsewhere.
+  root: __dirname,
   // Treat 3D binary model files as static assets so they are not parsed as JS modules.
   assetsInclude: ['**/*.glb'],
   plugins: [
@@ -28,10 +30,13 @@ export default defineConfig({
     react(),
   ],
   resolve: {
-    alias: {
-      // Maps `@/` to `<project-root>/src` so every internal import can use the same absolute base.
-      '@': path.resolve(__dirname, './src'),
-    },
+    alias: [
+      {
+        // Maps `@/` to `<project-root>/src` so every internal import can use the same absolute base.
+        find: /^@\//,
+        replacement: `${path.resolve(__dirname, './src')}/`,
+      },
+    ],
   },
   server: {
     proxy: {

@@ -1,0 +1,1 @@
+// /collections: GET all, GET by slug

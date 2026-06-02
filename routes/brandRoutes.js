@@ -1,0 +1,1 @@
+// /brands: GET all

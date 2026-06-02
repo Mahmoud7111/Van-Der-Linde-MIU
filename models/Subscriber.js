@@ -1,0 +1,1 @@
+// email, isActive, subscribedAt, unsubscribeToken

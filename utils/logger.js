@@ -1,1 +1,1 @@
-// Tracks everything happening in the backend.
+// Winston error logger + Morgan request logger config

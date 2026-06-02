@@ -1,0 +1,1 @@
+//  mock + real: getAll, getBySlug
