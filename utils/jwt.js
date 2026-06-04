@@ -1,8 +1,24 @@
-// a utility file that wraps everything related to JSON Web Tokens (JWT) so the auth logic stays clean and reusable.
-/*
-It usually handles 3 things:
+// signToken(id), verifyToken(token) — wraps jsonwebtoken
+const jwt = require('jsonwebtoken')
+const { JWT_SECRET, JWT_EXPIRE } = require('../config/env')
 
-1. Create token (sign)
-2. Verify token
-3. Decode token (optional)
-*/
+/**
+ * Sign a JWT for a given user ID.
+ * @param {string} id - MongoDB user _id
+ * @returns {string} signed JWT
+ */
+const signToken = (id) => {
+    return jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRE })
+}
+
+/**
+ * Verify and decode a JWT.
+ * Throws if token is expired or tampered.
+ * @param {string} token
+ * @returns {{ id: string, iat: number, exp: number }}
+ */
+const verifyToken = (token) => {
+    return jwt.verify(token, JWT_SECRET)
+}
+
+module.exports = { signToken, verifyToken }

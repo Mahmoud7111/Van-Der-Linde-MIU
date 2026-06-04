@@ -1,2 +1,5 @@
 // /shipping: GET rates, GET by orderId
-//! I don't feel so i might delete it
+//! Placeholder — may be removed if shipping is handled elsewhere
+const router = require('express').Router()
+
+module.exports = router
