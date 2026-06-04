@@ -1,6 +1,8 @@
 //* Express config: middleware chain + route mounting + static serving in prod
 const express = require('express')
 const helmet = require('helmet')
+const { connectDB } = require('./config/db')
+const { PORT } = require('./config/env')
 const cors = require('cors')
 const morgan = require('morgan')
 const { corsOptions } = require('./config/cors')
@@ -30,5 +32,12 @@ app.use('/api', routes) // routes are mounted at /api/...
 
 app.use(errorHandler) // must be last
 
+connectDB().then(() => {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+})
+.catch(err => {
+    console.error('DB connection failed:', err)
+    process.exit(1)
+})
 
 module.exports = app
