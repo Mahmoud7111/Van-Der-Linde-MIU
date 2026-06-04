@@ -1,6 +1,5 @@
 const router = require('express').Router()
 
-//! Client-side cart only
-//! In the future: Server-side cart
+// /chatbot: send message, get chat history
 
 module.exports = router

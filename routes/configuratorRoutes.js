@@ -1,6 +1,5 @@
 const router = require('express').Router()
 
-//! Client-side cart only
-//! In the future: Server-side cart
+// /configurator: create configuration request, get configurations
 
 module.exports = router
