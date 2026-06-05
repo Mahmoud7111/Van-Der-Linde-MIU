@@ -1,37 +1,30 @@
-// user(ref), watchBase(ref), customizations{}, status, notes
+// user(ref, optional), name, email, configuration{}, status
 const mongoose = require('mongoose')
 
-const customizationsSchema = new mongoose.Schema({
-    dialColor:    { type: String, default: '' },
-    strapMaterial:{ type: String, default: '' },  // 'leather' | 'rubber' | 'steel'
-    strapColor:   { type: String, default: '' },
-    engravingText:{ type: String, default: '' },
-    caseMaterial: { type: String, default: '' },  // 'steel' | 'gold' | 'titanium'
-    additionalNotes: { type: String, default: '' },
+const configurationSchema = new mongoose.Schema({
+    caseColor:     { type: String, default: '' },
+    dialColor:     { type: String, default: '' },
+    strapMaterial: { type: String, default: '' },
+    strapColor:    { type: String, default: '' },
+    notes:         { type: String, default: '' },
 }, { _id: false })
 
 const configurationRequestSchema = new mongoose.Schema({
     user: {
-        type:     mongoose.Schema.Types.ObjectId,
-        ref:      'User',
-        required: true,
-    },
-    watchBase: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:  'Watch',
+        ref:  'User',
     },
-    customizations: {
-        type:    customizationsSchema,
+    name:  { type: String, required: true, trim: true },
+    email: { type: String, required: true, trim: true, lowercase: true },
+    configuration: {
+        type:    configurationSchema,
         default: () => ({}),
     },
     status: {
         type:    String,
-        enum:    ['pending', 'reviewing', 'quoted', 'approved', 'rejected', 'completed'],
+        enum:    ['pending', 'contacted', 'fulfilled'],
         default: 'pending',
     },
-    adminNotes:  { type: String, default: '' },  // internal notes from admin
-    clientNotes: { type: String, default: '' },  // notes from the client
-    estimatedPrice: { type: Number, default: null },
 }, { timestamps: true })
 
 module.exports = mongoose.model('ConfigurationRequest', configurationRequestSchema)

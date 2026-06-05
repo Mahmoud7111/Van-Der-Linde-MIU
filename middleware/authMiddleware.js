@@ -3,13 +3,12 @@
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config/env')
 const User = require('../models/User')
-const { error } = require('../utils/apiResponse')
 
 const protect = async (req, res, next) => {
     const authHeader = req.headers.authorization
 
     if (!authHeader?.startsWith('Bearer '))
-        return error(res, 'Not authorized', 401)
+        return res.status(401).json({ success: false, message: 'Not authorized', data: null })
     
     try {
         const token = authHeader.split(' ')[1]
@@ -17,17 +16,17 @@ const protect = async (req, res, next) => {
         req.user = await User.findById(decoded.id).select('-password')
 
         if (!req.user)
-            return error(res, 'User not found', 401)
+            return res.status(401).json({ success: false, message: 'User not found', data: null })
 
         next()
     } 
     catch {
-        error(res, 'Token invalid or expired', 401)
+        res.status(401).json({ success: false, message: 'Token invalid or expired', data: null })
     }
 }
 
 const adminOnly = (req, res, next) => {
-    if (req.user?.role !== 'admin') return error(res, 'Admin access required', 403)
+    if (req.user?.role !== 'admin') return res.status(403).json({ success: false, message: 'Admin access required', data: null })
     next()
 }
 

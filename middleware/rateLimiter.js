@@ -8,4 +8,10 @@ const authLimiter = rateLimit({
     message: { success: false, message: 'Too many requests, try again later', data: null }
 })
 
-module.exports = { authLimiter }
+const chatbotLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    message: { success: false, message: 'Too many messages, please slow down.', data: null }
+})
+
+module.exports = { authLimiter, chatbotLimiter }

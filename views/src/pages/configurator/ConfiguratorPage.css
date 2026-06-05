@@ -619,3 +619,209 @@
     height: 40px;
   }
 }
+
+/* ── CONFIGURATION REQUEST FORM ───────────────────────────────────────────── */
+
+.configurator-form {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: clamp(var(--space-xl), 8vh, var(--space-2xl)) clamp(var(--space-md), 4vw, var(--space-xl));
+}
+
+.configurator-form__inner {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.configurator-form__eyebrow {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.configurator-form__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-dark);
+}
+
+.configurator-form__desc {
+  margin: calc(-1 * var(--space-sm)) 0 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-muted);
+  max-width: 52ch;
+}
+
+/* ── FIELDS ── */
+
+.configurator-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.configurator-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.configurator-form__label {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-dark);
+}
+
+.configurator-form__optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
+.configurator-form__input,
+.configurator-form__textarea {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-dark);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal);
+  box-sizing: border-box;
+}
+
+.configurator-form__input:focus,
+.configurator-form__textarea:focus {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 18%, transparent 82%);
+}
+
+.configurator-form__input--error {
+  border-color: #c0392b;
+}
+
+.configurator-form__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.configurator-form__error {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #c0392b;
+  letter-spacing: 0.02em;
+}
+
+.configurator-form__submit-error {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #c0392b;
+  padding: var(--space-sm) var(--space-md);
+  background: color-mix(in srgb, #c0392b 8%, transparent 92%);
+  border: 1px solid color-mix(in srgb, #c0392b 25%, transparent 75%);
+  border-radius: var(--radius-md);
+}
+
+.configurator-form__submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-xs);
+}
+
+/* ── SUCCESS STATE ── */
+
+.configurator-form__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg);
+  background: color-mix(in srgb, var(--color-gold) 5%, var(--color-white) 95%);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
+  border-radius: var(--radius-lg);
+}
+
+.configurator-form__success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.configurator-form__success p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-dark);
+  max-width: 44ch;
+}
+
+.configurator-form__success-tag {
+  font-family: var(--font-body);
+  font-size: 0.72rem !important;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold) !important;
+}
+
+/* ── DARK MODE ── */
+
+[data-theme='dark'] .configurator-form {
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .configurator-form__title {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .configurator-form__label {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .configurator-form__input,
+[data-theme='dark'] .configurator-form__textarea {
+  background: color-mix(in srgb, var(--color-white) 8%, transparent 92%);
+  border-color: var(--color-border);
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .configurator-form__success {
+  background: color-mix(in srgb, var(--color-gold) 8%, var(--color-surface) 92%);
+}
+
+[data-theme='dark'] .configurator-form__success p {
+  color: var(--color-dark);
+}

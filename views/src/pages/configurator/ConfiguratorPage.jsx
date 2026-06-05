@@ -16,14 +16,16 @@
  * V2 note: Three.js 3D model replaces the SVG illustration. Logic stays identical.
  */
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
-import { useCart } from '@/context/CartContext'
 import { useCurrency } from '@/context/CurrencyContext'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import Watch3DModel from '@/components/configurator/Watch3DModel'
 import { cn } from '@/utils/cn'
-import toast from 'react-hot-toast'
+import { configuratorService } from '@/services/configuratorService'
 import './ConfiguratorPage.css'
 
 import omegaModel from '@/assets/3D Models/Omega Sea Master.glb'
@@ -88,6 +90,12 @@ const STRAP_OPTIONS = [
 // Base price is now model-dependent
 const BASE_PRICE = 0
 
+const configuratorSchema = Yup.object({
+  name:  Yup.string().required('Name is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  notes: Yup.string(),
+})
+
 // ─────────────────────────────────────────────────────────────────────────────
 // SWATCH BUTTON
 // ─────────────────────────────────────────────────────────────────────────────
@@ -113,7 +121,6 @@ function SwatchButton({ color, label, selected, onClick }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ConfiguratorPage() {
-  const { dispatch } = useCart()
   const { formatPrice } = useCurrency()
 
   // Active selections — defaults to first option in each group
@@ -126,6 +133,15 @@ export default function ConfiguratorPage() {
   // Active config panel tab
   const [activePanel, setActivePanel] = useState('model')
 
+  // Request form state
+  const [formSubmitting, setFormSubmitting] = useState(false)
+  const [formSuccess,    setFormSuccess]    = useState(false)
+  const [formError,      setFormError]      = useState('')
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(configuratorSchema),
+  })
+
   // ─────────────────────────────────────────────────────────────────────────────
   // PRICE CALCULATION
   // Sums the base model price + the premiums of each selected component.
@@ -136,34 +152,6 @@ export default function ConfiguratorPage() {
                      (selectedBezel?.price || 0) + 
                      (selectedDial?.price || 0) + 
                      (selectedStrap?.price || 0)
-
-  // Summary label for the configured watch
-  const watchName = `Van Der Linde — ${selectedModel.label} / ${selectedCase.label} / ${selectedDial.label} / ${selectedStrap.label}`
-
-  const handleAddToCart = () => {
-    dispatch({
-      type: 'ADD',
-      payload: {
-        _id: `custom-${selectedCase.id}-${selectedDial.id}-${selectedStrap.id}`,
-        name: watchName,
-        price: totalPrice,
-        stock: 1,
-        quantity: 1,
-        images: [],
-        category: 'luxury',
-        // Custom flag so admin/checkout can identify configured items
-        isConfigured: true,
-        configuration: {
-          model: selectedModel.label,
-          case:  selectedCase.label,
-          bezel: selectedBezel.label,
-          dial:  selectedDial.label,
-          strap: selectedStrap.label,
-        },
-      },
-    })
-    toast.success('Added to cart')
-  }
 
   return (
     <PageTransition>
@@ -508,21 +496,115 @@ export default function ConfiguratorPage() {
                 </div>
               </div>
 
-              <Button
-                variant="primary"
-                size="lg"
-                className="cfg-summary__cta"
-                onClick={handleAddToCart}
-              >
-                Add to Cart
-              </Button>
-              <p className="cfg-summary__note">
-                Complimentary delivery · 30-day returns · Certificate of authenticity
-              </p>
             </div>
 
           </div>
         </div>
+
+        {/* ── CONFIGURATION REQUEST FORM ── */}
+        <section className="configurator-form">
+          <div className="configurator-form__inner">
+            <p className="configurator-form__eyebrow">Request a Quote</p>
+            <h2 className="configurator-form__title">Submit Your Configuration</h2>
+            <p className="configurator-form__desc">
+              Share your details and we will reach out within 2–3 business days
+              to bring your bespoke timepiece to life.
+            </p>
+
+            {formSuccess ? (
+              <Motion.div
+                className="configurator-form__success"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <span className="configurator-form__success-icon">✓</span>
+                <p>Your configuration has been submitted. We will be in touch within 2–3 business days.</p>
+                <p className="configurator-form__success-tag">Crafting Legacy Since 1874</p>
+              </Motion.div>
+            ) : (
+              <form
+                id="configurator-request-form"
+                className="configurator-form__fields"
+                onSubmit={handleSubmit(async (values) => {
+                  setFormSubmitting(true)
+                  setFormError('')
+                  try {
+                    await configuratorService.submit({
+                      name:  values.name,
+                      email: values.email,
+                      configuration: {
+                        caseColor:     selectedCase.label,
+                        dialColor:     selectedDial.label,
+                        strapMaterial: selectedStrap.label,
+                        strapColor:    selectedStrap.color,
+                        notes:         values.notes || '',
+                      },
+                    })
+                    setFormSuccess(true)
+                  } catch (err) {
+                    setFormError(err?.message || 'Something went wrong. Please try again.')
+                  } finally {
+                    setFormSubmitting(false)
+                  }
+                })}
+              >
+                <div className="configurator-form__field">
+                  <label htmlFor="cfg-req-name" className="configurator-form__label">Full Name</label>
+                  <input
+                    id="cfg-req-name"
+                    type="text"
+                    className={cn('configurator-form__input', errors.name && 'configurator-form__input--error')}
+                    placeholder="Your name"
+                    {...register('name')}
+                  />
+                  {errors.name && <span className="configurator-form__error">{errors.name.message}</span>}
+                </div>
+
+                <div className="configurator-form__field">
+                  <label htmlFor="cfg-req-email" className="configurator-form__label">Email Address</label>
+                  <input
+                    id="cfg-req-email"
+                    type="email"
+                    className={cn('configurator-form__input', errors.email && 'configurator-form__input--error')}
+                    placeholder="your@email.com"
+                    {...register('email')}
+                  />
+                  {errors.email && <span className="configurator-form__error">{errors.email.message}</span>}
+                </div>
+
+                <div className="configurator-form__field">
+                  <label htmlFor="cfg-req-notes" className="configurator-form__label">
+                    Additional Notes <span className="configurator-form__optional">(optional)</span>
+                  </label>
+                  <textarea
+                    id="cfg-req-notes"
+                    className="configurator-form__textarea"
+                    placeholder="Any special requests or details about your vision…"
+                    rows={4}
+                    {...register('notes')}
+                  />
+                </div>
+
+                {formError && (
+                  <p className="configurator-form__submit-error">{formError}</p>
+                )}
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  className="configurator-form__submit"
+                  isLoading={formSubmitting}
+                  disabled={formSubmitting}
+                >
+                  Submit Configuration
+                </Button>
+              </form>
+            )}
+          </div>
+        </section>
+
       </div>
     </PageTransition>
   )
