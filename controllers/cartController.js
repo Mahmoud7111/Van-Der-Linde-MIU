@@ -1,3 +1,4 @@
+// getCart, addItem, updateItem, removeItem, clearCart
 const cartService = require('../services/cartService')
 
 // GET /api/cart
@@ -10,15 +11,10 @@ const getCart = async (req, res, next) => {
     }
 }
 
-// POST /api/cart/items
+// POST /api/cart/items — body: { watchId, quantity }
 const addItem = async (req, res, next) => {
     try {
         const { watchId, quantity } = req.body
-
-        if (!watchId) {
-            return res.status(400).json({ success: false, message: 'Watch ID is required', data: null })
-        }
-
         const cart = await cartService.addItem(req.user._id, watchId, quantity)
         res.status(200).json({ success: true, message: 'Item added to cart', data: cart })
     } catch (err) {
@@ -26,17 +22,11 @@ const addItem = async (req, res, next) => {
     }
 }
 
-// PUT /api/cart/items/:watchId
+// PUT /api/cart/items/:watchId — body: { quantity }
 const updateItem = async (req, res, next) => {
     try {
-        const { watchId } = req.params
         const { quantity } = req.body
-
-        if (quantity === undefined || quantity === null) {
-            return res.status(400).json({ success: false, message: 'Quantity is required', data: null })
-        }
-
-        const cart = await cartService.updateItem(req.user._id, watchId, quantity)
+        const cart = await cartService.updateItem(req.user._id, req.params.watchId, quantity)
         res.status(200).json({ success: true, message: 'Cart updated', data: cart })
     } catch (err) {
         next(err)
@@ -46,10 +36,8 @@ const updateItem = async (req, res, next) => {
 // DELETE /api/cart/items/:watchId
 const removeItem = async (req, res, next) => {
     try {
-        const { watchId } = req.params
-
-        const cart = await cartService.removeItem(req.user._id, watchId)
-        res.status(200).json({ success: true, message: 'Item removed from cart', data: cart })
+        const cart = await cartService.removeItem(req.user._id, req.params.watchId)
+        res.status(200).json({ success: true, message: 'Item removed', data: cart })
     } catch (err) {
         next(err)
     }
@@ -58,8 +46,8 @@ const removeItem = async (req, res, next) => {
 // DELETE /api/cart
 const clearCart = async (req, res, next) => {
     try {
-        const cart = await cartService.clearCart(req.user._id)
-        res.status(200).json({ success: true, message: 'Cart cleared', data: cart })
+        await cartService.clearCart(req.user._id)
+        res.status(200).json({ success: true, message: 'Cart cleared', data: null })
     } catch (err) {
         next(err)
     }
