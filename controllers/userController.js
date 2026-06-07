@@ -1,1 +1,40 @@
 // getProfile, updateProfile, uploadProfilePicture
+// getProfile, updateProfile, uploadProfilePicture
+const userService = require('../services/userService')
+
+// GET /api/users/profile
+const getProfile = async (req, res, next) => {
+    try {
+        const user = await userService.getProfile(req.user._id)
+        res.status(200).json({ success: true, message: 'OK', data: user })
+    } catch (err) {
+        next(err)
+    }
+}
+
+// PUT /api/users/profile
+const updateProfile = async (req, res, next) => {
+    try {
+        const user = await userService.updateProfile(req.user._id, req.body)
+        res.status(200).json({ success: true, message: 'Profile updated', data: user })
+    } catch (err) {
+        next(err)
+    }
+}
+
+// POST /api/users/profile/picture — Multer sets req.file
+const uploadProfilePicture = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            const err = new Error('No file uploaded')
+            err.statusCode = 400
+            return next(err)
+        }
+        const user = await userService.uploadProfilePicture(req.user._id, req.file.path)
+        res.status(200).json({ success: true, message: 'Profile picture updated', data: user })
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports = { getProfile, updateProfile, uploadProfilePicture }
