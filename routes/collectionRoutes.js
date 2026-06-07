@@ -1,5 +1,10 @@
 const router = require('express').Router()
+const {
+    getCollections,
+    getCollectionBySlug,
+} = require('../controllers/collectionController')
 
-// /collections: GET all, GET by slug
+router.get('/', getCollections)
+router.get('/:slug', getCollectionBySlug)
 
 module.exports = router
