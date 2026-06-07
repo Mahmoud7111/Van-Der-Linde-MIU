@@ -1,6 +1,7 @@
 //* Express config: middleware chain + route mounting + static serving in prod
 const express = require('express')
 const helmet = require('helmet')
+const cookieParser = require('cookie-parser')
 const { connectDB } = require('./config/db')
 const { PORT } = require('./config/env')
 const cors = require('cors')
@@ -11,10 +12,11 @@ const routes = require('./routes/index')
 
 const app = express()
 
-app.use(helmet())
+app.use(helmet())   
 app.use(cors(corsOptions))
-app.use(express.json())
-app.use(morgan('dev'))
+app.use(express.json())   //it read the body of the request and parse it to json
+app.use(cookieParser())   // must be before routes so req.cookies is populated
+app.use(morgan('dev'))    // for logging
 
 app.get('/api/health', (req, res) => {
     res.json({ success: true, message: 'API is running' })
