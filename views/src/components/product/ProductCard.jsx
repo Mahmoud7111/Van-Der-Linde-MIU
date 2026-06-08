@@ -69,7 +69,7 @@ export default function ProductCard({ watch, viewMode = 'grid', className = '' }
       </div>
 
       <div className="product-card__content">
-        <p className="product-card__brand">{watch.brand}</p>
+        <p className="product-card__brand">{typeof watch.brand === 'object' ? watch.brand?.name : watch.brand}</p>
         <h3 className="product-card__name">
           <Link className="product-card__name-link" to={productPath}>
             {watch.name}

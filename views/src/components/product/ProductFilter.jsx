@@ -2,12 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useCurrency } from '@/context/CurrencyContext'
 import { CATEGORIES, CURRENCIES, SORT_OPTIONS } from '@/utils/constants'
-import brands from '@/data/brands.json'
+import { brandService } from '@/services/brandService'
+import { collectionService } from '@/services/collectionService'
 import './ProductFilter.css'
-
-const BRAND_OPTIONS = [{ value: 'all', label: 'All brands' }].concat(
-  brands.map((brand) => ({ value: brand.name, label: brand.name })),
-)
 
 const GENDER_OPTIONS = [
   { value: 'all', label: 'All' },
@@ -25,7 +22,7 @@ const RATING_OPTIONS = [
 export default function ProductFilter({ defaultGender }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const { currency } = useCurrency()
-  const category = searchParams.get('category') || 'all'
+  const collection = searchParams.get('collection') || 'all'
   const brand = searchParams.get('brand') || 'all'
   const genderParam = searchParams.get('gender')
   const gender = genderParam || defaultGender || 'all'
@@ -37,10 +34,32 @@ export default function ProductFilter({ defaultGender }) {
 
   const [searchInput, setSearchInput] = useState(searchValue)
   const currencySymbol = CURRENCIES.find((item) => item.code === currency)?.symbol ?? '$'
+  const [brandsList, setBrandsList] = useState([])
+  const [collectionsList, setCollectionsList] = useState([])
 
   useEffect(() => {
     setSearchInput(searchValue)
   }, [searchValue])
+
+  useEffect(() => {
+    const fetchFiltersData = async () => {
+      try {
+        const [brandsData, collectionsData] = await Promise.all([
+          brandService.getAll(),
+          collectionService.getAll(),
+        ])
+        setBrandsList([{ value: 'all', label: 'All brands' }].concat(
+          brandsData.map((b) => ({ value: b.name, label: b.name }))
+        ))
+        setCollectionsList([{ value: 'all', label: 'All collections' }].concat(
+          collectionsData.map((c) => ({ value: c.name, label: c.name }))
+        ))
+      } catch (err) {
+        console.error('Failed to load filter options:', err)
+      }
+    }
+    fetchFiltersData()
+  }, [])
 
   const updateParam = useCallback(
     (key, value) => {
@@ -130,19 +149,23 @@ export default function ProductFilter({ defaultGender }) {
 
           <div className="product-filter__field">
             <label className="product-filter__label" htmlFor="category">
-              Collection
+              Category
             </label>
             <select
               id="category"
               className="product-filter__select"
-              value={category}
-              onChange={(event) => updateParam('category', event.target.value)}
+              value={collection}
+              onChange={(event) => updateParam('collection', event.target.value)}
             >
-              {CATEGORIES.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              {collectionsList.length > 0 ? (
+                collectionsList.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))
+              ) : (
+                <option value="all">All collections</option>
+              )}
             </select>
           </div>
 
@@ -156,11 +179,15 @@ export default function ProductFilter({ defaultGender }) {
               value={brand}
               onChange={(event) => updateParam('brand', event.target.value)}
             >
-              {BRAND_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              {brandsList.length > 0 ? (
+                brandsList.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))
+              ) : (
+                <option value="all">All brands</option>
+              )}
             </select>
           </div>
 

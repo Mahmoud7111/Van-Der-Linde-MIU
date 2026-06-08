@@ -157,4 +157,3 @@ const markAsPaid = async (orderId) => {
 // ─── exports ─────────────────────────────────────────────────────────────────
 
 module.exports = { validateBin, createOrder, getMyOrders, getAllOrders, getOrderById, updateStatus, markAsPaid }
-

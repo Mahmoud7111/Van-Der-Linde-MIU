@@ -70,6 +70,7 @@ const getShopFilters = (request, defaultGender = 'all') => {
 
   return {
     category: url.searchParams.get('category') || 'all',
+    collection: url.searchParams.get('collection') || 'all',
     search: url.searchParams.get('search') || '',
     brand: url.searchParams.get('brand') || 'all',
     gender: url.searchParams.get('gender') || defaultGender,

@@ -1,5 +1,8 @@
-// /shipping: GET rates, GET by orderId
-//! Placeholder — may be removed if shipping is handled elsewhere
+// /shipping: GET rates, GET rate by id — public
 const router = require('express').Router()
+const { getRates, getRateById } = require('../controllers/shippingController')
+
+router.get('/rates',     getRates)
+router.get('/rates/:id', getRateById)
 
 module.exports = router

@@ -95,7 +95,7 @@ export default function ProductDetailPage() {
                 <FiHeart aria-hidden="true" fill={isSaved ? 'currentColor' : 'none'} />
               </button>
             </div>
-            <p className="product-detail__brand">{watch.brand ?? 'Van Der Linde'}</p>
+            <p className="product-detail__brand">{(typeof watch.brand === 'object' ? watch.brand?.name : watch.brand) ?? 'Van Der Linde'}</p>
           </header>
 
           <div className="product-detail__layout">

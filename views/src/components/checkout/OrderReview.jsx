@@ -53,13 +53,13 @@ export default function OrderReview({
                     <div className="order-review__item-image-wrapper">
                       <img
                         src={resolveWatchProductImage(imageSource)}
-                        alt={`Image of ${item?.brand || 'Van Der Linde'} ${item?.name || 'watch'}`}
+                        alt={`Image of ${(typeof item?.brand === 'object' ? item.brand?.name : item?.brand) || 'Van Der Linde'} ${item?.name || 'watch'}`}
                         className="order-review__item-image"
                         loading="lazy"
                       />
                     </div>
                     <figcaption className="order-review__item-details">
-                      <span className="order-review__item-brand">{item?.brand || 'Van Der Linde'}</span>
+                      <span className="order-review__item-brand">{(typeof item?.brand === 'object' ? item.brand?.name : item?.brand) || 'Van Der Linde'}</span>
                       <h3 className="order-review__item-name">{item?.name || 'Watch'}</h3>
                       <span className="order-review__item-qty">Qty: {item?.quantity || 1}</span>
                     </figcaption>

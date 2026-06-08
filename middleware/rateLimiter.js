@@ -1,4 +1,4 @@
-// express-rate-limit applied to /auth, /checkout, /register
+// express-rate-limit applied to /auth, /checkout, /register, /configurator
 
 const rateLimit = require('express-rate-limit')
 
@@ -14,4 +14,10 @@ const chatbotLimiter = rateLimit({
     message: { success: false, message: 'Too many messages, please slow down.', data: null }
 })
 
-module.exports = { authLimiter, chatbotLimiter }
+const configuratorLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { success: false, message: 'Too many configuration requests, please try again later.', data: null }
+})
+
+module.exports = { authLimiter, chatbotLimiter, configuratorLimiter }

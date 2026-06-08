@@ -59,6 +59,9 @@ export const resolveWatchProductImage = (imagePath) => {
     return collectionFallbackImage
   }
 
+  // External URLs — use as-is
+  if (/^https?:\/\//i.test(imagePath)) return imagePath
+
   const normalizedPath = imagePath.trim().replace(/^@\//, '/src/')
   if (watchImageAssets[normalizedPath]) {
     return watchImageAssets[normalizedPath]

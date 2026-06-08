@@ -65,8 +65,3 @@ export const USER_ROLES = {
 // Base API URL used by axios instance and service files; defaults to `/api` for Vite proxy usage.
 export const API_URL = import.meta.env.VITE_API_URL || '/api' //
 
-// Toggle mock services versus real HTTP calls.
-// Defaults to `true` for frontend-first development (backend not running yet).
-// Set VITE_USE_MOCK=false in `.env` when you want to use real API routes.
-const envUseMock = import.meta.env.VITE_USE_MOCK
-export const USE_MOCK = envUseMock ? envUseMock.toLowerCase() === 'true' : true

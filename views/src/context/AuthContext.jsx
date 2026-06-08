@@ -5,7 +5,8 @@
  * A global auth state manager for logged-in user session and auth actions.
  *
  * What it does:
- * - Restores session on refresh by validating stored token with `authService.getMe()`.
+ * - Restores session on refresh by calling GET /auth/me — the httpOnly authToken
+ *   cookie is sent automatically by the browser, no localStorage token needed.
  * - Exposes login, register, update profile, and logout helpers.
  * - Prevents flash of wrong auth UI by rendering children only after initial check completes.
  *
@@ -20,40 +21,28 @@ import toast from 'react-hot-toast'
 
 // Create auth context for user, loading state, and auth methods.
 const AuthContext = createContext(null)
-// Wraps the app and manages authentication lifecycle
 // Provider wraps app and controls auth lifecycle globally.
 export const AuthProvider = ({ children }) => {
-  // Stores current logged-in user (null = not authenticated)
   // Current authenticated user; null means not logged in.
   const [user, setUser] = useState(null)
 
-  // Loading flag tracks initial token/session restoration process.
+  // Loading flag tracks initial session restoration process.
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // Session restore runs once on app startup.
+    // Auth is cookie-based (httpOnly authToken) — the browser sends the cookie
+    // automatically on every request. We always call /auth/me and let the server
+    // decide if the session is valid. No localStorage token guard needed or used.
     const restoreSession = async () => {
-      // Check if a token exists before calling `/auth/me`.
-      const token = localStorage.getItem('token')
-
-      // No token means no session to restore; stop loading immediately.
-      if (!token) {
-        setLoading(false)
-        return
-      }
-
       try {
-        // Validate token and fetch current user profile silently.
+        // Cookie is sent automatically; if valid, returns the user object.
         const currentUser = await authService.getMe()
-
-        // Store user in context so protected UI renders correctly.
         setUser(currentUser)
       } catch {
-        // If token is invalid/expired, clear it so future requests do not reuse stale auth.
-        localStorage.removeItem('token')
+        // 401 means no valid cookie / session — user is a guest. Nothing to clear.
         setUser(null)
       } finally {
-        // End initial auth gate so provider can render children.
         setLoading(false)
       }
     }
@@ -63,13 +52,9 @@ export const AuthProvider = ({ children }) => {
 
   // Login action used by LoginPage.
   const login = async (email, password) => {
-    // Call auth service (mock or real), expecting `{ user, token }` response shape.
+    // Backend sets httpOnly authToken cookie; response body has { user }.
+    // Token is never in the response body — do NOT store in localStorage.
     const result = await authService.login({ email, password })
-
-    // Persist JWT for future session restoration.
-    localStorage.setItem('token', result.token)
-
-    // Push authenticated user into global context.
     setUser(result.user)
     toast.success('Successfully logged in!')
 
@@ -78,13 +63,8 @@ export const AuthProvider = ({ children }) => {
 
   // Register action used by RegisterPage.
   const register = async (data) => {
-    // Create account through auth service and receive `{ user, token }`.
+    // Same as login: cookie set by backend, token not in response body.
     const result = await authService.register(data)
-
-    // Persist token to keep the user signed in after registration.
-    localStorage.setItem('token', result.token)
-
-    // Set newly created user in context.
     setUser(result.user)
     toast.success('Registration successful!')
 
@@ -102,11 +82,10 @@ export const AuthProvider = ({ children }) => {
   // Logout action used by header/account menus.
   const logout = async () => {
     try {
-      // Notify backend when available; mock resolves instantly.
+      // Backend clears the httpOnly cookie via Set-Cookie: authToken=; Max-Age=0
       await authService.logout()
     } finally {
-      // Always clear local auth state regardless of remote logout outcome.
-      localStorage.removeItem('token')
+      // Always clear local auth state regardless of remote outcome.
       setUser(null)
       toast.success('Logged out successfully.')
     }

@@ -251,6 +251,40 @@
   color: var(--color-dark);
 }
 
+.payment-form__cod-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background-color: color-mix(in srgb, var(--color-gold) 10%, transparent);
+  border: 1px dashed var(--color-gold);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+}
+
+.payment-form__cod-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--color-gold);
+  flex-shrink: 0;
+}
+
+.payment-form__cod-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-dark);
+  margin: 0;
+  line-height: 1.5;
+}
+
+[data-theme="dark"] .payment-form__cod-notice {
+  background-color: color-mix(in srgb, var(--color-gold) 5%, transparent);
+}
+
+[data-theme="dark"] .payment-form__cod-text {
+  color: var(--color-white);
+}
+
 @media (max-width: 639px) {
   .payment-form__row {
     grid-template-columns: 1fr;

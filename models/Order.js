@@ -58,6 +58,21 @@ const orderSchema = new mongoose.Schema({
         enum:    ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
         default: 'pending',
     },
+    paymentMethod: {
+        type:    String,
+        enum:    ['card', 'cod'],
+        default: 'cod',
+    },
+    shippingCost: {
+        type:    Number,
+        default: 0,
+    },
+    cardSummary: {
+        last4:      String,
+        scheme:     String,
+        bank:       String,
+        nameOnCard: String,
+    },
     paymentResult: { type: paymentResultSchema },
     isPaid:        { type: Boolean, default: false },
     paidAt:        { type: Date },

@@ -46,7 +46,7 @@ export default function SearchOverlay ({
     setResults(
       allWatches.filter(w =>
         w.name?.toLowerCase().includes(term) ||
-        w.brand?.toLowerCase().includes(term) ||
+        (typeof w.brand === 'object' ? w.brand?.name : w.brand)?.toLowerCase().includes(term) ||
         w.category?.toLowerCase().includes(term)
       )
     )

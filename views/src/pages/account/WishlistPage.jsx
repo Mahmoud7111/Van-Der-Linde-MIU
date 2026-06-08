@@ -60,7 +60,7 @@ export default function WishlistPage() {
                   resolveFavoriteWatchImage(item) ||
                   item?.images?.[0] ||
                   ''
-                const brand = item?.brand || 'Van Der Linde'
+                const brand = (typeof item?.brand === 'object' ? item.brand?.name : item?.brand) || 'Van Der Linde'
                 const price = item?.price ?? item?.finalPrice ?? item?.salePrice ?? 0
                 const oldPrice = item?.oldPrice ?? item?.compareAtPrice ?? item?.originalPrice
                 const rating = Number(item?.rating ?? 0)

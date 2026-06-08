@@ -1,4 +1,6 @@
 //* Express config: middleware chain + route mounting + static serving in prod
+require('dotenv').config() // must be first — populates process.env before any other module reads it
+
 const express = require('express')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')

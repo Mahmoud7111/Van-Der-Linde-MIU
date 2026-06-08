@@ -23,6 +23,8 @@ export default function PaymentForm({
     ...(initialData || {}),
   })
 
+  const isCOD = formData.paymentMethod === 'Cash on Delivery'
+
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -59,94 +61,128 @@ export default function PaymentForm({
             />
             <span className="payment-form__method-name">Credit Card</span>
           </label>
+
+          <label className="payment-form__method-label">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="Cash on Delivery"
+              className="payment-form__method-input"
+              checked={isCOD}
+              onChange={handleChange}
+              disabled={isProcessing}
+            />
+            <span className="payment-form__method-name">Cash on Delivery</span>
+          </label>
         </div>
       </fieldset>
 
-      <div className="payment-form__fields">
-        <div className="payment-form__field">
-          <label htmlFor="payment-card-name" className="payment-form__label">
-            Cardholder Name
-          </label>
-          <input
-            id="payment-card-name"
-            name="cardName"
-            type="text"
-            className="payment-form__input"
-            value={formData.cardName}
-            onChange={handleChange}
-            disabled={isProcessing}
-            required
-            autoComplete="cc-name"
-            placeholder="Name on card"
-          />
+      {isCOD ? (
+        <div className="payment-form__cod-notice">
+          <svg
+            className="payment-form__cod-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+            <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+          </svg>
+          <p className="payment-form__cod-text">
+            You will pay in cash when your order is delivered. No card details required.
+          </p>
         </div>
-
-        <div className="payment-form__field">
-          <label htmlFor="payment-card-number" className="payment-form__label">
-            Card Number
-          </label>
-          <input
-            id="payment-card-number"
-            name="cardNumber"
-            type="text"
-            inputMode="numeric"
-            className="payment-form__input payment-form__input--mono"
-            value={formData.cardNumber}
-            onChange={handleChange}
-            disabled={isProcessing}
-            required
-            autoComplete="cc-number"
-            minLength={16}
-            maxLength={19}
-            pattern="[0-9\s]*"
-            placeholder="0000 0000 0000 0000"
-          />
-        </div>
-
-        <div className="payment-form__row">
-          <div className="payment-form__field payment-form__field--half">
-            <label htmlFor="payment-expiry" className="payment-form__label">
-              Expiry Date
+      ) : (
+        <div className="payment-form__fields">
+          <div className="payment-form__field">
+            <label htmlFor="payment-card-name" className="payment-form__label">
+              Cardholder Name
             </label>
             <input
-              id="payment-expiry"
-              name="expiry"
+              id="payment-card-name"
+              name="cardName"
               type="text"
-              inputMode="numeric"
-              className="payment-form__input payment-form__input--mono"
-              value={formData.expiry}
+              className="payment-form__input"
+              value={formData.cardName}
               onChange={handleChange}
               disabled={isProcessing}
               required
-              autoComplete="cc-exp"
-              placeholder="MM/YY"
-              maxLength={5}
+              autoComplete="cc-name"
+              placeholder="Name on card"
             />
           </div>
 
-          <div className="payment-form__field payment-form__field--half">
-            <label htmlFor="payment-cvv" className="payment-form__label">
-              CVV
+          <div className="payment-form__field">
+            <label htmlFor="payment-card-number" className="payment-form__label">
+              Card Number
             </label>
             <input
-              id="payment-cvv"
-              name="cvv"
+              id="payment-card-number"
+              name="cardNumber"
               type="text"
               inputMode="numeric"
               className="payment-form__input payment-form__input--mono"
-              value={formData.cvv}
+              value={formData.cardNumber}
               onChange={handleChange}
               disabled={isProcessing}
               required
-              autoComplete="cc-csc"
-              minLength={3}
-              maxLength={4}
-              pattern="[0-9]*"
-              placeholder="123"
+              autoComplete="cc-number"
+              minLength={16}
+              maxLength={19}
+              pattern="[0-9\s]*"
+              placeholder="0000 0000 0000 0000"
             />
           </div>
+
+          <div className="payment-form__row">
+            <div className="payment-form__field payment-form__field--half">
+              <label htmlFor="payment-expiry" className="payment-form__label">
+                Expiry Date
+              </label>
+              <input
+                id="payment-expiry"
+                name="expiry"
+                type="text"
+                inputMode="numeric"
+                className="payment-form__input payment-form__input--mono"
+                value={formData.expiry}
+                onChange={handleChange}
+                disabled={isProcessing}
+                required
+                autoComplete="cc-exp"
+                placeholder="MM/YY"
+                maxLength={5}
+              />
+            </div>
+
+            <div className="payment-form__field payment-form__field--half">
+              <label htmlFor="payment-cvv" className="payment-form__label">
+                CVV
+              </label>
+              <input
+                id="payment-cvv"
+                name="cvv"
+                type="text"
+                inputMode="numeric"
+                className="payment-form__input payment-form__input--mono"
+                value={formData.cvv}
+                onChange={handleChange}
+                disabled={isProcessing}
+                required
+                autoComplete="cc-csc"
+                minLength={3}
+                maxLength={4}
+                pattern="[0-9]*"
+                placeholder="123"
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="payment-form__security-notice">
         <svg

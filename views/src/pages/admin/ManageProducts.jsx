@@ -7,12 +7,15 @@ import toast from 'react-hot-toast'
 import AdminShell from '@/components/admin/AdminShell'
 import { useCurrency } from '@/context/CurrencyContext'
 import { watchService } from '@/services/watchService'
+import { brandService } from '@/services/brandService'
+import { collectionService } from '@/services/collectionService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { CATEGORIES, LOW_STOCK_THRESHOLD } from '@/utils/constants'
 import './ManageProducts.css'
 const FORM_DEFAULTS = {
   name: '',
   brand: 'Van Der Linde',
+  collection: 'Heritage',
   category: 'luxury',
   gender: 'men',
   price: '',
@@ -26,9 +29,9 @@ const GENDER_OPTIONS = [
   { value: 'women', label: 'Women' },
 ]
 
-const getCategoryLabel = (value) => {
-  if (!value) return 'Uncategorized'
-  return CATEGORIES.find((option) => option.value === value)?.label ?? value
+const getCollectionLabel = (watch) => {
+  if (!watch?.collection) return 'Uncategorized'
+  return typeof watch.collection === 'object' ? watch.collection.name : watch.collection
 }
 
 const getStockValue = (watch) => {
@@ -52,6 +55,24 @@ export default function ManageProducts() {
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
+  const [brandsList, setBrandsList] = useState([])
+  const [collectionsList, setCollectionsList] = useState([])
+
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        const [brandsData, collectionsData] = await Promise.all([
+          brandService.getAll(),
+          collectionService.getAll()
+        ])
+        setBrandsList(brandsData)
+        setCollectionsList(collectionsData)
+      } catch (err) {
+        console.error('Failed to load form data:', err)
+      }
+    }
+    fetchFormData()
+  }, [])
 
   useEffect(() => {
     setCatalog(watches)
@@ -86,12 +107,14 @@ export default function ManageProducts() {
 
     return catalog.filter((watch) => {
       const name = watch?.name?.toLowerCase() ?? ''
-      const brand = watch?.brand?.toLowerCase() ?? ''
-      const category = watch?.category ?? ''
+      const brandName = typeof watch?.brand === 'object' ? watch?.brand?.name : watch?.brand;
+      const brand = brandName?.toLowerCase() ?? ''
+      const collectionName = typeof watch?.collection === 'object' ? watch?.collection?.name : watch?.collection;
+      const collection = collectionName?.toLowerCase() ?? ''
       const matchQuery =
-        !query || name.includes(query) || brand.includes(query) || category.toLowerCase().includes(query)
+        !query || name.includes(query) || brand.includes(query) || collection.includes(query)
 
-      const matchCategory = categoryFilter === 'all' || category === categoryFilter
+      const matchCategory = categoryFilter === 'all' || collection === categoryFilter.toLowerCase()
 
       const stockValue = getStockValue(watch)
       const isOutOfStock = stockValue !== null && stockValue <= 0
@@ -145,7 +168,8 @@ export default function ManageProducts() {
     setEditingId(watch?._id ?? null)
     setFormValues({
       name: watch?.name ?? '',
-      brand: watch?.brand ?? 'Van Der Linde',
+      brand: (typeof watch?.brand === 'object' ? watch?.brand?.name : watch?.brand) ?? 'Van Der Linde',
+      collection: (typeof watch?.collection === 'object' ? watch?.collection?.name : watch?.collection) ?? 'Heritage',
       category: watch?.category ?? 'luxury',
       gender: watch?.gender ?? 'men',
       price: watch?.price ?? '',
@@ -197,11 +221,12 @@ export default function ManageProducts() {
     setIsSaving(true)
 
     const baseWatch = editingId ? catalog.find((item) => item._id === editingId) : null
-    const imageValue = formValues.image.trim()
+    const imageValue = formValues.image.trim().replace(/\\/g, '/')
 
     const payload = {
       name,
       brand: formValues.brand.trim() || 'Van Der Linde',
+      collection: formValues.collection.trim() || 'Heritage',
       category: formValues.category,
       gender: formValues.gender,
       price: priceValue,
@@ -214,17 +239,18 @@ export default function ManageProducts() {
 
     try {
       if (formMode === 'edit' && editingId) {
-        const updated = await watchService.update(editingId, payload)
+        await watchService.update(editingId, payload)
+        // Re-fetch to get populated brand/collection objects instead of raw ObjectIds
+        const populated = await watchService.getById(editingId)
         setCatalog((prev) =>
-          prev.map((item) =>
-            item._id === editingId ? { ...item, ...payload, ...updated, _id: editingId } : item
-          )
+          prev.map((item) => (item._id === editingId ? populated : item))
         )
         toast.success('Watch updated successfully.')
       } else {
         const created = await watchService.create(payload)
-        const newWatch = { ...payload, ...created }
-        setCatalog((prev) => [newWatch, ...prev])
+        // Re-fetch to get populated brand/collection objects instead of raw ObjectIds
+        const populated = await watchService.getById(created._id)
+        setCatalog((prev) => [populated, ...prev])
         toast.success('New watch added to the catalog.')
         setFormValues(FORM_DEFAULTS)
       }
@@ -325,30 +351,35 @@ export default function ManageProducts() {
                       <label className="admin-products__label" htmlFor="watch-brand">
                         Brand
                       </label>
-                      <input
+                      <select
                         id="watch-brand"
                         name="brand"
-                        className="admin-products__input"
+                        className="admin-products__select"
                         value={formValues.brand}
                         onChange={handleFormChange}
-                        placeholder="Van Der Linde"
-                      />
+                      >
+                        {brandsList.map((brand) => (
+                          <option key={brand._id} value={brand.name}>
+                            {brand.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div className="admin-products__field">
-                      <label className="admin-products__label" htmlFor="watch-category">
-                        Category
+                      <label className="admin-products__label" htmlFor="watch-collection">
+                        Collection
                       </label>
                       <select
-                        id="watch-category"
-                        name="category"
+                        id="watch-collection"
+                        name="collection"
                         className="admin-products__select"
-                        value={formValues.category}
+                        value={formValues.collection}
                         onChange={handleFormChange}
                       >
-                        {CATEGORIES.filter((option) => option.value !== 'all').map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
+                        {collectionsList.map((col) => (
+                          <option key={col._id} value={col.name}>
+                            {col.name}
                           </option>
                         ))}
                       </select>
@@ -416,7 +447,7 @@ export default function ManageProducts() {
                         className="admin-products__input"
                         value={formValues.image}
                         onChange={handleFormChange}
-                        placeholder="@/assets/images/Watches/..."
+                        placeholder="@/assets/images/Watches/... (use forward slashes)"
                       />
                     </div>
 
@@ -508,7 +539,7 @@ export default function ManageProducts() {
                 </div>
                 <div className="admin-products__field">
                   <label className="admin-products__label" htmlFor="watch-category">
-                    Category
+                    Collection
                   </label>
                   <select
                     id="watch-category"
@@ -516,9 +547,10 @@ export default function ManageProducts() {
                     value={categoryFilter}
                     onChange={(event) => setCategoryFilter(event.target.value)}
                   >
-                    {CATEGORIES.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
+                    <option value="all">All collections</option>
+                    {collectionsList.map((col) => (
+                      <option key={col._id} value={col.name}>
+                        {col.name}
                       </option>
                     ))}
                   </select>
@@ -546,7 +578,7 @@ export default function ManageProducts() {
                   <thead>
                     <tr>
                       <th scope="col">Watch</th>
-                      <th scope="col">Category</th>
+                      <th scope="col">Collection</th>
                       <th scope="col">Price</th>
                       <th scope="col">Stock</th>
                       <th scope="col">Actions</th>
@@ -587,7 +619,7 @@ export default function ManageProducts() {
                               />
                               <div className="admin-products__product-info">
                                 <p className="admin-products__product-name">{watch?.name ?? 'Untitled watch'}</p>
-                                <p className="admin-products__product-brand">{watch?.brand ?? 'Van Der Linde'}</p>
+                                <p className="admin-products__product-brand">{(typeof watch?.brand === 'object' ? watch?.brand?.name : watch?.brand) ?? 'Van Der Linde'}</p>
                                 {hasRating && (
                                   <div className="admin-products__product-rating">
                                     <StarRating rating={ratingValue} className="admin-products__product-stars" />
@@ -599,7 +631,7 @@ export default function ManageProducts() {
                               </div>
                             </div>
                           </th>
-                          <td className="admin-products__cell">{getCategoryLabel(watch?.category)}</td>
+                          <td className="admin-products__cell">{getCollectionLabel(watch)}</td>
                           <td className="admin-products__cell">{formatPrice(watch?.price)}</td>
                           <td className="admin-products__cell">
                             <span className={`admin-products__status admin-products__status--${statusTone}`}>

@@ -76,4 +76,3 @@ const markAsPaid = async (req, res, next) => {
 }
 
 module.exports = { createOrder, getMyOrders, getAllOrders, getOrderById, updateOrderStatus, validateBin, markAsPaid }
-

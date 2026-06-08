@@ -45,14 +45,15 @@ export default function CheckoutPage() {
   }
 
   const handlePaymentSubmit = (data) => {
+    const isCOD = data?.paymentMethod === 'Cash on Delivery'
     const rawCardNumber = String(data?.cardNumber || '')
     const digits = rawCardNumber.replace(/\D/g, '')
 
     setPaymentData({
       ...data,
       method: data?.paymentMethod || 'Credit Card',
-      brand: 'Card',
-      last4: digits.slice(-4),
+      brand: isCOD ? 'Cash' : 'Card',
+      last4: isCOD ? null : digits.slice(-4),
     })
     setStep(3)
   }
@@ -65,11 +66,17 @@ export default function CheckoutPage() {
     try {
       const normalizedShippingData = normalizeShippingData(shippingData || {})
 
+      const isCOD = paymentData?.method === 'Cash on Delivery'
+      const backendPaymentMethod = isCOD ? 'cod' : 'card'
+
       const orderPayload = {
-        items: safeCart,
+        items: safeCart.map(item => ({
+          ...item,
+          watch: item._id
+        })),
         shippingAddress: normalizedShippingData,
         payment: paymentData,
-        paymentMethod: paymentData?.method || paymentData?.paymentMethod || 'Credit Card',
+        paymentMethod: backendPaymentMethod,
         totalPrice: safeTotalPrice,
         // Transitional fields for compatibility with legacy mock payload readers.
         shipping: normalizedShippingData,

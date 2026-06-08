@@ -2,8 +2,8 @@
 const router = require('express').Router()
 
 router.use('/auth',         require('./authRoutes'))
-router.use('/watches',      require('./watchRoutes'))
-router.use('/reviews',      require('./reviewRoutes'))
+router.use('/watches',                    require('./watchRoutes'))
+router.use('/watches/:watchId/reviews',   require('./reviewRoutes'))
 router.use('/orders',       require('./orderRoutes'))
 router.use('/cart',         require('./cartRoutes'))
 router.use('/wishlist',     require('./wishlistRoutes'))
@@ -17,4 +17,4 @@ router.use('/subscribers',  require('./subscriberRoutes'))
 router.use('/payment',      require('./paymentRoutes'))
 router.use('/shipping',     require('./shippingRoutes'))
 
-module.exports = router
+module.exports = router

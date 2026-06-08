@@ -39,7 +39,10 @@ export default function Layout() {
   const location = useLocation() // Provides current route info (pathname, search, etc.)
 
   // Loading bar appears whenever router is fetching/transitioning to a new route.
-  const isLoading = navigation.state === 'loading'
+  // We ignore search parameter changes on the same page (e.g., filtering on /shop) so the user is not interrupted by a full page loader overlay.
+  const isSearchParamChangeOnly =
+    navigation.location && navigation.location.pathname === location.pathname
+  const isLoading = navigation.state === 'loading' && !isSearchParamChangeOnly
   const [isSuspending, setIsSuspending] = useState(false)
   const authPaths = ['/login', '/register']
   const isAuthPage = authPaths.includes(location.pathname)
