@@ -55,7 +55,139 @@ Important backend files:
 - `routes/index.js`: combines all route files
 - `middleware/errorHandler.js`: final error response handler
 
-## 3. Frontend Startup Flow
+## 3. Backend Response Format
+
+The project does not use `utils/apiResponse.js`.
+
+Controllers return normal Express JSON responses:
+
+```js
+res.status(statusCode).json({
+  success: true,
+  message,
+  data,
+})
+```
+
+For errors:
+
+```js
+res.status(statusCode).json({
+  success: false,
+  message,
+})
+```
+
+Why:
+
+- It is simpler for the team to explain.
+- Every controller is easy to read.
+- We do not depend on a custom response helper.
+
+## 4. Updated Dev Ownership Split
+
+### Dev 5 - Backend Foundation
+
+Dev 5 owns the backend foundation because this is the base that all other backend work depends on.
+
+Owns:
+
+- `app.js`
+- `.env`
+- `.env.example`
+- `package.json`
+- `config/db.js`
+- `config/env.js`
+- `config/cors.js`
+- `routes/index.js`
+- base middleware setup
+- MongoDB connection
+- route mounting
+- backend startup
+- CORS setup
+- email environment setup base
+
+Dev 5 also owns advanced backend features:
+
+- Configurator backend
+- Email sending through Brevo/Nodemailer
+- Chatbot backend
+- Admin dashboard backend
+
+### Dev 1 - Authentication
+
+Dev 1 owns all authentication.
+
+Owns:
+
+- `models/User.js`
+- `models/PasswordToken.js`
+- `services/authService.js`
+- `controllers/authController.js`
+- `routes/authRoutes.js`
+- auth middleware support with Dev 5 foundation
+
+Authentication features:
+
+- Register
+- Login
+- Logout
+- Get current user
+- Forgot password
+- Reset password
+- JWT/token handling
+- protected user access
+
+### Dev 2 - Catalog
+
+Dev 2 owns:
+
+- Brands
+- Collections
+- Watches
+- Public catalog APIs
+- Watch filters/sorting/search
+- Admin watch CRUD backend
+
+### Dev 3 - Cart, Orders, Checkout
+
+Dev 3 owns:
+
+- Cart backend
+- Orders backend
+- Payment backend
+- Shipping backend
+- Checkout order creation
+- Cart persistence in MongoDB
+
+### Dev 4 - User Features
+
+Dev 4 owns:
+
+- User profile backend
+- Profile update
+- Wishlist backend
+- Reviews backend
+- Review admin routes
+
+### Frontend Feature Split
+
+Frontend experience features are split across the team:
+
+- Translation: shared frontend feature using `LanguageContext` and `translations.json`
+- Dark/light mode: shared frontend feature using `ThemeContext`
+- Currency switcher: shared frontend feature using `CurrencyContext`
+
+These are frontend UI-state features, not backend modules.
+
+If we want to save user preferences across devices later, then backend can add:
+
+```txt
+PATCH /api/users/profile
+body: { preferences: { lang, theme, currency } }
+```
+
+## 5. Frontend Startup Flow
 
 Frontend starts from `views/src/main.jsx`.
 
@@ -78,7 +210,7 @@ Important frontend folders:
 - `views/src/routes`: React Router route map
 - `views/src/data/translations.json`: English/Arabic translations
 
-## 4. Shared UI Features
+## 6. Shared UI Features
 
 ### Theme: Dark Mode and Light Mode
 
@@ -145,7 +277,7 @@ Currency selector
 
 Current behavior is frontend display logic. If real exchange rates are needed, add a backend or external rates service.
 
-## 5. Authentication Flow
+## 7. Authentication Flow
 
 Pages:
 
@@ -199,7 +331,7 @@ User edits profile in AccountPage
   -> frontend user state refreshes
 ```
 
-## 6. Catalog Flow: Brands, Collections, Watches
+## 8. Catalog Flow: Brands, Collections, Watches
 
 Backend routes:
 
@@ -250,7 +382,7 @@ User opens /collections/:slug
   -> CollectionDetailPage renders collection and related watches
 ```
 
-## 7. Search Flow
+## 9. Search Flow
 
 Frontend flow:
 
@@ -269,7 +401,7 @@ Current search is mostly frontend filtering. For very large catalogs, move searc
 GET /api/watches?search=rolex
 ```
 
-## 8. Cart Flow
+## 10. Cart Flow
 
 Backend route:
 
@@ -308,7 +440,7 @@ Guest adds product
   -> no MongoDB write
 ```
 
-## 9. Wishlist Flow
+## 11. Wishlist Flow
 
 Backend route:
 
@@ -334,7 +466,7 @@ User clicks wishlist heart
   -> UI updates
 ```
 
-## 10. Checkout and Orders Flow
+## 12. Checkout and Orders Flow
 
 Backend routes:
 
@@ -389,7 +521,7 @@ Admin opens /admin/orders
   -> admin can review/update statuses
 ```
 
-## 11. Configurator Flow
+## 13. Configurator Flow
 
 Backend route:
 
@@ -438,7 +570,7 @@ Important:
 - `ADMIN_EMAIL` is who receives the order/request details.
 - User email comes from the configurator form.
 
-## 12. Reviews Flow
+## 14. Reviews Flow
 
 Backend routes:
 
@@ -461,7 +593,7 @@ User submits review
 
 Admin review flow can approve, reject, or manage reviews depending on current route/controller logic.
 
-## 13. Chatbot Flow
+## 15. Chatbot Flow
 
 Backend route:
 
@@ -481,26 +613,7 @@ User sends chatbot message
   -> chat UI displays answer
 ```
 
-## 14. Newsletter / Subscriber Flow
-
-Backend route:
-
-- `subscriberRoutes.js`
-
-Model:
-
-- `Subscriber.js`
-
-Flow:
-
-```txt
-User enters email in newsletter/footer
-  -> frontend sends email to /api/subscribers
-  -> backend validates email
-  -> Subscriber saved in MongoDB
-```
-
-## 15. Admin Flow
+## 16. Admin Flow
 
 Admin pages:
 
@@ -546,7 +659,7 @@ Admin updates order status
   -> customer order history reflects new status
 ```
 
-## 16. Cloud and Deployment Flow
+## 17. Cloud and Deployment Flow
 
 ### Local Development
 
@@ -632,7 +745,7 @@ GET https://your-backend-domain.com/api/watches
 POST https://your-backend-domain.com/api/auth/login
 ```
 
-## 17. Full Customer Journey
+## 18. Full Customer Journey
 
 ```txt
 Visitor lands on Home
@@ -647,7 +760,7 @@ Visitor lands on Home
   -> user checks Order History
 ```
 
-## 18. Full Configurator Journey
+## 19. Full Configurator Journey
 
 ```txt
 Visitor opens Configurator
@@ -660,7 +773,7 @@ Visitor opens Configurator
   -> request appears in MongoDB
 ```
 
-## 19. Full Admin Journey
+## 20. Full Admin Journey
 
 ```txt
 Admin logs in
@@ -672,7 +785,7 @@ Admin logs in
   -> customer-facing pages reflect changes
 ```
 
-## 20. Testing Flow Before Commit
+## 21. Testing Flow Before Commit
 
 Run these after each feature change:
 
@@ -702,7 +815,7 @@ Manual frontend tests:
 - Configurator email submission
 - Admin dashboard/products/orders
 
-## 21. Current Translation Completion Notes
+## 22. Current Translation Completion Notes
 
 Already translated in the current working tree:
 
