@@ -165,6 +165,19 @@
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-gold) 20%, transparent);
 }
 
+.payment-form__input[aria-invalid="true"] {
+  border-color: var(--color-error, #b42318);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-error, #b42318) 16%, transparent);
+}
+
+.payment-form__error {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-error, #b42318);
+  line-height: 1.4;
+}
+
 .payment-form__input--mono {
   font-family: var(--font-mono);
   letter-spacing: 0.05em;

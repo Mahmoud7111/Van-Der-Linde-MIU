@@ -21,6 +21,18 @@ const normalizeShippingData = (data = {}) => ({
   notes: String(data?.notes || '').trim(),
 })
 
+const hasShippingData = (data) => {
+  const normalized = normalizeShippingData(data)
+  return ['fullName', 'email', 'phone', 'street', 'city', 'country', 'zip']
+    .every((key) => normalized[key])
+}
+
+const hasPaymentData = (data) => {
+  if (!data?.method && !data?.paymentMethod) return false
+  if ((data.method || data.paymentMethod) === 'Cash on Delivery') return true
+  return Boolean(data.cardName && data.cardNumber && data.expiry && data.cvv)
+}
+
 export default function CheckoutPage() {
   const { cart, totalPrice, dispatch } = useCart()
   const { t } = useLanguage()
@@ -57,6 +69,18 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async () => {
     if (isCartEmpty) return
 
+    if (!hasShippingData(shippingData)) {
+      toast.error('Please complete valid shipping details first.')
+      setStep(1)
+      return
+    }
+
+    if (!hasPaymentData(paymentData)) {
+      toast.error('Please complete valid payment details first.')
+      setStep(2)
+      return
+    }
+
     setIsProcessing(true)
 
     try {
@@ -72,6 +96,12 @@ export default function CheckoutPage() {
         })),
         shippingAddress: normalizedShippingData,
         payment: paymentData,
+        cardData: isCOD ? null : {
+          number: String(paymentData?.cardNumber || '').replace(/\D/g, ''),
+          name: paymentData?.cardName || '',
+          expiry: paymentData?.expiry || '',
+          cvv: paymentData?.cvv || '',
+        },
         paymentMethod: backendPaymentMethod,
         totalPrice: safeTotalPrice,
         // Transitional fields for compatibility with legacy mock payload readers.

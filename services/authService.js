@@ -6,6 +6,7 @@ const User = require('../models/User')
 const PasswordToken = require('../models/PasswordToken')
 const { signToken } = require('../utils/jwt')
 const { hashToken } = require('../utils/securityUtils')
+const { assertLength, isEmail, normalizeEmail, cleanString } = require('../utils/validationUtils')
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -18,11 +19,18 @@ const makeError = (msg, code) => {
 // ─── register ───────────────────────────────────────────────────────────────
 
 const register = async (name, email, password) => {
-    const existing = await User.findOne({ email: email.toLowerCase() })
+    const cleanName = assertLength(name, 'Name', 2, 80)
+    const cleanEmail = normalizeEmail(email)
+    const cleanPassword = cleanString(password)
+
+    if (!isEmail(cleanEmail)) throw makeError('Please enter a valid email', 400)
+    if (cleanPassword.length < 6) throw makeError('Password must be at least 6 characters', 400)
+
+    const existing = await User.findOne({ email: cleanEmail })
     if (existing) throw makeError('Email already in use', 400)
 
     // Password is stored as-is here; the User pre-save hook hashes it with bcrypt (saltRounds 12)
-    const user = await User.create({ name, email, password })
+    const user = await User.create({ name: cleanName, email: cleanEmail, password: cleanPassword })
 
     const token = signToken(user._id)
 
@@ -34,8 +42,11 @@ const register = async (name, email, password) => {
 // ─── login ──────────────────────────────────────────────────────────────────
 
 const login = async (email, password) => {
+    const cleanEmail = normalizeEmail(email)
+    if (!isEmail(cleanEmail) || !password) throw makeError('Invalid credentials', 401)
+
     // Explicitly select password — it is select:false in the schema
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password')
+    const user = await User.findOne({ email: cleanEmail }).select('+password')
     if (!user) throw makeError('Invalid credentials', 401)
 
     // Use the model's comparePassword method (bcrypt.compare internally)
@@ -65,7 +76,10 @@ const logout = async () => {}
 // ─── forgotPassword ─────────────────────────────────────────────────────────
 
 const forgotPassword = async (email) => {
-    const user = await User.findOne({ email: email.toLowerCase() })
+    const cleanEmail = normalizeEmail(email)
+    if (!isEmail(cleanEmail)) throw makeError('Please enter a valid email', 400)
+
+    const user = await User.findOne({ email: cleanEmail })
     if (!user) throw makeError('No account found with that email', 404)
 
     // Generate a cryptographically secure raw token
@@ -86,6 +100,8 @@ const forgotPassword = async (email) => {
 // ─── resetPassword ──────────────────────────────────────────────────────────
 
 const resetPassword = async (rawToken, newPassword) => {
+    if (cleanString(newPassword).length < 6) throw makeError('Password must be at least 6 characters', 400)
+
     const hashedToken = hashToken(rawToken)
 
     const record = await PasswordToken.findOne({

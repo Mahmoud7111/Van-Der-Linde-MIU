@@ -1,6 +1,7 @@
 const ConfigurationRequest = require('../models/ConfigurationRequest')
 const { sendEmail } = require('../utils/emailService')
 const { ADMIN_EMAIL } = require('../config/env')
+const { cleanString, normalizeEmail } = require('../utils/validationUtils')
 
 const escapeHtml = (value = '') => String(value)
     .replace(/&/g, '&amp;')
@@ -44,12 +45,23 @@ const buildEmailLayout = (title, bodyHtml) => `
 `
 
 const submitConfiguration = async ({ userId, name, email, configuration }) => {
-    const normalizedEmail = email.toLowerCase()
-    const docData = { name, email: normalizedEmail, configuration }
+    const normalizedEmail = normalizeEmail(email)
+    const cleanName = cleanString(name)
+    const cleanConfiguration = {
+        model:          cleanString(configuration?.model),
+        caseColor:      cleanString(configuration?.caseColor),
+        bezelColor:     cleanString(configuration?.bezelColor),
+        dialColor:      cleanString(configuration?.dialColor),
+        strapMaterial:  cleanString(configuration?.strapMaterial),
+        strapColor:     cleanString(configuration?.strapColor),
+        estimatedPrice: Math.max(0, Number(configuration?.estimatedPrice) || 0),
+        notes:          cleanString(configuration?.notes).slice(0, 1000),
+    }
+    const docData = { name: cleanName, email: normalizedEmail, configuration: cleanConfiguration }
     if (userId) docData.user = userId
 
     const request = await ConfigurationRequest.create(docData)
-    const rows = buildConfigurationRows(configuration)
+    const rows = buildConfigurationRows(cleanConfiguration)
 
     if (!ADMIN_EMAIL) {
         console.error('Admin email failed: ADMIN_EMAIL is missing')
@@ -57,9 +69,9 @@ const submitConfiguration = async ({ userId, name, email, configuration }) => {
         try {
             await sendEmail({
                 to: ADMIN_EMAIL,
-                subject: `New configuration request from ${name}`,
+                subject: `New configuration request from ${cleanName}`,
                 html: buildEmailLayout('New Configuration Request', `
-                    <p><strong>Customer:</strong> ${escapeHtml(name)} &lt;${escapeHtml(normalizedEmail)}&gt;</p>
+                    <p><strong>Customer:</strong> ${escapeHtml(cleanName)} &lt;${escapeHtml(normalizedEmail)}&gt;</p>
                     <p><strong>Request ID:</strong> ${request._id}</p>
                     <table style="border-collapse:collapse;width:100%;max-width:640px;">
                         ${rows}
@@ -76,7 +88,7 @@ const submitConfiguration = async ({ userId, name, email, configuration }) => {
             to: normalizedEmail,
             subject: 'We received your Van Der Linde configuration request',
             html: buildEmailLayout('Your Configuration Request Is Confirmed', `
-                <p>Dear ${escapeHtml(name)},</p>
+                <p>Dear ${escapeHtml(cleanName)},</p>
                 <p>Thank you for submitting your personalized watch request. Our team received your configuration and will contact you within 2-3 business days.</p>
                 <table style="border-collapse:collapse;width:100%;max-width:640px;">
                     ${rows}

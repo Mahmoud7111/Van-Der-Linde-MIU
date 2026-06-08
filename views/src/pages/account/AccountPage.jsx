@@ -39,6 +39,7 @@ export default function AccountPage() {
     email: '',
     phone: '',
   })
+  const [formErrors, setFormErrors] = useState({})
 
   const fullName = useMemo(() => {
     return user?.name || t('account.guestUser')
@@ -52,12 +53,28 @@ export default function AccountPage() {
       email: user?.email || '',
       phone: user?.phone || '',
     })
+    setFormErrors({})
     setIsEditing(false)
   }, [user])
 
   const handleFieldChange = (event) => {
     const { name, value } = event.target
     setFormData((current) => ({ ...current, [name]: value }))
+    setFormErrors((current) => ({ ...current, [name]: undefined }))
+  }
+
+  const validateProfile = () => {
+    const nextErrors = {}
+    const name = formData.name.trim()
+    const email = formData.email.trim()
+    const phone = formData.phone.trim()
+
+    if (name.length < 2) nextErrors.name = 'Full name must be at least 2 characters'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Please enter a valid email'
+    if (phone && !/^\+?[0-9\s\-()]{7,20}$/.test(phone)) nextErrors.phone = 'Please enter a valid phone number'
+
+    setFormErrors(nextErrors)
+    return Object.keys(nextErrors).length === 0
   }
 
   const handleEdit = () => {
@@ -66,14 +83,21 @@ export default function AccountPage() {
       email: user?.email || '',
       phone: user?.phone || '',
     })
+    setFormErrors({})
     setIsEditing(true)
   }
 
   const handleSave = async () => {
+    if (!validateProfile()) return
+
     setIsSaving(true)
 
     try {
-      await updateProfile(formData)
+      await updateProfile({
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.trim(),
+      })
       setIsEditing(false)
     } finally {
       setIsSaving(false)
@@ -137,10 +161,13 @@ export default function AccountPage() {
                           onChange={handleFieldChange}
                           className="account-input"
                           autoComplete="name"
+                          aria-invalid={Boolean(formErrors.name)}
+                          aria-describedby={formErrors.name ? 'account-name-error' : undefined}
                         />
                       ) : (
                         <strong>{user?.name || '-'}</strong>
                       )}
+                      {isEditing && formErrors.name && <small id="account-name-error" className="account-error">{formErrors.name}</small>}
                     </label>
                     <label className="account-field">
                       <span>{t('account.email')}</span>
@@ -152,10 +179,13 @@ export default function AccountPage() {
                           onChange={handleFieldChange}
                           className="account-input"
                           autoComplete="email"
+                          aria-invalid={Boolean(formErrors.email)}
+                          aria-describedby={formErrors.email ? 'account-email-error' : undefined}
                         />
                       ) : (
                         <strong>{user?.email || '-'}</strong>
                       )}
+                      {isEditing && formErrors.email && <small id="account-email-error" className="account-error">{formErrors.email}</small>}
                     </label>
                     <label className="account-field">
                       <span>{t('account.phone')}</span>
@@ -167,10 +197,13 @@ export default function AccountPage() {
                           onChange={handleFieldChange}
                           className="account-input"
                           autoComplete="tel"
+                          aria-invalid={Boolean(formErrors.phone)}
+                          aria-describedby={formErrors.phone ? 'account-phone-error' : undefined}
                         />
                       ) : (
                         <strong>{user?.phone || '-'}</strong>
                       )}
+                      {isEditing && formErrors.phone && <small id="account-phone-error" className="account-error">{formErrors.phone}</small>}
                     </label>
                   </div>
 

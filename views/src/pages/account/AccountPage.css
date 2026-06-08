@@ -124,6 +124,20 @@
   border-color: var(--color-gold);
 }
 
+.account-input[aria-invalid="true"] {
+  border-color: var(--color-error, #b42318);
+  outline: 2px solid color-mix(in srgb, var(--color-error, #b42318) 20%, transparent);
+}
+
+.account-error {
+  width: min(100%, 260px);
+  margin-left: auto;
+  color: var(--color-error, #b42318);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
 .account-profile-form {
   display: flex;
   flex-direction: column;

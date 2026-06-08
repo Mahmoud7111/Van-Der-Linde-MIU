@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@/components/common/Button'
 import { useLanguage } from '@/context/LanguageContext'
 import { cn } from '@/utils/cn'
+import { shippingSchema } from '@/utils/validators'
 import './ShippingForm.css'
 
 const DEFAULT_SHIPPING_DATA = {
@@ -29,24 +32,32 @@ export default function ShippingForm({
   isProcessing = false,
   className,
 }) {
-  const [formData, setFormData] = useState(normalizeInitialData(initialData))
   const { t } = useLanguage()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(shippingSchema),
+    mode: 'onBlur',
+    defaultValues: normalizeInitialData(initialData),
+  })
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  useEffect(() => {
+    reset(normalizeInitialData(initialData))
+  }, [initialData, reset])
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    onSubmit?.(formData)
+  const submitShipping = (values) => {
+    onSubmit?.(values)
   }
 
   return (
     <form
       className={cn('shipping-form', className)}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(submitShipping)}
       aria-label={t('checkout.shippingForm')}
+      noValidate
     >
       <header className="shipping-form__header">
         <h2 className="shipping-form__title">{t('checkout.shippingDetails')}</h2>
@@ -62,13 +73,14 @@ export default function ShippingForm({
             name="fullName"
             type="text"
             className="shipping-form__input"
-            value={formData.fullName}
-            onChange={handleChange}
             disabled={isProcessing}
-            required
+            aria-invalid={Boolean(errors.fullName)}
+            aria-describedby={errors.fullName ? 'shipping-name-error' : undefined}
             autoComplete="name"
             placeholder="John Doe"
+            {...register('fullName')}
           />
+          {errors.fullName && <p id="shipping-name-error" className="shipping-form__error">{errors.fullName.message}</p>}
         </div>
 
         <div className="shipping-form__row">
@@ -81,13 +93,14 @@ export default function ShippingForm({
               name="email"
               type="email"
               className="shipping-form__input"
-              value={formData.email}
-              onChange={handleChange}
               disabled={isProcessing}
-              required
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? 'shipping-email-error' : undefined}
               autoComplete="email"
               placeholder="you@example.com"
+              {...register('email')}
             />
+            {errors.email && <p id="shipping-email-error" className="shipping-form__error">{errors.email.message}</p>}
           </div>
 
           <div className="shipping-form__field shipping-form__field--half">
@@ -99,13 +112,14 @@ export default function ShippingForm({
               name="phone"
               type="tel"
               className="shipping-form__input"
-              value={formData.phone}
-              onChange={handleChange}
               disabled={isProcessing}
-              required
+              aria-invalid={Boolean(errors.phone)}
+              aria-describedby={errors.phone ? 'shipping-phone-error' : undefined}
               autoComplete="tel"
               placeholder="+1 555 123 4567"
+              {...register('phone')}
             />
+            {errors.phone && <p id="shipping-phone-error" className="shipping-form__error">{errors.phone.message}</p>}
           </div>
         </div>
 
@@ -118,13 +132,14 @@ export default function ShippingForm({
             name="street"
             type="text"
             className="shipping-form__input"
-            value={formData.street}
-            onChange={handleChange}
             disabled={isProcessing}
-            required
+            aria-invalid={Boolean(errors.street)}
+            aria-describedby={errors.street ? 'shipping-street-error' : undefined}
             autoComplete="street-address"
             placeholder="123 Luxury Ave, Suite 100"
+            {...register('street')}
           />
+          {errors.street && <p id="shipping-street-error" className="shipping-form__error">{errors.street.message}</p>}
         </div>
 
         <div className="shipping-form__row">
@@ -137,13 +152,14 @@ export default function ShippingForm({
               name="city"
               type="text"
               className="shipping-form__input"
-              value={formData.city}
-              onChange={handleChange}
               disabled={isProcessing}
-              required
+              aria-invalid={Boolean(errors.city)}
+              aria-describedby={errors.city ? 'shipping-city-error' : undefined}
               autoComplete="address-level2"
               placeholder="New York"
+              {...register('city')}
             />
+            {errors.city && <p id="shipping-city-error" className="shipping-form__error">{errors.city.message}</p>}
           </div>
 
           <div className="shipping-form__field shipping-form__field--half">
@@ -155,13 +171,14 @@ export default function ShippingForm({
               name="zip"
               type="text"
               className="shipping-form__input"
-              value={formData.zip}
-              onChange={handleChange}
               disabled={isProcessing}
-              required
+              aria-invalid={Boolean(errors.zip)}
+              aria-describedby={errors.zip ? 'shipping-zip-error' : undefined}
               autoComplete="postal-code"
               placeholder="10001"
+              {...register('zip')}
             />
+            {errors.zip && <p id="shipping-zip-error" className="shipping-form__error">{errors.zip.message}</p>}
           </div>
         </div>
 
@@ -174,13 +191,14 @@ export default function ShippingForm({
             name="country"
             type="text"
             className="shipping-form__input"
-            value={formData.country}
-            onChange={handleChange}
             disabled={isProcessing}
-            required
+            aria-invalid={Boolean(errors.country)}
+            aria-describedby={errors.country ? 'shipping-country-error' : undefined}
             autoComplete="country"
             placeholder="United States"
+            {...register('country')}
           />
+          {errors.country && <p id="shipping-country-error" className="shipping-form__error">{errors.country.message}</p>}
         </div>
 
         <div className="shipping-form__field">
@@ -191,11 +209,10 @@ export default function ShippingForm({
             id="shipping-notes"
             name="notes"
             className="shipping-form__textarea"
-            value={formData.notes}
-            onChange={handleChange}
             disabled={isProcessing}
             placeholder={t('checkout.notesPlaceholder')}
             rows={4}
+            {...register('notes')}
           />
         </div>
       </div>

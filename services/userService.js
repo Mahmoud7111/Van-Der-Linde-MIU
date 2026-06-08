@@ -1,6 +1,7 @@
 // profile CRUD, Cloudinary upload flow
 // profile CRUD, profile picture upload
 const User = require('../models/User')
+const { assertLength, cleanString, isEmail, isPhone, normalizeEmail } = require('../utils/validationUtils')
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -27,10 +28,20 @@ const updateProfile = async (userId, data) => {
         Object.entries(data).filter(([k]) => allowed.includes(k))
     )
 
+    if (Object.prototype.hasOwnProperty.call(update, 'name')) {
+        update.name = assertLength(update.name, 'Name', 2, 80)
+    }
+
     if (update.email) {
-        update.email = update.email.toLowerCase()
+        update.email = normalizeEmail(update.email)
+        if (!isEmail(update.email)) throw makeError('Please enter a valid email', 400)
         const existing = await User.findOne({ email: update.email, _id: { $ne: userId } })
         if (existing) throw makeError('Email already in use', 400)
+    }
+
+    if (Object.prototype.hasOwnProperty.call(update, 'phone')) {
+        update.phone = cleanString(update.phone)
+        if (update.phone && !isPhone(update.phone)) throw makeError('Please enter a valid phone number', 400)
     }
 
     const user = await User.findByIdAndUpdate(userId, update, { new: true }).select('-password')

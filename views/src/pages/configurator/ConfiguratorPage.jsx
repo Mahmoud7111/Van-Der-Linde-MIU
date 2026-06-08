@@ -92,9 +92,19 @@ const STRAP_OPTIONS = [
 const BASE_PRICE = 0
 
 const configuratorSchema = Yup.object({
-  name:  Yup.string().required('Name is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  notes: Yup.string(),
+  name: Yup.string()
+    .trim()
+    .min(2, 'Name must be at least 2 characters')
+    .max(80, 'Name must be 80 characters or less')
+    .required('Name is required'),
+  email: Yup.string()
+    .trim()
+    .lowercase()
+    .email('Please enter a valid email')
+    .required('Email is required'),
+  notes: Yup.string()
+    .trim()
+    .max(1000, 'Notes must be 1000 characters or less'),
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -142,6 +152,7 @@ export default function ConfiguratorPage() {
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(configuratorSchema),
+    mode: 'onBlur',
   })
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -532,8 +543,8 @@ export default function ConfiguratorPage() {
                   setFormError('')
                   try {
                     await configuratorService.submit({
-                      name:  values.name,
-                      email: values.email,
+                      name:  values.name.trim(),
+                      email: values.email.trim().toLowerCase(),
                       configuration: {
                         model:         selectedModel.label,
                         caseColor:     selectedCase.label,
@@ -542,7 +553,7 @@ export default function ConfiguratorPage() {
                         strapMaterial: selectedStrap.label,
                         strapColor:    selectedStrap.color,
                         estimatedPrice: totalPrice,
-                        notes:         values.notes || '',
+                        notes:         values.notes?.trim() || '',
                       },
                     })
                     setFormSuccess(true)
@@ -583,11 +594,14 @@ export default function ConfiguratorPage() {
                   </label>
                   <textarea
                     id="cfg-req-notes"
-                    className="configurator-form__textarea"
+                    className={cn('configurator-form__textarea', errors.notes && 'configurator-form__input--error')}
                     placeholder={t('config.notesPlaceholder')}
                     rows={4}
+                    aria-invalid={Boolean(errors.notes)}
+                    aria-describedby={errors.notes ? 'cfg-notes-error' : undefined}
                     {...register('notes')}
                   />
+                  {errors.notes && <span id="cfg-notes-error" className="configurator-form__error">{errors.notes.message}</span>}
                 </div>
 
                 {formError && (

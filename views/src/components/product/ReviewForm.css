@@ -105,6 +105,21 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 18%, transparent 82%);
 }
 
+.review-form__input[aria-invalid="true"],
+.review-form__select[aria-invalid="true"],
+.review-form__textarea[aria-invalid="true"] {
+  border-color: var(--color-error, #b42318);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error, #b42318) 14%, transparent);
+}
+
+.review-form__error {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-error, #b42318);
+  line-height: 1.4;
+}
+
 .review-form__actions {
   display: flex;
   align-items: center;

@@ -46,9 +46,10 @@ export default function RegisterPage() {
     setServerError('')
     try {
       const payload = {
+        name: `${values.firstName?.trim() || ''} ${values.lastName?.trim() || ''}`.trim(),
         firstName: values.firstName?.trim(),
         lastName: values.lastName?.trim(),
-        email: values.email?.trim(),
+        email: values.email?.trim().toLowerCase(),
         phone: values.phone?.trim(),
         password: values.password,
         dateOfBirth: values.dateOfBirth,

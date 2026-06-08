@@ -1,6 +1,7 @@
 // getReviews, createReview, getAllReviews (admin), deleteReview (admin)
 const Review = require('../models/Review')
 const Order  = require('../models/Order')
+const { assertLength } = require('../utils/validationUtils')
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -21,6 +22,12 @@ const getReviews = async (watchId) => {
 // ─── createReview ─────────────────────────────────────────────────────────────
 
 const createReview = async (watchId, userId, { rating, comment }) => {
+    const numericRating = Number(rating)
+    if (!Number.isInteger(numericRating) || numericRating < 1 || numericRating > 5) {
+        throw makeError('Rating must be between 1 and 5', 400)
+    }
+    const cleanComment = assertLength(comment, 'Comment', 10, 1000)
+
     // Check verified purchase
     const hasOrder = await Order.findOne({
         user:   userId,
@@ -31,8 +38,8 @@ const createReview = async (watchId, userId, { rating, comment }) => {
     const review = await Review.create({
         user:               userId,
         watch:              watchId,
-        rating:             Number(rating),
-        comment:            comment || '',
+        rating:             numericRating,
+        comment:            cleanComment,
         isVerifiedPurchase: Boolean(hasOrder),
     })
 

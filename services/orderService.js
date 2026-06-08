@@ -2,6 +2,7 @@
 const Order = require('../models/Order')
 const Watch = require('../models/Watch')
 const { checkStock, calculateOrderTotal, generateOrderNumber } = require('../utils/orderUtils')
+const { assertLength, cleanString, isEmail, isPhone, isPostalCode } = require('../utils/validationUtils')
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -21,6 +22,68 @@ const populateItemsForStockCheck = async (items) => {
             return { watch, qty: item.quantity ?? item.qty }
         })
     )
+}
+
+const luhnCheck = (value) => {
+    const digits = cleanString(value).replace(/\D/g, '')
+    let sum = 0
+    let shouldDouble = false
+
+    for (let i = digits.length - 1; i >= 0; i -= 1) {
+        let digit = Number(digits[i])
+        if (shouldDouble) {
+            digit *= 2
+            if (digit > 9) digit -= 9
+        }
+        sum += digit
+        shouldDouble = !shouldDouble
+    }
+
+    return digits.length >= 13 && digits.length <= 19 && sum % 10 === 0
+}
+
+const normaliseOrderInput = ({ items, shippingAddress, paymentMethod = 'cod', cardData } = {}) => {
+    if (!Array.isArray(items) || items.length === 0) throw makeError('Order must include at least one item', 400)
+
+    const cleanItems = items.map((item) => {
+        const watch = cleanString(item.watch)
+        const name = assertLength(item.name, 'Item name', 1, 120)
+        const price = Number(item.price)
+        const qty = Number(item.quantity ?? item.qty)
+
+        if (!watch) throw makeError('Each order item must include a watch id', 400)
+        if (!Number.isFinite(price) || price < 0) throw makeError('Each order item must include a valid price', 400)
+        if (!Number.isInteger(qty) || qty < 1) throw makeError('Each order item must include a valid quantity', 400)
+
+        return { ...item, watch, name, price, quantity: qty, qty }
+    })
+
+    const cleanShippingAddress = {
+        fullName: assertLength(shippingAddress?.fullName || shippingAddress?.name, 'Full name', 2, 80),
+        street:   assertLength(shippingAddress?.street, 'Street', 5, 160),
+        city:     assertLength(shippingAddress?.city, 'City', 2, 80),
+        state:    cleanString(shippingAddress?.state),
+        zip:      cleanString(shippingAddress?.zip || shippingAddress?.postalCode),
+        country:  assertLength(shippingAddress?.country, 'Country', 2, 80),
+        phone:    cleanString(shippingAddress?.phone),
+    }
+
+    if (!isPostalCode(cleanShippingAddress.zip)) throw makeError('Please enter a valid postal code', 400)
+    if (cleanShippingAddress.phone && !isPhone(cleanShippingAddress.phone)) throw makeError('Please enter a valid phone number', 400)
+    if (shippingAddress?.email && !isEmail(shippingAddress.email)) throw makeError('Please enter a valid email', 400)
+
+    const cleanPaymentMethod = paymentMethod === 'card' ? 'card' : 'cod'
+    if (cleanPaymentMethod === 'card') {
+        if (!cardData || !luhnCheck(cardData.number)) throw makeError('Please enter a valid card number', 400)
+        if (cleanString(cardData.name).length < 2) throw makeError('Cardholder name is required', 400)
+    }
+
+    return {
+        items: cleanItems,
+        shippingAddress: cleanShippingAddress,
+        paymentMethod: cleanPaymentMethod,
+        cardData,
+    }
 }
 
 // ─── validateBin ─────────────────────────────────────────────────────────────
@@ -48,7 +111,10 @@ const validateBin = async (bin) => {
 
 // ─── createOrder ─────────────────────────────────────────────────────────────
 
-const createOrder = async (userId, { items, shippingAddress, shippingMethod, paymentMethod = 'cod', cardData }) => {
+const createOrder = async (userId, payload) => {
+    const { items, shippingAddress, paymentMethod, cardData } = normaliseOrderInput(payload)
+    const shippingMethod = payload?.shippingMethod
+
     // Populate watch docs so checkStock can read .stock and .name
     const populatedItems = await populateItemsForStockCheck(items)
 

@@ -1,15 +1,29 @@
 // submitConfig, getRequests
 const configuratorService = require('../services/configuratorService')
+const { assertLength, isEmail, normalizeEmail } = require('../utils/validationUtils')
 
 const submitConfig = async (req, res, next) => {
     const { name, email, configuration } = req.body
     const userId = req.user?._id
 
-    if (!name || !email || !configuration)
-        return res.status(400).json({ success: false, message: 'Name, email and configuration are required', data: null })
+    if (!configuration || typeof configuration !== 'object')
+        return res.status(400).json({ success: false, message: 'Configuration is required', data: null })
+
+    let cleanName
+    let cleanEmail
 
     try {
-        const request = await configuratorService.submitConfiguration({ userId, name, email, configuration })
+        cleanName = assertLength(name, 'Name', 2, 80)
+        cleanEmail = normalizeEmail(email)
+        if (!isEmail(cleanEmail)) {
+            return res.status(400).json({ success: false, message: 'Please enter a valid email', data: null })
+        }
+    } catch (err) {
+        return res.status(err.statusCode || 400).json({ success: false, message: err.message, data: null })
+    }
+
+    try {
+        const request = await configuratorService.submitConfiguration({ userId, name: cleanName, email: cleanEmail, configuration })
         res.status(201).json({ success: true, message: 'Configuration submitted successfully', data: request })
     } catch (err) {
         next(err)

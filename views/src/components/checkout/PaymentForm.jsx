@@ -12,6 +12,52 @@ const DEFAULT_PAYMENT_DATA = {
   cvv: '',
 }
 
+const luhnCheck = (value) => {
+  const digits = String(value || '').replace(/\D/g, '')
+  let sum = 0
+  let shouldDouble = false
+
+  for (let i = digits.length - 1; i >= 0; i -= 1) {
+    let digit = Number(digits[i])
+    if (shouldDouble) {
+      digit *= 2
+      if (digit > 9) digit -= 9
+    }
+    sum += digit
+    shouldDouble = !shouldDouble
+  }
+
+  return digits.length >= 13 && digits.length <= 19 && sum % 10 === 0
+}
+
+const isValidExpiry = (value) => {
+  const match = String(value || '').trim().match(/^(\d{2})\/(\d{2})$/)
+  if (!match) return false
+
+  const month = Number(match[1])
+  const year = Number(`20${match[2]}`)
+  if (month < 1 || month > 12) return false
+
+  const now = new Date()
+  const expiryDate = new Date(year, month)
+  return expiryDate > new Date(now.getFullYear(), now.getMonth())
+}
+
+const validatePayment = (data) => {
+  if (data.paymentMethod === 'Cash on Delivery') return {}
+
+  const errors = {}
+  const cardName = String(data.cardName || '').trim()
+  const cvv = String(data.cvv || '').trim()
+
+  if (cardName.length < 2) errors.cardName = 'Cardholder name is required'
+  if (!luhnCheck(data.cardNumber)) errors.cardNumber = 'Please enter a valid card number'
+  if (!isValidExpiry(data.expiry)) errors.expiry = 'Please enter a valid future expiry date'
+  if (!/^\d{3,4}$/.test(cvv)) errors.cvv = 'Please enter a valid CVV'
+
+  return errors
+}
+
 export default function PaymentForm({
   initialData,
   onSubmit,
@@ -24,16 +70,22 @@ export default function PaymentForm({
     ...DEFAULT_PAYMENT_DATA,
     ...(initialData || {}),
   })
+  const [errors, setErrors] = useState({})
 
   const isCOD = formData.paymentMethod === 'Cash on Delivery'
 
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    setErrors((prev) => ({ ...prev, [name]: undefined }))
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    const nextErrors = validatePayment(formData)
+    setErrors(nextErrors)
+    if (Object.keys(nextErrors).length > 0) return
+
     onSubmit?.(formData)
   }
 
@@ -112,10 +164,12 @@ export default function PaymentForm({
               value={formData.cardName}
               onChange={handleChange}
               disabled={isProcessing}
-              required
+              aria-invalid={Boolean(errors.cardName)}
+              aria-describedby={errors.cardName ? 'payment-card-name-error' : undefined}
               autoComplete="cc-name"
               placeholder={t('checkout.cardNamePlaceholder')}
             />
+            {errors.cardName && <p id="payment-card-name-error" className="payment-form__error">{errors.cardName}</p>}
           </div>
 
           <div className="payment-form__field">
@@ -131,13 +185,15 @@ export default function PaymentForm({
               value={formData.cardNumber}
               onChange={handleChange}
               disabled={isProcessing}
-              required
+              aria-invalid={Boolean(errors.cardNumber)}
+              aria-describedby={errors.cardNumber ? 'payment-card-number-error' : undefined}
               autoComplete="cc-number"
               minLength={16}
               maxLength={19}
               pattern="[0-9\s]*"
               placeholder="0000 0000 0000 0000"
             />
+            {errors.cardNumber && <p id="payment-card-number-error" className="payment-form__error">{errors.cardNumber}</p>}
           </div>
 
           <div className="payment-form__row">
@@ -154,11 +210,13 @@ export default function PaymentForm({
                 value={formData.expiry}
                 onChange={handleChange}
                 disabled={isProcessing}
-                required
+                aria-invalid={Boolean(errors.expiry)}
+                aria-describedby={errors.expiry ? 'payment-expiry-error' : undefined}
                 autoComplete="cc-exp"
                 placeholder="MM/YY"
                 maxLength={5}
               />
+              {errors.expiry && <p id="payment-expiry-error" className="payment-form__error">{errors.expiry}</p>}
             </div>
 
             <div className="payment-form__field payment-form__field--half">
@@ -174,13 +232,15 @@ export default function PaymentForm({
                 value={formData.cvv}
                 onChange={handleChange}
                 disabled={isProcessing}
-                required
+                aria-invalid={Boolean(errors.cvv)}
+                aria-describedby={errors.cvv ? 'payment-cvv-error' : undefined}
                 autoComplete="cc-csc"
                 minLength={3}
                 maxLength={4}
                 pattern="[0-9]*"
                 placeholder="123"
               />
+              {errors.cvv && <p id="payment-cvv-error" className="payment-form__error">{errors.cvv}</p>}
             </div>
           </div>
         </div>

@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@/components/common/Button'
 import { useLanguage } from '@/context/LanguageContext'
 import { reviewService } from '@/services/reviewService'
+import { reviewSchema } from '@/utils/validators'
 import toast from 'react-hot-toast'
 import './ReviewForm.css'
 
@@ -11,23 +14,29 @@ const initialValues = {
 }
 
 export default function ReviewForm({ watchId, onReviewSubmit }) {
-  const [values, setValues] = useState(initialValues)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { t } = useLanguage()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(reviewSchema),
+    mode: 'onBlur',
+    defaultValues: initialValues,
+  })
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    setValues((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
+  const submitReview = async (values) => {
     if (!watchId) return
 
     setIsSubmitting(true)
     try {
-      const response = await reviewService.create(watchId, values)
-      setValues(initialValues)
+      const response = await reviewService.create(watchId, {
+        rating: Number(values.rating),
+        comment: values.comment.trim(),
+      })
+      reset(initialValues)
       toast.success(t('review.submitSuccess') || 'Review submitted!')
       if (onReviewSubmit) {
         onReviewSubmit(response?.data || response)
@@ -40,7 +49,7 @@ export default function ReviewForm({ watchId, onReviewSubmit }) {
   }
 
   return (
-    <form className="review-form" onSubmit={handleSubmit}>
+    <form className="review-form" onSubmit={handleSubmit(submitReview)} noValidate>
       <div className="review-form__header">
         <p className="review-form__eyebrow">{t('review.addReview')}</p>
         <h3 className="review-form__title">{t('review.shareExperience')}</h3>
@@ -58,9 +67,9 @@ export default function ReviewForm({ watchId, onReviewSubmit }) {
             id="reviewer-rating"
             name="rating"
             className="review-form__select"
-            value={values.rating}
-            onChange={handleChange}
-            required
+            aria-invalid={Boolean(errors.rating)}
+            aria-describedby={errors.rating ? 'review-rating-error' : undefined}
+            {...register('rating')}
           >
             <option value="" disabled>
               {t('review.selectRating')}
@@ -71,6 +80,7 @@ export default function ReviewForm({ watchId, onReviewSubmit }) {
               </option>
             ))}
           </select>
+          {errors.rating && <p id="review-rating-error" className="review-form__error">{errors.rating.message}</p>}
         </div>
 
         <div className="review-form__field review-form__field--full">
@@ -83,10 +93,11 @@ export default function ReviewForm({ watchId, onReviewSubmit }) {
             className="review-form__textarea"
             placeholder={t('review.bodyPlaceholder')}
             rows={4}
-            value={values.comment}
-            onChange={handleChange}
-            required
+            aria-invalid={Boolean(errors.comment)}
+            aria-describedby={errors.comment ? 'review-comment-error' : undefined}
+            {...register('comment')}
           />
+          {errors.comment && <p id="review-comment-error" className="review-form__error">{errors.comment.message}</p>}
         </div>
       </div>
 

@@ -13,10 +13,29 @@
  */
 import * as yup from 'yup'
 
+const nameRule = (label) =>
+  yup
+    .string()
+    .transform((value) => (typeof value === 'string' ? value.trim() : ''))
+    .min(2, `${label} must be at least 2 characters`)
+    .max(80, `${label} must be 80 characters or less`)
+    .required(`${label} is required`)
+
+const emailRule = yup
+  .string()
+  .transform((value) => (typeof value === 'string' ? value.trim().toLowerCase() : ''))
+  .email('Please enter a valid email')
+  .required('Email is required')
+
+const phoneRule = yup
+  .string()
+  .transform((value) => (typeof value === 'string' ? value.trim() : ''))
+  .matches(/^\+?[0-9\s\-()]{7,20}$/, 'Please enter a valid phone number')
+
 // Used by LoginPage form with react-hook-form + yupResolver.
 export const loginSchema = yup.object({
   // Require a valid email format to align with backend auth input expectations.
-  email: yup.string().email('Please enter a valid email').required('Email is required'),
+  email: emailRule,
   // Password minimum length keeps basic credential quality and matches backend constraints.
   password: yup
     .string()
@@ -28,27 +47,20 @@ export const loginSchema = yup.object({
 // Used by RegisterPage form with react-hook-form + yupResolver.
 export const registerSchema = yup.object({
 // First name is required for profile identity.
-  firstName: yup
-    .string()
-    .min(2, 'First name must be at least 2 characters')
-    .required('First name is required'),
+  firstName: nameRule('First name'),
   // Last name is required for profile identity.
-  lastName: yup
-    .string()
-    .min(2, 'Last name must be at least 2 characters')
-    .required('Last name is required'),
+  lastName: nameRule('Last name'),
 
   // Phone is optional but must be valid when provided.
   phone: yup
     .string()
-    .nullable()
-    .transform((value) => (value ? value.trim() : ''))
+    .transform((value) => (typeof value === 'string' ? value.trim() : ''))
     .test('phone-format', 'Please enter a valid phone number', (value) => {
       if (!value) return true
-      return /^[+\d\s\-()]{7,20}$/.test(value)
+      return /^\+?[0-9\s\-()]{7,20}$/.test(value)
     }),
   // Email validation prevents malformed addresses before request submission.
-  email: yup.string().email('Please enter a valid email').required('Email is required'),
+  email: emailRule,
   // Password rule mirrors login expectations and backend validation.
   password: yup
     .string()
@@ -76,7 +88,7 @@ export const registerSchema = yup.object({
 
 // Used by ForgotPasswordPage with react-hook-form + yupResolver.
 export const forgotPasswordSchema = yup.object({
-  email: yup.string().email('Please enter a valid email').required('Email is required'),
+  email: emailRule,
 })
 
 // Used by ResetPasswordPage with react-hook-form + yupResolver.
@@ -96,21 +108,19 @@ export const resetPasswordSchema = yup.object({
 // Used by checkout ShippingForm with react-hook-form + yupResolver.
 export const shippingSchema = yup.object({
   // Collects receiver's full name for delivery labels.
-  fullName: yup.string().required('Full name is required'),
+  fullName: nameRule('Full name'),
   // Required so order confirmations and shipping updates can be sent.
-  email: yup.string().email('Please enter a valid email').required('Email is required'),
+  email: emailRule,
   // Required phone for courier contact during last-mile delivery.
-  phone: yup.string()
-  .matches(/^[+\d\s\-()]{7,20}$/, 'Please enter a valid phone number')
-  .required('Phone is required'),
+  phone: phoneRule.required('Phone is required'),
   // Street line for precise shipment destination.
-  street: yup.string().required('Street is required'),
+  street: yup.string().trim().min(5, 'Street must be at least 5 characters').required('Street is required'),
   // City is mandatory for delivery logistics.
-  city: yup.string().required('City is required'),
+  city: yup.string().trim().min(2, 'City must be at least 2 characters').required('City is required'),
   // Country supports regional shipping rules and tax calculations.
-  country: yup.string().required('Country is required'),
+  country: yup.string().trim().min(2, 'Country must be at least 2 characters').required('Country is required'),
   // ZIP/Postal code supports carrier routing.
-  zip: yup.string().required('ZIP code is required'),
+  zip: yup.string().trim().matches(/^[A-Za-z0-9\s-]{3,12}$/, 'Please enter a valid postal code').required('ZIP code is required'),
 })
 
 
@@ -125,7 +135,9 @@ export const reviewSchema = yup.object({
   // Review text minimum keeps feedback meaningful.
   comment: yup
     .string()
+    .trim()
     .min(10, 'Comment must be at least 10 characters')
+    .max(1000, 'Comment must be 1000 characters or less')
     .required('Comment is required'),
 })
 
@@ -133,14 +145,16 @@ export const reviewSchema = yup.object({
 // Used by ContactPage support form with react-hook-form + yupResolver.
 export const contactSchema = yup.object({
   // Sender name for personalized support responses.
-  name: yup.string().required('Name is required'),
+  name: nameRule('Name'),
   // Sender email for follow-up communication.
-  email: yup.string().email('Please enter a valid email').required('Email is required'),
+  email: emailRule,
   // Subject line for routing contact tickets.
   subject: yup.string().required('Subject is required'),
   // Message body minimum ensures enough context for support team triage.
   message: yup
     .string()
+    .trim()
     .min(20, 'Message must be at least 20 characters')
+    .max(1000, 'Message must be 1000 characters or less')
     .required('Message is required'),
 })

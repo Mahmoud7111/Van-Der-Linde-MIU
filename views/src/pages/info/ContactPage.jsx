@@ -1,32 +1,38 @@
 import { useState } from 'react'
 import { motion as Motion } from 'framer-motion'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@/components/common/Button'
 import { useLanguage } from '@/context/LanguageContext'
+import { contactSchema } from '@/utils/validators'
 import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi'
 import './ContactPage.css'
 
 export default function ContactPage() {
   const { t } = useLanguage()
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  })
   const [status, setStatus] = useState('idle') // idle, submitting, success
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(contactSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      name: '',
+      email: '',
+      subject: '',
+      message: '',
+    },
+  })
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const onSubmit = () => {
     setStatus('submitting')
     // Simulate an API call
     setTimeout(() => {
       setStatus('success')
-      setFormData({ name: '', email: '', subject: '', message: '' })
+      reset()
     }, 1500)
   }
 
@@ -117,18 +123,18 @@ export default function ContactPage() {
               <Button variant="primary" onClick={() => setStatus('idle')}>{t('contact.sendAnother')}</Button>
             </div>
           ) : (
-            <form className="contact-form" onSubmit={handleSubmit}>
+            <form className="contact-form" onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="form-group">
                 <label htmlFor="name">{t('contact.fullName')}</label>
                 <input 
                   type="text" 
                   id="name" 
-                  name="name" 
-                  value={formData.name} 
-                  onChange={handleChange} 
-                  required 
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? 'contact-name-error' : undefined}
                   placeholder="John Doe"
+                  {...register('name')}
                 />
+                {errors.name && <p id="contact-name-error" className="contact-form__error">{errors.name.message}</p>}
               </div>
 
               <div className="form-group">
@@ -136,22 +142,21 @@ export default function ContactPage() {
                 <input 
                   type="email" 
                   id="email" 
-                  name="email" 
-                  value={formData.email} 
-                  onChange={handleChange} 
-                  required 
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? 'contact-email-error' : undefined}
                   placeholder="john@example.com"
+                  {...register('email')}
                 />
+                {errors.email && <p id="contact-email-error" className="contact-form__error">{errors.email.message}</p>}
               </div>
 
               <div className="form-group">
                 <label htmlFor="subject">{t('contact.subject')}</label>
                 <select 
                   id="subject" 
-                  name="subject" 
-                  value={formData.subject} 
-                  onChange={handleChange}
-                  required
+                  aria-invalid={Boolean(errors.subject)}
+                  aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
+                  {...register('subject')}
                 >
                   <option value="" disabled>{t('contact.selectSubject')}</option>
                   <option value="General Inquiry">{t('contact.general')}</option>
@@ -159,19 +164,20 @@ export default function ContactPage() {
                   <option value="After-Sales Service">{t('contact.afterSales')}</option>
                   <option value="Press & Media">{t('contact.press')}</option>
                 </select>
+                {errors.subject && <p id="contact-subject-error" className="contact-form__error">{errors.subject.message}</p>}
               </div>
 
               <div className="form-group">
                 <label htmlFor="message">{t('contact.message')}</label>
                 <textarea 
                   id="message" 
-                  name="message" 
-                  value={formData.message} 
-                  onChange={handleChange} 
-                  required 
                   rows="5"
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={errors.message ? 'contact-message-error' : undefined}
                   placeholder={t('contact.messagePlaceholder')}
+                  {...register('message')}
                 ></textarea>
+                {errors.message && <p id="contact-message-error" className="contact-form__error">{errors.message.message}</p>}
               </div>
 
               <Button type="submit" variant="primary" disabled={status === 'submitting'}>

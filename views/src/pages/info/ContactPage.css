@@ -111,6 +111,20 @@
   border-color: var(--color-gold, #c9a84c);
 }
 
+.form-group input[aria-invalid="true"],
+.form-group select[aria-invalid="true"],
+.form-group textarea[aria-invalid="true"] {
+  border-color: var(--color-error, #b42318);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-error, #b42318) 16%, transparent);
+}
+
+.contact-form__error {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--color-error, #b42318);
+}
+
 .contact-form__success {
   text-align: center;
   padding: 4rem 2rem;
