@@ -6,25 +6,25 @@ module.exports = async (brands) => {
         {
             name: "Heritage",
             description: "Traditional silhouettes rooted in classical horology with modern reliability.",
-            coverImage: "https://placehold.co/800x800/0d1b2a/c9a84c?text=Heritage",
+            coverImage: "@/assets/Models/TonySoprano.jpg",
             slug: "heritage"
         },
         {
             name: "Casual & Everyday",
             description: "Timeless designs that seamlessly integrate into daily life, combining functionality with subtle style.",
-            coverImage: "https://placehold.co/800x800/0d1b2a/c9a84c?text=Casual+%26+Everyday",
+            coverImage: "@/assets/Models/Lalo.png",
             slug: "casual-everyday"
         },
         {
             name: "Noir Series",
             description: "Dark-toned luxury watches with refined contrast and understated aggression.",
-            coverImage: "https://placehold.co/800x800/0d1b2a/c9a84c?text=Noir+Series",
+            coverImage: "@/assets/Models/Henry-Cavill-Longines.jpg",
             slug: "noir-series"
         },
         {
             name: "Sport Elite",
             description: "Performance-first timepieces built for motion, endurance, and bold presence.",
-            coverImage: "https://placehold.co/800x800/0d1b2a/c9a84c?text=Sport+Elite",
+            coverImage: "@/assets/Models/sport1.png",
             slug: "sport-elite"
         }
     ]
