@@ -346,28 +346,10 @@ export default function WatchQuizPage() {
             </div>
 
             <div className="quiz-results-nav">
-              <button onClick={handleRestart} style={{
-                background: 'none',
-                border: '1px solid #c8b49a',
-                padding: '0.8rem 2rem',
-                letterSpacing: '0.14em',
-                fontSize: '0.8rem',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                color: '#3a2e22',
-              }}>
+              <button className="quiz-results-nav__btn quiz-results-nav__btn--secondary" onClick={handleRestart}>
                 RETAKE QUIZ
               </button>
-              <Link to="/shop" style={{
-                display: 'inline-block',
-                background: '#5a5a52',
-                color: '#fff',
-                padding: '0.8rem 2rem',
-                textDecoration: 'none',
-                letterSpacing: '0.14em',
-                fontSize: '0.8rem',
-                textTransform: 'uppercase',
-              }}>
+              <Link to="/shop" className="quiz-results-nav__btn quiz-results-nav__btn--primary">
                 SHOP ALL COLLECTION
               </Link>
             </div>
