@@ -503,108 +503,166 @@ export default function ConfiguratorPage() {
 
         {/* ── CONFIGURATION REQUEST FORM ── */}
         <section className="configurator-form">
-          <div className="configurator-form__inner">
-            <p className="configurator-form__eyebrow">Request a Quote</p>
-            <h2 className="configurator-form__title">Submit Your Configuration</h2>
-            <p className="configurator-form__desc">
-              Share your details and we will reach out within 2–3 business days
-              to bring your bespoke timepiece to life.
-            </p>
+          <div className="configurator-form__split">
+            
+            {/* ── LEFT PANEL (Summary) ── */}
+            <div className="configurator-form__left">
+              <div>
+                <p className="configurator-form__left-eyebrow">Your Creation</p>
+                <h2 className="configurator-form__left-title">Configuration Summary</h2>
+                <p className="configurator-form__left-desc">
+                  Review the details of your bespoke timepiece before submitting your request.
+                </p>
 
-            {formSuccess ? (
-              <Motion.div
-                className="configurator-form__success"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <span className="configurator-form__success-icon">✓</span>
-                <p>Your configuration has been submitted. We will be in touch within 2–3 business days.</p>
-                <p className="configurator-form__success-tag">Crafting Legacy Since 1874</p>
-              </Motion.div>
-            ) : (
-              <form
-                id="configurator-request-form"
-                className="configurator-form__fields"
-                onSubmit={handleSubmit(async (values) => {
-                  setFormSubmitting(true)
-                  setFormError('')
-                  try {
-                    await configuratorService.submit({
-                      name:  values.name,
-                      email: values.email,
-                      configuration: {
-                        model:         selectedModel.label,
-                        caseColor:     selectedCase.label,
-                        bezelColor:    selectedBezel.label,
-                        dialColor:     selectedDial.label,
-                        strapMaterial: selectedStrap.label,
-                        strapColor:    selectedStrap.color,
-                        estimatedPrice: totalPrice,
-                        notes:         values.notes || '',
-                      },
-                    })
-                    setFormSuccess(true)
-                  } catch (err) {
-                    setFormError(err?.message || 'Something went wrong. Please try again.')
-                  } finally {
-                    setFormSubmitting(false)
-                  }
-                })}
-              >
-                <div className="configurator-form__field">
-                  <label htmlFor="cfg-req-name" className="configurator-form__label">Full Name</label>
-                  <input
-                    id="cfg-req-name"
-                    type="text"
-                    className={cn('configurator-form__input', errors.name && 'configurator-form__input--error')}
-                    placeholder="Your name"
-                    {...register('name')}
-                  />
-                  {errors.name && <span className="configurator-form__error">{errors.name.message}</span>}
+                <div className="configurator-form__recap">
+                  <div className="configurator-form__recap-item">
+                    <span className="configurator-form__recap-key">Base Model</span>
+                    <span className="configurator-form__recap-val">{selectedModel.label}</span>
+                  </div>
+                  <div className="configurator-form__recap-item">
+                    <span className="configurator-form__recap-key">Case</span>
+                    <span className="configurator-form__recap-val">{selectedCase.label}</span>
+                  </div>
+                  <div className="configurator-form__recap-item">
+                    <span className="configurator-form__recap-key">Bezel</span>
+                    <span className="configurator-form__recap-val">{selectedBezel.label}</span>
+                  </div>
+                  <div className="configurator-form__recap-item">
+                    <span className="configurator-form__recap-key">Dial</span>
+                    <span className="configurator-form__recap-val">{selectedDial.label}</span>
+                  </div>
+                  <div className="configurator-form__recap-item">
+                    <span className="configurator-form__recap-key">Strap</span>
+                    <span className="configurator-form__recap-val">{selectedStrap.label}</span>
+                  </div>
                 </div>
+              </div>
 
-                <div className="configurator-form__field">
-                  <label htmlFor="cfg-req-email" className="configurator-form__label">Email Address</label>
-                  <input
-                    id="cfg-req-email"
-                    type="email"
-                    className={cn('configurator-form__input', errors.email && 'configurator-form__input--error')}
-                    placeholder="your@email.com"
-                    {...register('email')}
-                  />
-                  {errors.email && <span className="configurator-form__error">{errors.email.message}</span>}
+              <div>
+                <div className="configurator-form__total">
+                  <span className="configurator-form__total-label">Estimated Total</span>
+                  <span className="configurator-form__total-price">
+                    <AnimatePresence mode="wait">
+                      <Motion.span
+                        key={totalPrice}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        {formatPrice(totalPrice)}
+                      </Motion.span>
+                    </AnimatePresence>
+                  </span>
                 </div>
+                <div className="configurator-form__brand-mark">Van Der Linde Geneva</div>
+              </div>
+            </div>
 
-                <div className="configurator-form__field">
-                  <label htmlFor="cfg-req-notes" className="configurator-form__label">
-                    Additional Notes <span className="configurator-form__optional">(optional)</span>
-                  </label>
-                  <textarea
-                    id="cfg-req-notes"
-                    className="configurator-form__textarea"
-                    placeholder="Any special requests or details about your vision…"
-                    rows={4}
-                    {...register('notes')}
-                  />
-                </div>
+            {/* ── RIGHT PANEL (Form) ── */}
+            <div className="configurator-form__right">
+              <p className="configurator-form__right-eyebrow">Request a Quote</p>
+              <h2 className="configurator-form__right-title">Submit Details</h2>
+              <p className="configurator-form__right-desc">
+                Share your information and a concierge will reach out within 2–3 business days to bring your vision to life.
+              </p>
 
-                {formError && (
-                  <p className="configurator-form__submit-error">{formError}</p>
-                )}
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  className="configurator-form__submit"
-                  isLoading={formSubmitting}
-                  disabled={formSubmitting}
+              {formSuccess ? (
+                <Motion.div
+                  className="configurator-form__success"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
                 >
-                  Submit Configuration
-                </Button>
-              </form>
-            )}
+                  <span className="configurator-form__success-icon">✓</span>
+                  <p>Your configuration has been submitted. We will be in touch within 2–3 business days.</p>
+                  <p className="configurator-form__success-tag">Crafting Legacy Since 1874</p>
+                </Motion.div>
+              ) : (
+                <form
+                  id="configurator-request-form"
+                  className="configurator-form__fields"
+                  onSubmit={handleSubmit(async (values) => {
+                    setFormSubmitting(true)
+                    setFormError('')
+                    try {
+                      await configuratorService.submit({
+                        name:  values.name,
+                        email: values.email,
+                        configuration: {
+                          model:         selectedModel.label,
+                          caseColor:     selectedCase.label,
+                          bezelColor:    selectedBezel.label,
+                          dialColor:     selectedDial.label,
+                          strapMaterial: selectedStrap.label,
+                          strapColor:    selectedStrap.color,
+                          estimatedPrice: totalPrice,
+                          notes:         values.notes || '',
+                        },
+                      })
+                      setFormSuccess(true)
+                    } catch (err) {
+                      setFormError(err?.message || 'Something went wrong. Please try again.')
+                    } finally {
+                      setFormSubmitting(false)
+                    }
+                  })}
+                >
+                  <div className="configurator-form__row">
+                    <div className="configurator-form__field">
+                      <label htmlFor="cfg-req-name" className="configurator-form__label">Full Name</label>
+                      <input
+                        id="cfg-req-name"
+                        type="text"
+                        className={cn('configurator-form__input', errors.name && 'configurator-form__input--error')}
+                        placeholder="Your name"
+                        {...register('name')}
+                      />
+                      {errors.name && <span className="configurator-form__error">{errors.name.message}</span>}
+                    </div>
+
+                    <div className="configurator-form__field">
+                      <label htmlFor="cfg-req-email" className="configurator-form__label">Email Address</label>
+                      <input
+                        id="cfg-req-email"
+                        type="email"
+                        className={cn('configurator-form__input', errors.email && 'configurator-form__input--error')}
+                        placeholder="your@email.com"
+                        {...register('email')}
+                      />
+                      {errors.email && <span className="configurator-form__error">{errors.email.message}</span>}
+                    </div>
+                  </div>
+
+                  <div className="configurator-form__field">
+                    <label htmlFor="cfg-req-notes" className="configurator-form__label">
+                      Additional Notes <span className="configurator-form__optional">(optional)</span>
+                    </label>
+                    <textarea
+                      id="cfg-req-notes"
+                      className="configurator-form__textarea"
+                      placeholder="Any special requests or details about your vision…"
+                      rows={3}
+                      {...register('notes')}
+                    />
+                  </div>
+
+                  {formError && (
+                    <p className="configurator-form__submit-error">{formError}</p>
+                  )}
+
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    className="configurator-form__submit"
+                    isLoading={formSubmitting}
+                    disabled={formSubmitting}
+                  >
+                    Submit Configuration
+                  </Button>
+                </form>
+              )}
+            </div>
           </div>
         </section>
 

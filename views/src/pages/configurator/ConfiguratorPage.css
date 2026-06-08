@@ -620,21 +620,366 @@
   }
 }
 
-/* ── CONFIGURATION REQUEST FORM ───────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════
+   CONFIGURATION REQUEST FORM — Premium Split Layout
+   ══════════════════════════════════════════════════ */
 
 .configurator-form {
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  padding: clamp(var(--space-xl), 8vh, var(--space-2xl)) clamp(var(--space-md), 4vw, var(--space-xl));
+  position: relative;
+  overflow: hidden;
 }
 
-.configurator-form__inner {
-  max-width: 640px;
-  margin: 0 auto;
+.configurator-form__split {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: 640px;
+}
+
+/* ── LEFT PANEL — Dark brand panel ── */
+.configurator-form__left {
+  background: #1a1610;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(201, 168, 76, 0.05) 0%, transparent 50%);
+  padding: 4rem 3rem;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  justify-content: space-between;
+  position: relative;
 }
+
+.configurator-form__left-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-gold, #c9a84c);
+  margin: 0 0 1.5rem;
+}
+
+.configurator-form__left-title {
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: #f0ebe0;
+  margin: 0 0 0.8rem;
+  line-height: 1.2;
+}
+
+.configurator-form__left-desc {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: rgba(240, 235, 224, 0.6);
+  margin: 0 0 3rem;
+}
+
+/* Config recap cards */
+.configurator-form__recap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  margin-bottom: 2.5rem;
+}
+
+.configurator-form__recap-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.configurator-form__recap-item:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.configurator-form__recap-key {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 224, 0.45);
+}
+
+.configurator-form__recap-val {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #f0ebe0;
+  letter-spacing: 0.04em;
+}
+
+/* Total price in left panel */
+.configurator-form__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  margin-top: auto;
+  border-top: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+.configurator-form__total-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 224, 0.5);
+}
+
+.configurator-form__total-price {
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--color-gold, #c9a84c);
+  letter-spacing: 0.04em;
+}
+
+/* Brand watermark */
+.configurator-form__brand-mark {
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 224, 0.2);
+  margin-top: 2rem;
+}
+
+/* ── RIGHT PANEL — Form ── */
+.configurator-form__right {
+  background: var(--color-surface);
+  padding: 4rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.configurator-form__right-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold, #c9a84c);
+  margin: 0 0 0.8rem;
+}
+
+.configurator-form__right-title {
+  font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: var(--color-dark);
+  margin: 0 0 0.6rem;
+  line-height: 1.2;
+}
+
+.configurator-form__right-desc {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--color-muted);
+  margin: 0 0 2.5rem;
+  max-width: 46ch;
+}
+
+/* ── FIELDS ── */
+
+.configurator-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.configurator-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.configurator-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  position: relative;
+}
+
+.configurator-form__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-dark);
+}
+
+.configurator-form__optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+}
+
+.configurator-form__input,
+.configurator-form__textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  color: var(--color-dark);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border);
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  box-sizing: border-box;
+}
+
+.configurator-form__input:focus,
+.configurator-form__textarea:focus {
+  border-color: var(--color-gold, #c9a84c);
+  border-bottom-color: var(--color-gold, #c9a84c);
+  box-shadow: 0 2px 0 0 var(--color-gold, #c9a84c);
+  background: color-mix(in srgb, var(--color-gold) 2%, var(--color-white) 98%);
+}
+
+.configurator-form__input--error {
+  border-bottom-color: #c0392b;
+}
+
+.configurator-form__textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.6;
+}
+
+.configurator-form__error {
+  font-size: 0.76rem;
+  color: #c0392b;
+  letter-spacing: 0.02em;
+}
+
+.configurator-form__submit-error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #c0392b;
+  padding: 0.7rem 1rem;
+  background: color-mix(in srgb, #c0392b 6%, transparent 94%);
+  border-left: 3px solid #c0392b;
+}
+
+.configurator-form__submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.5rem;
+  padding: 1rem 2rem !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.2em !important;
+}
+
+/* ── SUCCESS STATE ── */
+
+.configurator-form__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: color-mix(in srgb, var(--color-gold) 5%, var(--color-white) 95%);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 30%, transparent 70%);
+}
+
+.configurator-form__success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.configurator-form__success p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-dark);
+  max-width: 44ch;
+}
+
+.configurator-form__success-tag {
+  font-size: 0.72rem !important;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold) !important;
+}
+
+/* ── DARK MODE ── */
+
+[data-theme='dark'] .configurator-form__left {
+  background: #0e0c08;
+}
+
+[data-theme='dark'] .configurator-form__right {
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .configurator-form__right-title {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .configurator-form__label {
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .configurator-form__input,
+[data-theme='dark'] .configurator-form__textarea {
+  background: color-mix(in srgb, var(--color-white) 8%, transparent 92%);
+  border-color: var(--color-border);
+  color: var(--color-dark);
+}
+
+[data-theme='dark'] .configurator-form__success {
+  background: color-mix(in srgb, var(--color-gold) 8%, var(--color-surface) 92%);
+}
+
+[data-theme='dark'] .configurator-form__success p {
+  color: var(--color-dark);
+}
+
+/* ── RESPONSIVE ── */
+
+@media (max-width: 1024px) {
+  .configurator-form__split {
+    grid-template-columns: 360px 1fr;
+  }
+
+  .configurator-form__left {
+    padding: 3rem 2.5rem;
+  }
+
+  .configurator-form__right {
+    padding: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .configurator-form__split {
+    grid-template-columns: 1fr;
+  }
+
+  .configurator-form__left {
+    padding: 2.5rem 2rem;
+  }
+
+  .configurator-form__right {
+    padding: 2.5rem 2rem;
+  }
+
+  .configurator-form__row {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 .configurator-form__eyebrow {
   margin: 0;
