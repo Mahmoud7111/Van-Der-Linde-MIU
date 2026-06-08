@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
 import { cn } from '@/utils/cn'
 import './CheckoutSteps.css'
 
@@ -14,8 +15,10 @@ export default function CheckoutSteps({
   className,
   onStepChange,
 }) {
+  const { t } = useLanguage()
+
   return (
-    <nav className={cn('checkout-steps', className)} aria-label="Checkout progress">
+    <nav className={cn('checkout-steps', className)} aria-label={t('checkout.progress')}>
       <ol className="checkout-steps__list">
         {steps.map((step, index) => {
           const isCompleted = step.id < currentStep

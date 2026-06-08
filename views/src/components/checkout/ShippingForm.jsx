@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Button from '@/components/common/Button'
+import { useLanguage } from '@/context/LanguageContext'
 import { cn } from '@/utils/cn'
 import './ShippingForm.css'
 
@@ -29,6 +30,7 @@ export default function ShippingForm({
   className,
 }) {
   const [formData, setFormData] = useState(normalizeInitialData(initialData))
+  const { t } = useLanguage()
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -44,16 +46,16 @@ export default function ShippingForm({
     <form
       className={cn('shipping-form', className)}
       onSubmit={handleSubmit}
-      aria-label="Shipping details form"
+      aria-label={t('checkout.shippingForm')}
     >
       <header className="shipping-form__header">
-        <h2 className="shipping-form__title">Shipping Details</h2>
+        <h2 className="shipping-form__title">{t('checkout.shippingDetails')}</h2>
       </header>
 
       <div className="shipping-form__fields">
         <div className="shipping-form__field">
           <label htmlFor="shipping-name" className="shipping-form__label">
-            Full Name
+            {t('checkout.fullName')}
           </label>
           <input
             id="shipping-name"
@@ -72,7 +74,7 @@ export default function ShippingForm({
         <div className="shipping-form__row">
           <div className="shipping-form__field shipping-form__field--half">
             <label htmlFor="shipping-email" className="shipping-form__label">
-              Email
+              {t('checkout.email')}
             </label>
             <input
               id="shipping-email"
@@ -90,7 +92,7 @@ export default function ShippingForm({
 
           <div className="shipping-form__field shipping-form__field--half">
             <label htmlFor="shipping-phone" className="shipping-form__label">
-              Phone
+              {t('checkout.phone')}
             </label>
             <input
               id="shipping-phone"
@@ -109,7 +111,7 @@ export default function ShippingForm({
 
         <div className="shipping-form__field">
           <label htmlFor="shipping-street" className="shipping-form__label">
-            Address
+            {t('checkout.address')}
           </label>
           <input
             id="shipping-street"
@@ -128,7 +130,7 @@ export default function ShippingForm({
         <div className="shipping-form__row">
           <div className="shipping-form__field shipping-form__field--half">
             <label htmlFor="shipping-city" className="shipping-form__label">
-              City
+              {t('checkout.city')}
             </label>
             <input
               id="shipping-city"
@@ -146,7 +148,7 @@ export default function ShippingForm({
 
           <div className="shipping-form__field shipping-form__field--half">
             <label htmlFor="shipping-postal-code" className="shipping-form__label">
-              Postal Code
+              {t('checkout.postalCode')}
             </label>
             <input
               id="shipping-postal-code"
@@ -165,7 +167,7 @@ export default function ShippingForm({
 
         <div className="shipping-form__field">
           <label htmlFor="shipping-country" className="shipping-form__label">
-            Country
+            {t('checkout.country')}
           </label>
           <input
             id="shipping-country"
@@ -183,7 +185,7 @@ export default function ShippingForm({
 
         <div className="shipping-form__field">
           <label htmlFor="shipping-notes" className="shipping-form__label">
-            Order Notes (Optional)
+            {t('checkout.orderNotes')}
           </label>
           <textarea
             id="shipping-notes"
@@ -192,7 +194,7 @@ export default function ShippingForm({
             value={formData.notes}
             onChange={handleChange}
             disabled={isProcessing}
-            placeholder="Special instructions for delivery..."
+            placeholder={t('checkout.notesPlaceholder')}
             rows={4}
           />
         </div>
@@ -206,7 +208,7 @@ export default function ShippingForm({
           disabled={isProcessing}
           isLoading={isProcessing}
         >
-          Continue to Payment
+          {t('checkout.continuePayment')}
         </Button>
       </footer>
     </form>

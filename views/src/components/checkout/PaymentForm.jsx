@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Button from '@/components/common/Button'
+import { useLanguage } from '@/context/LanguageContext'
 import { cn } from '@/utils/cn'
 import './PaymentForm.css'
 
@@ -18,6 +19,7 @@ export default function PaymentForm({
   isProcessing = false,
   className,
 }) {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     ...DEFAULT_PAYMENT_DATA,
     ...(initialData || {}),
@@ -39,14 +41,14 @@ export default function PaymentForm({
     <form
       className={cn('payment-form', className)}
       onSubmit={handleSubmit}
-      aria-label="Payment information"
+      aria-label={t('checkout.paymentInfo')}
     >
       <header className="payment-form__header">
-        <h2 className="payment-form__title">Payment Information</h2>
+        <h2 className="payment-form__title">{t('checkout.paymentTitle')}</h2>
       </header>
 
       <fieldset className="payment-form__method-group" disabled={isProcessing}>
-        <legend className="payment-form__method-legend">Payment Method</legend>
+        <legend className="payment-form__method-legend">{t('checkout.paymentMethod')}</legend>
 
         <div className="payment-form__method-options">
           <label className="payment-form__method-label">
@@ -59,7 +61,7 @@ export default function PaymentForm({
               onChange={handleChange}
               disabled={isProcessing}
             />
-            <span className="payment-form__method-name">Credit Card</span>
+            <span className="payment-form__method-name">{t('checkout.creditCard')}</span>
           </label>
 
           <label className="payment-form__method-label">
@@ -72,7 +74,7 @@ export default function PaymentForm({
               onChange={handleChange}
               disabled={isProcessing}
             />
-            <span className="payment-form__method-name">Cash on Delivery</span>
+            <span className="payment-form__method-name">{t('checkout.cashDelivery')}</span>
           </label>
         </div>
       </fieldset>
@@ -93,14 +95,14 @@ export default function PaymentForm({
             <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
           </svg>
           <p className="payment-form__cod-text">
-            You will pay in cash when your order is delivered. No card details required.
+            {t('checkout.codNotice')}
           </p>
         </div>
       ) : (
         <div className="payment-form__fields">
           <div className="payment-form__field">
             <label htmlFor="payment-card-name" className="payment-form__label">
-              Cardholder Name
+              {t('checkout.cardholder')}
             </label>
             <input
               id="payment-card-name"
@@ -112,13 +114,13 @@ export default function PaymentForm({
               disabled={isProcessing}
               required
               autoComplete="cc-name"
-              placeholder="Name on card"
+              placeholder={t('checkout.cardNamePlaceholder')}
             />
           </div>
 
           <div className="payment-form__field">
             <label htmlFor="payment-card-number" className="payment-form__label">
-              Card Number
+              {t('checkout.cardNumber')}
             </label>
             <input
               id="payment-card-number"
@@ -141,7 +143,7 @@ export default function PaymentForm({
           <div className="payment-form__row">
             <div className="payment-form__field payment-form__field--half">
               <label htmlFor="payment-expiry" className="payment-form__label">
-                Expiry Date
+                {t('checkout.expiry')}
               </label>
               <input
                 id="payment-expiry"
@@ -198,7 +200,7 @@ export default function PaymentForm({
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
           <path d="M7 11V7a5 5 0 0110 0v4" />
         </svg>
-        <span className="payment-form__security-text">Transactions are encrypted and secured.</span>
+        <span className="payment-form__security-text">{t('checkout.security')}</span>
       </div>
 
       <footer className="payment-form__actions">
@@ -210,7 +212,7 @@ export default function PaymentForm({
             onClick={onBack}
             disabled={isProcessing}
           >
-            Back to Shipping
+            {t('checkout.backShipping')}
           </Button>
         )}
 
@@ -221,7 +223,7 @@ export default function PaymentForm({
           disabled={isProcessing}
           isLoading={isProcessing}
         >
-          Continue to Review
+          {t('checkout.continueReview')}
         </Button>
       </footer>
     </form>

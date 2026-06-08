@@ -1,9 +1,11 @@
 import StarRating from '@/components/common/StarRating'
+import { useLanguage } from '@/context/LanguageContext'
 import { formatRelativeTime, getInitials } from '@/utils/formatters'
 import './ReviewCard.css'
 
 export default function ReviewCard({ review = {}, name, rating, date, title, body }) {
-  const fallbackName = 'Verified Collector'
+  const { t } = useLanguage()
+  const fallbackName = t('review.verifiedCollector')
   const rawName = name ?? review.name
   const displayName = typeof rawName === 'string' && rawName.trim() ? rawName.trim() : fallbackName
 
@@ -13,11 +15,13 @@ export default function ReviewCard({ review = {}, name, rating, date, title, bod
   const displayRating = hasRating ? numericRating : 0
 
   const rawDate = date ?? review.date
-  const displayDate = formatRelativeTime(rawDate) || 'Date unavailable'
-  const displayTitle = (title ?? review.title)?.trim() || 'Client impression'
+  const displayDate = formatRelativeTime(rawDate) || t('review.dateUnavailable')
+  const displayTitle = (title ?? review.title)?.trim() || t('review.clientImpression')
   const displayBody =
-    (body ?? review.body)?.trim() || 'Review details will be available once collectors share their feedback.'
-  const ratingLabel = hasRating ? `${displayRating.toFixed(1)} out of 5 stars` : 'Rating pending'
+    (body ?? review.body)?.trim() || t('review.defaultBody')
+  const ratingLabel = hasRating
+    ? t('review.ratingOutOfFive', { rating: displayRating.toFixed(1) })
+    : t('review.ratingPending')
 
   return (
     <article className="review-card">
@@ -34,7 +38,7 @@ export default function ReviewCard({ review = {}, name, rating, date, title, bod
       <div className="review-card__rating">
         <StarRating rating={displayRating} className="review-card__stars" ariaLabel={ratingLabel} />
         <span className="review-card__rating-text">
-          {hasRating ? `${displayRating.toFixed(1)} / 5` : 'Rating pending'}
+          {hasRating ? t('review.ratingSlashFive', { rating: displayRating.toFixed(1) }) : t('review.ratingPending')}
         </span>
       </div>
 

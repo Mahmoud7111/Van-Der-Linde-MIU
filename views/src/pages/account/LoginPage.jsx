@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 
 import { loginSchema } from '@/utils/validators'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import authHeroImage from '@/assets/Models/Dutch Van Der Linde1.png'
@@ -13,6 +14,7 @@ import './AuthPage.css'
 
 export default function LoginPage() {
   const { login } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from?.pathname || '/'
@@ -38,13 +40,13 @@ export default function LoginPage() {
     setServerError('')
     try {
       await login(email.trim(), password)
-      toast.success('Welcome back!')
+      toast.success(t('auth.welcomeBack'))
       navigate(from, { replace: true })
     } catch (error) {
       const message =
         error?.response?.data?.message ||
         error?.message ||
-        'Invalid email or password'
+        t('auth.invalidLogin')
       setServerError(message)
       toast.error(message)
     }
@@ -62,9 +64,7 @@ export default function LoginPage() {
           <div className="auth-hero__content">
             <div className="auth-hero__text-wrap">
               <p className="auth-hero__quote">
-                "Time is the most valuable
-                <br />
-                thing a man can spend."
+                {t('auth.quote')}
               </p>
               <p className="auth-hero__author">— THEOPHRASTUS</p>
 
@@ -78,12 +78,12 @@ export default function LoginPage() {
 
         <div className="auth-panel">
           <div className="auth-panel__inner">
-            <div className="auth-tabs" role="tablist" aria-label="Authentication tabs">
+            <div className="auth-tabs" role="tablist" aria-label={t('auth.tabs')}>
               <Link to="/login" className="auth-tab auth-tab--active" role="tab" aria-selected="true">
-                SIGN IN
+                {t('auth.signIn')}
               </Link>
               <Link to="/register" className="auth-tab" role="tab" aria-selected="false">
-                REGISTER
+                {t('auth.register')}
               </Link>
             </div>
 
@@ -96,7 +96,7 @@ export default function LoginPage() {
               )}
               <div className="auth-vdl-field">
                 <label htmlFor="email" className="auth-vdl-label">
-                  EMAIL
+                  {t('auth.email')}
                 </label>
                 <input
                   id="email"
@@ -118,7 +118,7 @@ export default function LoginPage() {
 
               <div className="auth-vdl-field">
                 <label htmlFor="password" className="auth-vdl-label">
-                  PASSWORD
+                  {t('auth.password')}
                 </label>
 
                 <div className="auth-vdl-password-wrap">
@@ -136,7 +136,7 @@ export default function LoginPage() {
                     type="button"
                     className="auth-vdl-eye"
                     onClick={() => setShowPassword((v) => !v)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                     disabled={isSubmitting}
                   >
                     👁
@@ -153,11 +153,11 @@ export default function LoginPage() {
               <div className="auth-vdl-row">
                 <label className="auth-vdl-checkbox">
                   <input type="checkbox" {...register('remember')} />
-                  <span>Remember me</span>
+                  <span>{t('auth.rememberMe')}</span>
                 </label>
 
                 <Link to="/forgot-password" className="auth-vdl-forgot">
-                  Forgot Password?
+                  {t('auth.forgotPassword')}
                 </Link>
               </div>
 
@@ -167,12 +167,12 @@ export default function LoginPage() {
                 isLoading={isSubmitting}
                 disabled={!isValid || isSubmitting}
               >
-                SIGN IN
+                {t('auth.signIn')}
               </Button>
             </form>
 
             <div className="auth-vdl-divider">
-              <span>OR CONTINUE WITH</span>
+              <span>{t('auth.orContinue')}</span>
             </div>
 
             <div className="auth-vdl-socials">
@@ -182,14 +182,14 @@ export default function LoginPage() {
             </div>
 
             <div className="auth-vdl-benefits">
-              <p className="auth-vdl-benefits__title">MEMBER BENEFITS</p>
+              <p className="auth-vdl-benefits__title">{t('auth.memberBenefits')}</p>
               <ul>
-                <li>Track orders in real-time</li>
-                <li>Save watches to your wishlist</li>
-                <li>Faster checkout experience</li>
-                <li>Exclusive early access to new collections</li>
-                <li>Earn reward points on every purchase</li>
-                <li>Birthday gift from Van Der Linde</li>
+                <li>{t('auth.benefitTrack')}</li>
+                <li>{t('auth.benefitWishlist')}</li>
+                <li>{t('auth.benefitCheckout')}</li>
+                <li>{t('auth.benefitCollections')}</li>
+                <li>{t('auth.benefitRewards')}</li>
+                <li>{t('auth.benefitBirthday')}</li>
               </ul>
             </div>
           </div>

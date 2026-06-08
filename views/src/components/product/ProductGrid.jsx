@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/utils/cn'
 import EmptyState from '@/components/common/EmptyState'
 import SkeletonCard from '@/components/common/SkeletonCard'
+import { useLanguage } from '@/context/LanguageContext'
 import ProductCard from './ProductCard'
 import './ProductGrid.css'
 
@@ -16,6 +17,7 @@ const MotionStage = motion.div
 
 export default function ProductGrid({ watches = [], loading = false, error = null }) {
   const [viewMode, setViewMode] = useState('grid') // 'grid' (2 columns) or 'feed' (1 column)
+  const { t } = useLanguage()
   const safeWatches = Array.isArray(watches) ? watches : []
   const errorMessage = typeof error === 'string' ? error : error?.message
   const gridKey = safeWatches.map((watch, index) => watch?._id ?? watch?.slug ?? `${watch?.name ?? 'watch'}-${index}`).join('|')
@@ -34,7 +36,7 @@ export default function ProductGrid({ watches = [], loading = false, error = nul
         className={cn('view-toggle__btn', viewMode === 'grid' && 'view-toggle__btn--active')}
         onClick={() => toggleView('grid')}
       >
-        <span>GRID</span>
+        <span>{t('product.grid')}</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
           <rect x="3" y="3" width="7" height="7" />
           <rect x="14" y="3" width="7" height="7" />
@@ -46,7 +48,7 @@ export default function ProductGrid({ watches = [], loading = false, error = nul
         className={cn('view-toggle__btn', viewMode === 'feed' && 'view-toggle__btn--active')}
         onClick={() => toggleView('feed')}
       >
-        <span>FEED</span>
+        <span>{t('product.feed')}</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
           <rect x="3" y="3" width="18" height="18" />
         </svg>
@@ -72,7 +74,7 @@ export default function ProductGrid({ watches = [], loading = false, error = nul
     if (safeWatches.length === 0) {
       return (
         <div className="product-grid product-grid--empty">
-          <EmptyState title="No watches found" message="Try adjusting your filters." />
+          <EmptyState title={t('product.noWatchesFound')} message={t('product.adjustFilters')} />
         </div>
       )
     }
@@ -126,7 +128,7 @@ export default function ProductGrid({ watches = [], loading = false, error = nul
             exit={{ opacity: 0, y: 20, transition: { duration: 0.3 } }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
           >
-            <EmptyState title="No watches found" message="Try adjusting your filters." />
+            <EmptyState title={t('product.noWatchesFound')} message={t('product.adjustFilters')} />
           </MotionStage>
         ) : (
           <MotionStage

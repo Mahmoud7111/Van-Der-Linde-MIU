@@ -9,6 +9,7 @@ import ReviewForm from '@/components/product/ReviewForm'
 import { useCart } from '@/context/CartContext'
 import { useWishlist } from '@/context/WishlistContext'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { cn } from '@/utils/cn'
 import './ProductDetailPage.css'
@@ -18,21 +19,51 @@ const prefersReducedMotion =
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+const CATEGORY_KEYS = new Set(['luxury', 'sport', 'classic', 'smart'])
+
+const getTranslatedCategory = (category, t) => {
+  if (typeof category !== 'string' || !category.trim()) {
+    return t('product.luxury')
+  }
+
+  const normalized = category.trim().toLowerCase()
+  return CATEGORY_KEYS.has(normalized) ? t(`category.${normalized}`) : category
+}
+
+const getTranslatedGender = (gender, t) => {
+  if (typeof gender !== 'string' || !gender.trim()) {
+    return t('product.unisex')
+  }
+
+  const normalized = gender.trim().toLowerCase()
+
+  if (normalized === 'men' || normalized === 'women') {
+    return t(`filter.${normalized}`)
+  }
+
+  if (normalized === 'unisex') {
+    return t('product.unisex')
+  }
+
+  return gender
+}
+
 export default function ProductDetailPage() {
   const watch = useLoaderData()
   const { dispatch } = useCart()
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist()
   const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
 
   if (!watch) {
     return (
       <PageTransition>
         <section className="product-detail product-detail--empty">
           <div className="product-detail__inner">
-            <h1 className="product-detail__title">Watch not found</h1>
-            <p className="product-detail__subtitle">The selected timepiece could not be loaded.</p>
+            <h1 className="product-detail__title">{t('product.notFound')}</h1>
+            <p className="product-detail__subtitle">{t('product.notFoundMessage')}</p>
             <Button to="/shop" variant="secondary">
-              Back to Shop
+              {t('product.backToShop')}
             </Button>
           </div>
         </section>
@@ -48,6 +79,8 @@ export default function ProductDetailPage() {
   const hasReviews = Number.isFinite(reviewCount) && reviewCount > 0
   const isOutOfStock = Number.isFinite(Number(watch.stock)) && Number(watch.stock) <= 0
   const isSaved = isWishlisted(watch._id)
+  const displayCategory = getTranslatedCategory(watch.category, t)
+  const displayGender = getTranslatedGender(watch.gender, t)
 
   const handleAddToCart = () => {
     dispatch({ type: 'ADD', payload: watch })
@@ -82,14 +115,14 @@ export default function ProductDetailPage() {
       <section className={cn('product-detail', isOutOfStock && 'product-detail--sold-out')}>
         <div className="product-detail__inner">
           <header className="product-detail__header">
-            <p className="product-detail__eyebrow">Timepiece</p>
+            <p className="product-detail__eyebrow">{t('product.timepiece')}</p>
             <div className="product-detail__heading">
-              <h1 className="product-detail__title">{watch.name ?? 'Van Der Linde Watch'}</h1>
+              <h1 className="product-detail__title">{watch.name ?? t('product.watchFallbackName')}</h1>
               <button
                 type="button"
                 className={cn('product-detail__wishlist', isSaved && 'product-detail__wishlist--active')}
                 aria-pressed={isSaved}
-                aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
+                aria-label={isSaved ? t('product.removeFromWishlist') : t('product.saveToWishlist')}
                 onClick={handleToggleWishlist}
               >
                 <FiHeart aria-hidden="true" fill={isSaved ? 'currentColor' : 'none'} />
@@ -101,7 +134,7 @@ export default function ProductDetailPage() {
           <div className="product-detail__layout">
             <div className="product-detail__gallery">
               <motion.div className="product-detail__image-frame" {...imageMotionProps}>
-                <img className="product-detail__image" src={imageUrl} alt={watch.name ?? 'Watch'} />
+                <img className="product-detail__image" src={imageUrl} alt={watch.name ?? t('product.watchFallbackAlt')} />
               </motion.div>
             </div>
 
@@ -117,30 +150,30 @@ export default function ProductDetailPage() {
               </div>
 
               <p className="product-detail__description">
-                {watch.description ?? 'A refined timepiece crafted for everyday luxury.'}
+                {watch.description ?? t('product.defaultDescription')}
               </p>
 
               <ul className="product-detail__specs">
                 <li>
-                  <span>Category</span>
-                  <strong>{watch.category ?? 'Luxury'}</strong>
+                  <span>{t('product.category')}</span>
+                  <strong>{displayCategory}</strong>
                 </li>
                 <li>
-                  <span>Gender</span>
-                  <strong>{watch.gender ?? 'Unisex'}</strong>
+                  <span>{t('product.gender')}</span>
+                  <strong>{displayGender}</strong>
                 </li>
                 <li>
-                  <span>Availability</span>
-                  <strong>{isOutOfStock ? 'Out of stock' : 'In stock'}</strong>
+                  <span>{t('product.availability')}</span>
+                  <strong>{isOutOfStock ? t('product.outOfStock') : t('product.inStock')}</strong>
                 </li>
               </ul>
 
               <div className="product-detail__actions">
                 <Button onClick={handleAddToCart} variant="primary" disabled={isOutOfStock}>
-                  Add to Cart
+                  {t('btn.addToCart')}
                 </Button>
                 <Button onClick={handleToggleWishlist} variant="secondary">
-                  {isSaved ? 'Saved' : 'Save to Wishlist'}
+                  {isSaved ? t('product.saved') : t('product.saveToWishlistButton')}
                 </Button>
               </div>
             </motion.div>
@@ -148,10 +181,10 @@ export default function ProductDetailPage() {
 
           <section className="product-detail__reviews">
             <div className="product-detail__reviews-header">
-              <p className="product-detail__eyebrow">Reviews</p>
-              <h2 className="product-detail__section-title">Collector feedback</h2>
+              <p className="product-detail__eyebrow">{t('product.reviews')}</p>
+              <h2 className="product-detail__section-title">{t('product.collectorFeedback')}</h2>
               <p className="product-detail__section-subtitle">
-                Trusted impressions from verified owners of this timepiece.
+                {t('product.reviewsSubtitle')}
               </p>
             </div>
             <div className="product-detail__reviews-grid">

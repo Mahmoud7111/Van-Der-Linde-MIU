@@ -2,39 +2,41 @@ import { Link } from 'react-router-dom'
 import { FaInstagram, FaTiktok, FaFacebook, FaTwitter } from 'react-icons/fa'
 import { FiPhone, FiMapPin } from 'react-icons/fi'
 import { useTheme } from '@/context/ThemeContext'
+import { useLanguage } from '@/context/LanguageContext'
 import './Footer.css'
 
 export default function Footer() {
   const { theme } = useTheme()
+  const { t } = useLanguage()
   const shopLinks = [
-    { to: '/shop', label: 'All Watches' },
-    { to: '/collections', label: 'Collections' },
-    { to: '/quiz', label: 'Watch Quiz' },
-    { to: '/shop/men', label: 'Men Collection' },
-    { to: '/shop/women', label: 'Women Collection' },
-    { to: '/shop/new-arrivals', label: 'New Arrivals' },
-    { to: '/shop/best-sellers', label: 'Best Sellers' },
-    { to: '/shop/sale', label: 'Sale' },
+    { to: '/shop', labelKey: 'footer.allWatches' },
+    { to: '/collections', labelKey: 'nav.collections' },
+    { to: '/quiz', labelKey: 'nav.watchQuiz' },
+    { to: '/shop/men', labelKey: 'footer.menCollection' },
+    { to: '/shop/women', labelKey: 'footer.womenCollection' },
+    { to: '/shop/new-arrivals', labelKey: 'footer.newArrivals' },
+    { to: '/shop/best-sellers', labelKey: 'footer.bestSellers' },
+    { to: '/shop/sale', labelKey: 'footer.sale' },
   ]
 
   const customerCareLinks = [
-    { to: '/contact', label: 'Contact Us' },
-    { to: '/terms', label: 'Shipping & Returns' },
-    { to: '/size-guide', label: 'Size Guide' },
-    { to: '/services', label: 'Care Instructions' },
-    { to: '/faq', label: 'FAQ' },
-    { to: '/orders', label: 'Track Your Order' },
-    { to: '/reviews', label: 'Customer Reviews' },
+    { to: '/contact', labelKey: 'nav.contactUs' },
+    { to: '/terms', labelKey: 'footer.shippingReturns' },
+    { to: '/size-guide', labelKey: 'size.title' },
+    { to: '/services', labelKey: 'footer.careInstructions' },
+    { to: '/faq', labelKey: 'nav.faqs' },
+    { to: '/orders', labelKey: 'footer.trackOrder' },
+    { to: '/reviews', labelKey: 'footer.customerReviews' },
   ]
 
   const companyLinks = [
-    { to: '/about', label: 'About Us' },
-    { to: '/careers', label: 'Careers' },
-    { to: '/press', label: 'Press' },
-    { to: '/sustainability', label: 'Sustainability' },
-    { to: '/privacy', label: 'Privacy Policy' },
-    { to: '/terms', label: 'Terms & Conditions' },
-    { to: '/cookie-policy', label: 'Cookie Policy' },
+    { to: '/about', labelKey: 'footer.aboutUs' },
+    { to: '/careers', labelKey: 'footer.careers' },
+    { to: '/press', labelKey: 'footer.press' },
+    { to: '/sustainability', labelKey: 'footer.sustainability' },
+    { to: '/privacy', labelKey: 'policy.privacyTitle' },
+    { to: '/terms', labelKey: 'footer.terms' },
+    { to: '/cookie-policy', labelKey: 'footer.cookie' },
   ]
 
   return (
@@ -51,8 +53,7 @@ export default function Footer() {
             />
           </Link>
           <p className="footer__description">
-            Discover your signature timepiece with Van Der Linde&apos;s curated collection of premium watches.
-            From timeless classics to modern masterpieces, we bring you world-class craftsmanship.
+            {t('footer.description')}
           </p>
 
           {/* Social Icons */}
@@ -77,11 +78,11 @@ export default function Footer() {
 
           {/* Shop */}
           <div className="footer__column">
-            <h3 className="footer__column-title">Shop</h3>
-            <nav className="footer__column-nav" aria-label="Shop links">
+            <h3 className="footer__column-title">{t('footer.shop')}</h3>
+            <nav className="footer__column-nav" aria-label={t('footer.shop')}>
               {shopLinks.map((link) => (
-                <Link key={`${link.to}-${link.label}`} to={link.to} className="footer__column-link">
-                  {link.label}
+                <Link key={`${link.to}-${link.labelKey}`} to={link.to} className="footer__column-link">
+                  {t(link.labelKey)}
                 </Link>
               ))}
             </nav>
@@ -89,11 +90,11 @@ export default function Footer() {
 
           {/* Customer Care */}
           <div className="footer__column">
-            <h3 className="footer__column-title">Customer Care</h3>
-            <nav className="footer__column-nav" aria-label="Customer care links">
+            <h3 className="footer__column-title">{t('footer.customerCare')}</h3>
+            <nav className="footer__column-nav" aria-label={t('footer.customerCare')}>
               {customerCareLinks.map((link) => (
-                <Link key={`${link.to}-${link.label}`} to={link.to} className="footer__column-link">
-                  {link.label}
+                <Link key={`${link.to}-${link.labelKey}`} to={link.to} className="footer__column-link">
+                  {t(link.labelKey)}
                 </Link>
               ))}
             </nav>
@@ -101,11 +102,11 @@ export default function Footer() {
 
           {/* Company */}
           <div className="footer__column">
-            <h3 className="footer__column-title">Company</h3>
-            <nav className="footer__column-nav" aria-label="Company links">
+            <h3 className="footer__column-title">{t('footer.company')}</h3>
+            <nav className="footer__column-nav" aria-label={t('footer.company')}>
               {companyLinks.map((link) => (
-                <Link key={`${link.to}-${link.label}`} to={link.to} className="footer__column-link">
-                  {link.label}
+                <Link key={`${link.to}-${link.labelKey}`} to={link.to} className="footer__column-link">
+                  {t(link.labelKey)}
                 </Link>
               ))}
             </nav>
@@ -113,13 +114,13 @@ export default function Footer() {
 
           {/* Get in Touch */}
           <div className="footer__column footer__column--contact">
-            <h3 className="footer__column-title">Get in Touch</h3>
+            <h3 className="footer__column-title">{t('footer.getInTouch')}</h3>
             <div className="footer__contact-item">
               <span className="footer__contact-icon-box">
                 <FiPhone className="footer__contact-icon" />
               </span>
               <div>
-                <p className="footer__contact-label">Phone</p>
+                <p className="footer__contact-label">{t('footer.phone')}</p>
                 <p className="footer__contact-value">+20 111-998-4154</p>
               </div>
             </div>
@@ -128,7 +129,7 @@ export default function Footer() {
                 <FiMapPin className="footer__contact-icon" />
               </span>
               <div>
-                <p className="footer__contact-label">Address</p>
+                <p className="footer__contact-label">{t('footer.address')}</p>
                 <p className="footer__contact-value">123 Fragrance Street</p>
                 <p className="footer__contact-value">Cairo, Egypt 10001</p>
               </div>

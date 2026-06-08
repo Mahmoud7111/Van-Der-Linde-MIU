@@ -6,6 +6,7 @@ import StarRating from '@/components/common/StarRating'
 import { useWishlist } from '@/context/WishlistContext'
 import { useCart } from '@/context/CartContext'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { resolveFavoriteWatchImage } from '@/utils/watchImageResolver'
 import './WishlistPage.css'
 
@@ -13,6 +14,7 @@ export default function WishlistPage() {
   const { wishlist, removeFromWishlist } = useWishlist()
   const { dispatch } = useCart()
   const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
 
   const handleAddToCart = (item) => {
     dispatch({ type: 'ADD', payload: item })
@@ -28,13 +30,13 @@ export default function WishlistPage() {
         <div className="wishlist-page__container">
           <header className="wishlist-page__header">
             <div>
-              <p className="wishlist-page__eyebrow">My Account</p>
-              <h1 className="wishlist-page__title">Wishlist</h1>
+              <p className="wishlist-page__eyebrow">{t('account.myAccount')}</p>
+              <h1 className="wishlist-page__title">{t('wishlist.title')}</h1>
             </div>
 
             <div className="wishlist-page__meta">
               <FiHeart aria-hidden="true" />
-              <span>{wishlist.length} item{wishlist.length !== 1 ? 's' : ''}</span>
+              <span>{t(wishlist.length === 1 ? 'wishlist.itemCount' : 'wishlist.itemCountPlural', { count: wishlist.length })}</span>
             </div>
           </header>
 
@@ -43,10 +45,10 @@ export default function WishlistPage() {
               <div className="wishlist-page__empty-icon" aria-hidden="true">
                 <FiHeart />
               </div>
-              <p>Your wishlist is empty.</p>
-              <span>Save the pieces you love and find them quickly here.</span>
+              <p>{t('wishlist.empty')}</p>
+              <span>{t('wishlist.emptyHint')}</span>
               <Link to="/shop" className="wishlist-page__back">
-                Explore Products
+                {t('wishlist.explore')}
               </Link>
             </div>
           ) : (
@@ -79,7 +81,7 @@ export default function WishlistPage() {
                       {image ? (
                         <img src={image} alt={name} className="wishlist-card__image" loading="lazy" />
                       ) : (
-                        <div className="wishlist-card__placeholder">No Image</div>
+                        <div className="wishlist-card__placeholder">{t('wishlist.noImage')}</div>
                       )}
                     </Link>
 
@@ -100,7 +102,7 @@ export default function WishlistPage() {
                       </div>
 
                       <div className="wishlist-card__stock">
-                        {inStock ? 'In stock' : 'Out of stock'}
+                        {inStock ? t('product.inStock') : t('product.outOfStock')}
                       </div>
 
                       <div className="wishlist-card__actions">
@@ -111,17 +113,17 @@ export default function WishlistPage() {
                           className="wishlist-card__cart-btn"
                         >
                           <FiShoppingBag />
-                          <span>Add to Cart</span>
+                          <span>{t('btn.addToCart')}</span>
                         </Button>
 
                         <button
                           type="button"
                           className="wishlist-card__remove"
                           onClick={() => handleRemove(item)}
-                          aria-label={`Remove ${name} from wishlist`}
+                          aria-label={t('wishlist.removeNamed', { name })}
                         >
                           <FiTrash2 />
-                          <span>Remove</span>
+                          <span>{t('wishlist.remove')}</span>
                         </button>
                       </div>
                     </div>
@@ -132,7 +134,7 @@ export default function WishlistPage() {
           )}
 
           <Link to="/account" className="wishlist-page__account-link">
-            Back to Account
+            {t('wishlist.backAccount')}
           </Link>
         </div>
       </section>

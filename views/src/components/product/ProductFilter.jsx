@@ -1,27 +1,37 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useCurrency } from '@/context/CurrencyContext'
-import { CATEGORIES, CURRENCIES, SORT_OPTIONS } from '@/utils/constants'
+import { useLanguage } from '@/context/LanguageContext'
+import { CURRENCIES, SORT_OPTIONS } from '@/utils/constants'
 import { brandService } from '@/services/brandService'
 import { collectionService } from '@/services/collectionService'
 import './ProductFilter.css'
 
 const GENDER_OPTIONS = [
-  { value: 'all', label: 'All' },
-  { value: 'men', label: 'Men' },
-  { value: 'women', label: 'Women' },
+  { value: 'all', labelKey: 'filter.all' },
+  { value: 'men', labelKey: 'filter.men' },
+  { value: 'women', labelKey: 'filter.women' },
 ]
 
 const RATING_OPTIONS = [
-  { value: 'all', label: 'All ratings' },
-  { value: '4.5', label: '4.5+ stars' },
-  { value: '4', label: '4.0+ stars' },
-  { value: '3.5', label: '3.5+ stars' },
+  { value: 'all', labelKey: 'filter.allRatings' },
+  { value: '4.5', labelKey: 'filter.starsAndUp', rating: '4.5' },
+  { value: '4', labelKey: 'filter.starsAndUp', rating: '4.0' },
+  { value: '3.5', labelKey: 'filter.starsAndUp', rating: '3.5' },
 ]
+
+const SORT_LABEL_KEYS = {
+  default: 'sort.default',
+  'price-asc': 'sort.priceAsc',
+  'price-desc': 'sort.priceDesc',
+  rating: 'sort.rating',
+  newest: 'sort.newest',
+}
 
 export default function ProductFilter({ defaultGender }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const { currency } = useCurrency()
+  const { t } = useLanguage()
   const collection = searchParams.get('collection') || 'all'
   const brand = searchParams.get('brand') || 'all'
   const genderParam = searchParams.get('gender')
@@ -48,10 +58,10 @@ export default function ProductFilter({ defaultGender }) {
           brandService.getAll(),
           collectionService.getAll(),
         ])
-        setBrandsList([{ value: 'all', label: 'All brands' }].concat(
+        setBrandsList([{ value: 'all', labelKey: 'filter.allBrands' }].concat(
           brandsData.map((b) => ({ value: b.name, label: b.name }))
         ))
-        setCollectionsList([{ value: 'all', label: 'All collections' }].concat(
+        setCollectionsList([{ value: 'all', labelKey: 'filter.allCollections' }].concat(
           collectionsData.map((c) => ({ value: c.name, label: c.name }))
         ))
       } catch (err) {
@@ -106,16 +116,16 @@ export default function ProductFilter({ defaultGender }) {
   }, [searchInput, searchValue, updateParam])
 
   return (
-    <section className="product-filter" aria-label="Filter watches">
+    <section className="product-filter" aria-label={t('filter.aria')}>
       <div className="product-filter__surface">
         <div className="product-filter__header">
           <div>
-            <p className="product-filter__eyebrow">Refine</p>
-            <h2 className="product-filter__title">Filter the collection</h2>
+            <p className="product-filter__eyebrow">{t('filter.refine')}</p>
+            <h2 className="product-filter__title">{t('filter.title')}</h2>
           </div>
           <div className="product-filter__field product-filter__field--sort">
             <label className="product-filter__label" htmlFor="sort">
-              Sort
+              {t('filter.sort')}
             </label>
             <select
               id="sort"
@@ -125,7 +135,7 @@ export default function ProductFilter({ defaultGender }) {
             >
               {SORT_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(SORT_LABEL_KEYS[option.value] || option.label)}
                 </option>
               ))}
             </select>
@@ -135,12 +145,12 @@ export default function ProductFilter({ defaultGender }) {
         <div className="product-filter__grid">
           <div className="product-filter__field product-filter__field--search">
             <label className="product-filter__label" htmlFor="search">
-              Search
+              {t('filter.search')}
             </label>
             <input
               id="search"
               type="search"
-              placeholder="Search watches"
+              placeholder={t('filter.searchPlaceholder')}
               className="product-filter__input"
               value={searchInput}
               onChange={(event) => setSearchInput(event.target.value)}
@@ -149,7 +159,7 @@ export default function ProductFilter({ defaultGender }) {
 
           <div className="product-filter__field">
             <label className="product-filter__label" htmlFor="category">
-              Category
+              {t('filter.collection')}
             </label>
             <select
               id="category"
@@ -160,18 +170,18 @@ export default function ProductFilter({ defaultGender }) {
               {collectionsList.length > 0 ? (
                 collectionsList.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {option.labelKey ? t(option.labelKey) : option.label}
                   </option>
                 ))
               ) : (
-                <option value="all">All collections</option>
+                <option value="all">{t('filter.allCollections')}</option>
               )}
             </select>
           </div>
 
           <div className="product-filter__field">
             <label className="product-filter__label" htmlFor="brand">
-              Brand
+              {t('filter.brand')}
             </label>
             <select
               id="brand"
@@ -182,18 +192,18 @@ export default function ProductFilter({ defaultGender }) {
               {brandsList.length > 0 ? (
                 brandsList.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {option.labelKey ? t(option.labelKey) : option.label}
                   </option>
                 ))
               ) : (
-                <option value="all">All brands</option>
+                <option value="all">{t('filter.allBrands')}</option>
               )}
             </select>
           </div>
 
           <fieldset className="product-filter__fieldset">
-            <legend className="product-filter__legend">Gender</legend>
-            <div className="product-filter__options" role="radiogroup" aria-label="Gender">
+            <legend className="product-filter__legend">{t('filter.gender')}</legend>
+            <div className="product-filter__options" role="radiogroup" aria-label={t('filter.gender')}>
               {GENDER_OPTIONS.map((option) => (
                 <label key={option.value} className="product-filter__option">
                   <input
@@ -203,7 +213,7 @@ export default function ProductFilter({ defaultGender }) {
                     checked={gender === option.value}
                     onChange={(event) => updateParam('gender', event.target.value)}
                   />
-                  <span>{option.label}</span>
+                  <span>{t(option.labelKey)}</span>
                 </label>
               ))}
             </div>
@@ -211,7 +221,7 @@ export default function ProductFilter({ defaultGender }) {
 
           <div className="product-filter__field">
             <label className="product-filter__label" htmlFor="rating">
-              Rating
+              {t('filter.rating')}
             </label>
             <select
               id="rating"
@@ -221,14 +231,14 @@ export default function ProductFilter({ defaultGender }) {
             >
               {RATING_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.labelKey, { rating: option.rating })}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="product-filter__field product-filter__field--price">
-            <span className="product-filter__label">Price range</span>
+            <span className="product-filter__label">{t('filter.priceRange')}</span>
             <div className="product-filter__range">
               <label className="product-filter__range-field" htmlFor="price-min">
                 <span className="product-filter__prefix">{currencySymbol}</span>
@@ -237,7 +247,7 @@ export default function ProductFilter({ defaultGender }) {
                   type="number"
                   min="0"
                   inputMode="numeric"
-                  placeholder="Min"
+                  placeholder={t('filter.min')}
                   className="product-filter__input product-filter__input--price"
                   value={minPrice}
                   onChange={(event) => updateParam('minPrice', event.target.value)}
@@ -251,7 +261,7 @@ export default function ProductFilter({ defaultGender }) {
                   type="number"
                   min="0"
                   inputMode="numeric"
-                  placeholder="Max"
+                  placeholder={t('filter.max')}
                   className="product-filter__input product-filter__input--price"
                   value={maxPrice}
                   onChange={(event) => updateParam('maxPrice', event.target.value)}

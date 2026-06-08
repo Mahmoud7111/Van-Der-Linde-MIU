@@ -2,6 +2,7 @@ import { Link, useLoaderData } from 'react-router-dom'
 import PageTransition from '@/components/common/PageTransition'
 import Badge from '@/components/common/Badge'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { formatDate } from '@/utils/formatters'
 import './OrderHistoryPage.css'
 
@@ -17,6 +18,7 @@ function getStatusVariant(status) {
 export default function OrderHistoryPage() {
   const loaderData = useLoaderData()
   const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
   const orders = Array.isArray(loaderData)
     ? loaderData
     : Array.isArray(loaderData?.orders)
@@ -28,15 +30,15 @@ export default function OrderHistoryPage() {
       <section className="order-history-page">
         <div className="order-history-page__container">
           <header className="order-history-page__header">
-            <p className="order-history-page__eyebrow">My Account</p>
-            <h1 className="order-history-page__title">Order History</h1>
+            <p className="order-history-page__eyebrow">{t('account.myAccount')}</p>
+            <h1 className="order-history-page__title">{t('orders.title')}</h1>
           </header>
 
           {orders.length === 0 ? (
             <div className="order-history-page__empty">
-              <p>You have no orders yet.</p>
+              <p>{t('orders.empty')}</p>
               <Link to="/shop" className="order-history-page__back">
-                Start Shopping
+                {t('orders.startShopping')}
               </Link>
             </div>
           ) : (
@@ -45,12 +47,12 @@ export default function OrderHistoryPage() {
                 <table className="order-history-table">
                   <thead>
                     <tr>
-                      <th>Order ID</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Items</th>
-                      <th>Total</th>
-                      <th>Actions</th>
+                      <th>{t('orders.id')}</th>
+                      <th>{t('orders.date')}</th>
+                      <th>{t('orders.status')}</th>
+                      <th>{t('orders.items')}</th>
+                      <th>{t('cart.total')}</th>
+                      <th>{t('orders.actions')}</th>
                     </tr>
                   </thead>
 
@@ -80,10 +82,10 @@ export default function OrderHistoryPage() {
                           <td>
                             <div className="order-history-page__actions">
                               <Link to={`/order-confirmation?orderId=${id}`} className="order-history-link-btn">
-                                Details
+                                {t('orders.details')}
                               </Link>
                               <Link to="/contact" className="order-history-link-btn">
-                                Help
+                                {t('orders.help')}
                               </Link>
                             </div>
                           </td>
@@ -97,7 +99,7 @@ export default function OrderHistoryPage() {
           )}
 
           <Link to="/account" className="order-history-page__back">
-            Back to Account
+            {t('orders.backAccount')}
           </Link>
         </div>
       </section>

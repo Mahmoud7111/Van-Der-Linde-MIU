@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useCart } from '@/context/CartContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { orderService } from '@/services/orderService'
 import toast from 'react-hot-toast'
 import Button from '@/components/common/Button'
@@ -8,12 +9,6 @@ import PaymentForm from '@/components/checkout/PaymentForm'
 import OrderReview from '@/components/checkout/OrderReview'
 import CheckoutSteps from '@/components/checkout/CheckoutSteps'
 import './CheckoutPage.css'
-
-const CHECKOUT_STEPS = [
-  { id: 1, label: 'Shipping' },
-  { id: 2, label: 'Payment' },
-  { id: 3, label: 'Review' },
-]
 
 const normalizeShippingData = (data = {}) => ({
   fullName: String(data?.fullName || data?.name || '').trim(),
@@ -28,6 +23,7 @@ const normalizeShippingData = (data = {}) => ({
 
 export default function CheckoutPage() {
   const { cart, totalPrice, dispatch } = useCart()
+  const { t } = useLanguage()
 
   const [step, setStep] = useState(1)
   const [shippingData, setShippingData] = useState(null)
@@ -85,10 +81,10 @@ export default function CheckoutPage() {
 
       await orderService.create(orderPayload)
       dispatch({ type: 'CLEAR' })
-      toast.success('Order placed successfully!')
+      toast.success(t('checkout.orderPlaced'))
       setIsSuccess(true)
     } catch (err) {
-      toast.error(err.message || 'Failed to process order. Please try again.')
+      toast.error(err.message || t('checkout.processFailed'))
     } finally {
       setIsProcessing(false)
     }
@@ -97,12 +93,12 @@ export default function CheckoutPage() {
   if (isSuccess) {
     return (
       <main className="checkout-success">
-        <h1 className="checkout-success__title">Order Confirmed</h1>
+        <h1 className="checkout-success__title">{t('checkout.confirmed')}</h1>
         <p className="checkout-success__message">
-          Thank you for your purchase. Your order has been placed successfully.
+          {t('checkout.successMessage')}
         </p>
         <Button to="/shop" variant="primary" className="checkout-success__action">
-          Return to Shop
+          {t('checkout.returnShop')}
         </Button>
       </main>
     )
@@ -111,12 +107,12 @@ export default function CheckoutPage() {
   if (isCartEmpty) {
     return (
       <main className="checkout-empty">
-        <h1 className="checkout-empty__title">Your Cart Is Empty</h1>
+        <h1 className="checkout-empty__title">{t('checkout.emptyTitle')}</h1>
         <p className="checkout-empty__message">
-          You need items in your cart to proceed with checkout.
+          {t('checkout.emptyMessage')}
         </p>
         <Button to="/shop" variant="primary" className="checkout-empty__action">
-          Browse Collection
+          {t('checkout.browseCollection')}
         </Button>
       </main>
     )
@@ -129,10 +125,15 @@ export default function CheckoutPage() {
     shippingCost: 0,
     total: safeTotalPrice,
   }
+  const checkoutSteps = [
+    { id: 1, label: t('checkout.shipping') },
+    { id: 2, label: t('checkout.payment') },
+    { id: 3, label: t('checkout.review') },
+  ]
 
   return (
     <main className="checkout-page">
-      <CheckoutSteps currentStep={step} steps={CHECKOUT_STEPS} onStepChange={setStep} />
+      <CheckoutSteps currentStep={step} steps={checkoutSteps} onStepChange={setStep} />
 
       <div className="checkout-page__content">
         {step === 1 && (

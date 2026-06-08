@@ -1,5 +1,6 @@
 import Button from '@/components/common/Button'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { cn } from '@/utils/cn'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import './OrderReview.css'
@@ -30,18 +31,19 @@ export default function OrderReview({
   className,
 }) {
   const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
   const paymentSummary = getPaymentSummary(paymentData)
   const fullName = shippingData.fullName || shippingData.name || '-'
   const zip = shippingData.zip || shippingData.postalCode || '-'
 
   return (
-    <section className={cn('order-review', className)} aria-label="Order summary and review">
+    <section className={cn('order-review', className)} aria-label={t('checkout.reviewAria')}>
       <header className="order-review__header">
-        <h2 className="order-review__title">Review Your Order</h2>
+        <h2 className="order-review__title">{t('checkout.reviewTitle')}</h2>
       </header>
 
       <div className="order-review__content">
-        <section className="order-review__items-section" aria-label="Order items">
+        <section className="order-review__items-section" aria-label={t('checkout.orderItems')}>
           <ul className="order-review__item-list">
             {cart.items.map((item, index) => {
               const itemId = item?._id || item?.id || `${item?.name || 'item'}-${index}`
@@ -53,15 +55,18 @@ export default function OrderReview({
                     <div className="order-review__item-image-wrapper">
                       <img
                         src={resolveWatchProductImage(imageSource)}
-                        alt={`Image of ${(typeof item?.brand === 'object' ? item.brand?.name : item?.brand) || 'Van Der Linde'} ${item?.name || 'watch'}`}
+                        alt={t('checkout.imageOf', {
+                          brand: (typeof item?.brand === 'object' ? item.brand?.name : item?.brand) || 'Van Der Linde',
+                          name: item?.name || t('product.watchFallbackAlt'),
+                        })}
                         className="order-review__item-image"
                         loading="lazy"
                       />
                     </div>
                     <figcaption className="order-review__item-details">
                       <span className="order-review__item-brand">{(typeof item?.brand === 'object' ? item.brand?.name : item?.brand) || 'Van Der Linde'}</span>
-                      <h3 className="order-review__item-name">{item?.name || 'Watch'}</h3>
-                      <span className="order-review__item-qty">Qty: {item?.quantity || 1}</span>
+                      <h3 className="order-review__item-name">{item?.name || t('product.watchFallbackAlt')}</h3>
+                      <span className="order-review__item-qty">{t('checkout.qty', { quantity: item?.quantity || 1 })}</span>
                     </figcaption>
                   </figure>
                   <div className="order-review__item-price-wrapper">
@@ -76,9 +81,9 @@ export default function OrderReview({
         </section>
 
         <div className="order-review__info-grid">
-          <article className="order-review__info-block" aria-label="Shipping details">
+          <article className="order-review__info-block" aria-label={t('checkout.shippingDetails')}>
             <div className="order-review__info-header">
-              <h3 className="order-review__info-title">Shipping Address</h3>
+              <h3 className="order-review__info-title">{t('checkout.shippingAddress')}</h3>
               {onEditShipping && (
                 <button
                   type="button"
@@ -86,7 +91,7 @@ export default function OrderReview({
                   onClick={onEditShipping}
                   disabled={isProcessing}
                 >
-                  Edit
+                  {t('account.edit')}
                 </button>
               )}
             </div>
@@ -105,9 +110,9 @@ export default function OrderReview({
             </address>
           </article>
 
-          <article className="order-review__info-block" aria-label="Payment details">
+          <article className="order-review__info-block" aria-label={t('checkout.paymentDetails')}>
             <div className="order-review__info-header">
-              <h3 className="order-review__info-title">Payment Method</h3>
+              <h3 className="order-review__info-title">{t('checkout.paymentMethod')}</h3>
               {onEditPayment && (
                 <button
                   type="button"
@@ -115,7 +120,7 @@ export default function OrderReview({
                   onClick={onEditPayment}
                   disabled={isProcessing}
                 >
-                  Edit
+                  {t('account.edit')}
                 </button>
               )}
             </div>
@@ -123,33 +128,33 @@ export default function OrderReview({
               <span className="order-review__payment-method">{paymentSummary.method}</span>
               {paymentSummary.last4 && (
                 <span className="order-review__payment-card">
-                  {paymentSummary.brand} ending in {paymentSummary.last4}
+                  {t('checkout.paymentEnding', { brand: paymentSummary.brand, last4: paymentSummary.last4 })}
                 </span>
               )}
             </div>
           </article>
         </div>
 
-        <section className="order-review__summary-section" aria-label="Order totals">
+        <section className="order-review__summary-section" aria-label={t('checkout.orderTotals')}>
           <dl className="order-review__totals">
             <div className="order-review__total-row">
-              <dt className="order-review__total-label">Subtotal</dt>
+              <dt className="order-review__total-label">{t('cart.subtotal')}</dt>
               <dd className="order-review__total-value">{formatPrice(cart.subtotal || 0)}</dd>
             </div>
             <div className="order-review__total-row">
-              <dt className="order-review__total-label">Shipping</dt>
+              <dt className="order-review__total-label">{t('checkout.shipping')}</dt>
               <dd className="order-review__total-value">
                 {Number(cart.shippingCost) === 0
-                  ? 'Complimentary'
+                  ? t('checkout.complimentary')
                   : formatPrice(cart.shippingCost || 0)}
               </dd>
             </div>
             <div className="order-review__total-row">
-              <dt className="order-review__total-label">Estimated Tax</dt>
+              <dt className="order-review__total-label">{t('cart.estimatedTax')}</dt>
               <dd className="order-review__total-value">{formatPrice(cart.tax || 0)}</dd>
             </div>
             <div className="order-review__total-row order-review__total-row--final">
-              <dt className="order-review__total-label">Total</dt>
+              <dt className="order-review__total-label">{t('cart.total')}</dt>
               <dd className="order-review__total-value">{formatPrice(cart.total || 0)}</dd>
             </div>
           </dl>
@@ -165,7 +170,7 @@ export default function OrderReview({
                 onClick={onBack}
                 disabled={isProcessing}
               >
-                Back to Payment
+                {t('checkout.backPayment')}
               </Button>
             )}
             <Button
@@ -176,7 +181,7 @@ export default function OrderReview({
               disabled={isProcessing}
               isLoading={isProcessing}
             >
-              Place Order
+              {t('checkout.placeOrder')}
             </Button>
           </div>
         </footer>

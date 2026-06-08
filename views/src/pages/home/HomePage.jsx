@@ -20,6 +20,7 @@ import { Link, useLoaderData } from 'react-router-dom'
 import { AnimatePresence, motion as Motion, useInView } from 'framer-motion'
 import Button from '@/components/common/Button'
 import StarRating from '@/components/common/StarRating'
+import { useLanguage } from '@/context/LanguageContext'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import { getInitials } from '@/utils/formatters'
 import { wrapIndex } from '@/utils/carousel'
@@ -93,23 +94,23 @@ const QUIZ_WATCHES = [
 const TRUST_STRIP_ITEMS = [
   {
     icon: marqueeCrown,
-    title: 'Customer Service',
-    subtitle: 'For any question please contact customer service@gmail.com',
+    titleKey: 'home.customerService',
+    subtitleKey: 'home.customerServiceSubtitle',
   },
   {
     icon: marqueeHorse,
-    title: 'Complimentary Delivery',
-    subtitle: 'on all orders',
+    titleKey: 'home.complimentaryDelivery',
+    subtitleKey: 'home.complimentaryDeliverySubtitle',
   },
   {
     icon: marqueeSwissMade,
-    title: 'Swiss Made',
-    subtitle: 'guaranteed authenticity',
+    titleKey: 'home.swissMade',
+    subtitleKey: 'home.swissMadeSubtitle',
   },
   {
     icon: marqueeKey,
-    title: 'Secure Payment',
-    subtitle: 'for all payments',
+    titleKey: 'home.securePayment',
+    subtitleKey: 'home.securePaymentSubtitle',
   },
 ]
 
@@ -133,6 +134,8 @@ const getCollectionPath = (collection) => {
 }
 
 export default function HomePage() {
+  const { t } = useLanguage()
+
   // ============================================================================
   // SECTION REFERENCES (observed for in-view animation triggers)
   // ============================================================================
@@ -615,7 +618,7 @@ export default function HomePage() {
     <div className="home-page">
 
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="home-hero" aria-label="Van Der Linde luxury watches">
+      <section className="home-hero" aria-label={t('home.heroAria')}>
         {/* Background video layer */}
         <video
           className="home-hero__video"
@@ -635,12 +638,11 @@ export default function HomePage() {
         {/* Foreground title, subtitle, and discovery CTA */}
         <div className="home-hero__content">
           <h1 className="home-hero__title">
-            <span className="home-hero__title-line">THE ART OF</span>
-            <span className="home-hero__title-line">WATCHMAKING</span>
+            <span className="home-hero__title-line">{t('home.heroTitleLine1')}</span>
+            <span className="home-hero__title-line">{t('home.heroTitleLine2')}</span>
           </h1>
           <p className="home-hero__subtitle">
-            Explore exceptional vintage and luxury watches crafted with precision, heritage,
-            and timeless elegance.
+            {t('home.heroSubtitle')}
           </p>
           {/*
             JS scroll avoids the fixed header covering the section target,
@@ -655,7 +657,7 @@ export default function HomePage() {
                 ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
             }
           >
-            Discover More
+            {t('home.discoverMore')}
           </Button>
         </div>
       </section>
@@ -663,7 +665,7 @@ export default function HomePage() {
       {/* ── TRUST STRIP MARQUEE ─────────────────────────────────────────── */}
       <section
         className="home-trust"
-        aria-label="Service and trust highlights"
+        aria-label={t('home.trustAria')}
       >
         {/* Outer clipping wrapper for marquee track */}
         <div className="home-trust__marquee">
@@ -677,7 +679,7 @@ export default function HomePage() {
                 aria-hidden={groupIndex === 1}
               >
                 {TRUST_STRIP_ITEMS.map((item) => (
-                  <article key={`${groupIndex}-${item.title}`} className="home-trust__item">
+                  <article key={`${groupIndex}-${item.titleKey}`} className="home-trust__item">
                     <img
                       className="home-trust__icon"
                       src={item.icon}
@@ -685,8 +687,8 @@ export default function HomePage() {
                       loading="lazy"
                       aria-hidden="true"
                     />
-                    <h2 className="home-trust__title">{item.title}</h2>
-                    <p className="home-trust__subtitle">{item.subtitle}</p>
+                    <h2 className="home-trust__title">{t(item.titleKey)}</h2>
+                    <p className="home-trust__subtitle">{t(item.subtitleKey)}</p>
                   </article>
                 ))}
               </div>
@@ -717,7 +719,7 @@ export default function HomePage() {
         id="collections"
         ref={collectionsSectionRef}
         className="home-collections"
-        aria-label="Featured collections"
+        aria-label={t('home.featuredCollectionsAria')}
       >
         {/*
           Scroll container is its own element so the section ref (IntersectionObserver)
@@ -738,13 +740,13 @@ export default function HomePage() {
               }`}
           >
             {/* Intro copy + utility nav */}
-            <p className="home-collections__label">OUR COLLECTIONS</p>
-            <h2 className="home-collections__title">OUR 2026 NOVELTIES</h2>
+            <p className="home-collections__label">{t('home.ourCollections')}</p>
+            <h2 className="home-collections__title">{t('home.novelties')}</h2>
             <Link
               className="home-collections__view-all"
               to="/collections"
             >
-              Explore our collections
+              {t('home.exploreCollections')}
             </Link>
           </div>
 
@@ -757,7 +759,7 @@ export default function HomePage() {
           <div
             className="home-collections__cards"
             ref={collectionsCardsRef}
-            aria-label="Featured collections carousel"
+            aria-label={t('home.collectionsCarousel')}
           >
             {/* Mapped collection cards */}
             {featured.map((collection, index) => (
@@ -787,7 +789,7 @@ export default function HomePage() {
                     className="home-collection-card__link"
                     to={getCollectionPath(collection)}
                   >
-                    Explore <span aria-hidden="true">→</span>
+                    {t('home.explore')} <span aria-hidden="true">→</span>
                   </Link>
                 </div>
               </article>
@@ -805,7 +807,7 @@ export default function HomePage() {
             className={`home-collections__nav-btn home-collections__nav-btn--left${canScrollCollectionsLeft ? ' home-collections__nav-btn--visible' : ''
               }`}
             onClick={() => scrollCollections(-1)}
-            aria-label="Scroll collections left"
+            aria-label={t('home.scrollCollectionsLeft')}
           >
             ←
           </Button>
@@ -814,7 +816,7 @@ export default function HomePage() {
             className={`home-collections__nav-btn home-collections__nav-btn--right${canScrollCollectionsRight ? ' home-collections__nav-btn--visible' : ''
               }`}
             onClick={() => scrollCollections(1)}
-            aria-label="Scroll collections right"
+            aria-label={t('home.scrollCollectionsRight')}
           >
             →
           </Button>
@@ -826,7 +828,7 @@ export default function HomePage() {
       <section
         ref={favoritesSectionRef}
         className="home-favorites"
-        aria-label="Shop your favorites"
+        aria-label={t('home.favoritesAria')}
       >
         <div className="home-favorites__inner">
           <Motion.h2
@@ -835,7 +837,7 @@ export default function HomePage() {
             animate={isFavoritesInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
             transition={{ duration: 0.55, ease: 'easeOut' }}
           >
-            SHOP YOUR FAVORITES
+            {t('home.shopFavorites')}
           </Motion.h2>
 
           {activeFavorite ? (
@@ -851,7 +853,7 @@ export default function HomePage() {
                 className="home-favorites__nav home-favorites__nav--left"
                 onClick={shiftFavoritesLeft}
                 disabled={isFavoriteTransitioning}
-                aria-label="Show previous watch"
+                aria-label={t('home.previousWatch')}
               >
                 ←
               </Button>
@@ -877,7 +879,7 @@ export default function HomePage() {
                           to={`/watch/${product._id}`}
                           variant="home-watch-link-center"
                           className="home-favorites__watch-link"
-                          aria-label={`View details for ${product.name}`}
+                          aria-label={t('home.viewDetailsFor', { name: product.name })}
                         >
                           <img
                             className="home-favorites__watch-image"
@@ -893,7 +895,7 @@ export default function HomePage() {
                           className="home-favorites__watch-link"
                           onClick={() => goToFavorite(index)}
                           disabled={isFavoriteTransitioning}
-                          aria-label={`Show ${product.name} in the center`}
+                          aria-label={t('home.showInCenter', { name: product.name })}
                         >
                           <img
                             className="home-favorites__watch-image"
@@ -914,7 +916,7 @@ export default function HomePage() {
                 className="home-favorites__nav home-favorites__nav--right"
                 onClick={shiftFavoritesRight}
                 disabled={isFavoriteTransitioning}
-                aria-label="Show next watch"
+                aria-label={t('home.nextWatch')}
               >
                 →
               </Button>
@@ -936,7 +938,7 @@ export default function HomePage() {
                     <p className="home-favorites__description">{activeFavorite.description}</p>
                     <p
                       className="home-favorites__rating"
-                      aria-label={`${Number(activeFavorite.rating || 0).toFixed(1)} out of 5 stars`}
+                      aria-label={t('review.ratingOutOfFive', { rating: Number(activeFavorite.rating || 0).toFixed(1) })}
                     >
                       <StarRating
                         rating={activeFavorite.rating}
@@ -952,10 +954,10 @@ export default function HomePage() {
                   <div className="home-favorites__actions">
                     {/* Primary and secondary navigation actions */}
                     <Button to="/shop" variant="home-action-solid" className="home-favorites__action">
-                      Shop All
+                      {t('home.shopAll')}
                     </Button>
                     <Button to="/gifting" variant="home-action-ghost" className="home-favorites__action">
-                      Buy As A Gift?
+                      {t('home.buyGift')}
                     </Button>
                   </div>
                 </Motion.article>
@@ -969,7 +971,7 @@ export default function HomePage() {
       <section
         ref={genderSectionRef}
         className="home-gender"
-        aria-label="Shop by gender"
+        aria-label={t('home.genderAria')}
       >
         {/* Left promotional panel */}
         <Motion.article
@@ -982,7 +984,7 @@ export default function HomePage() {
           <Link
             className="home-gender__panel-link"
             to="/shop/men"
-            aria-label="Shop men's watches"
+            aria-label={t('home.shopMensAria')}
           />
           <Motion.div
             className="home-gender__image"
@@ -993,10 +995,10 @@ export default function HomePage() {
           <div className="home-gender__overlay" aria-hidden="true" />
 
           <div className="home-gender__content">
-            <h3 className="home-gender__title">FOR HIM</h3>
-            <p className="home-gender__subtitle">BOLD. SOPHISTICATED. TIMELESS.</p>
+            <h3 className="home-gender__title">{t('home.forHim')}</h3>
+            <p className="home-gender__subtitle">{t('home.himSubtitle')}</p>
             <Link className="home-gender__cta" to="/shop/men">
-              SHOP MEN&apos;S WATCHES
+              {t('home.shopMens')}
             </Link>
           </div>
         </Motion.article>
@@ -1014,7 +1016,7 @@ export default function HomePage() {
           <Link
             className="home-gender__panel-link"
             to="/shop/women"
-            aria-label="Shop women's watches"
+            aria-label={t('home.shopWomensAria')}
           />
           <Motion.div
             className="home-gender__image"
@@ -1025,10 +1027,10 @@ export default function HomePage() {
           <div className="home-gender__overlay" aria-hidden="true" />
 
           <div className="home-gender__content">
-            <h3 className="home-gender__title">FOR HER</h3>
-            <p className="home-gender__subtitle">ELEGANT. REFINED. EXQUISITE.</p>
+            <h3 className="home-gender__title">{t('home.forHer')}</h3>
+            <p className="home-gender__subtitle">{t('home.herSubtitle')}</p>
             <Link className="home-gender__cta" to="/shop/women">
-              SHOP WOMEN&apos;S WATCHES
+              {t('home.shopWomens')}
             </Link>
           </div>
         </Motion.article>
@@ -1038,7 +1040,7 @@ export default function HomePage() {
       <section
         ref={quizSectionRef}
         className="home-quiz"
-        aria-label="Find your watch quiz"
+        aria-label={t('home.quizAria')}
       >
         <div className="home-quiz__inner">
           {/* Quiz lead copy + action */}
@@ -1048,15 +1050,14 @@ export default function HomePage() {
             animate={isQuizInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <p className="home-quiz__eyebrow">Personal Selector</p>
-            <h2 className="home-quiz__title">Find Your Watch</h2>
+            <p className="home-quiz__eyebrow">{t('home.personalSelector')}</p>
+            <h2 className="home-quiz__title">{t('home.findWatch')}</h2>
             <p className="home-quiz__subtitle">
-              Need help narrowing down the best watches for your style? Take our quick quiz
-              and discover your perfect match.
+              {t('home.quizSubtitle')}
             </p>
 
             <Link className="home-quiz__cta" to="/quiz">
-              Find Your Watch
+              {t('home.findWatch')}
             </Link>
           </Motion.div>
 
@@ -1093,7 +1094,7 @@ export default function HomePage() {
         id="configurator-cta"
         ref={configuratorSectionRef}
         className="home-configurator"
-        aria-label="Configure your time"
+        aria-label={t('home.configuratorAria')}
       >
         <div className="home-configurator__inner">
           {/* Left side: narrative copy + entry link */}
@@ -1101,16 +1102,15 @@ export default function HomePage() {
             className={`home-configurator__left${isConfiguratorVisible ? ' home-configurator__left--visible' : ''
               }`}
           >
-            <p className="home-configurator__label">Configure Your</p>
-            <h2 className="home-configurator__title">TIME</h2>
+            <p className="home-configurator__label">{t('home.configureYour')}</p>
+            <h2 className="home-configurator__title">{t('home.time')}</h2>
             <p className="home-configurator__desc">
-              Create a watch that reflects your style. Choose materials, straps, and finishes
-              inspired by classic vintage craftsmanship.
+              {t('home.configuratorSubtitle')}
             </p>
 
             <div className="home-configurator__cta-row">
               <span className="home-configurator__cta-line" aria-hidden="true" />
-              <Link to="/configurator">START CONFIGURATION</Link>
+              <Link to="/configurator">{t('home.startConfiguration')}</Link>
             </div>
           </div>
 
@@ -1147,7 +1147,7 @@ export default function HomePage() {
       <section
         ref={reviewsSectionRef}
         className="home-reviews"
-        aria-label="Customer reviews"
+        aria-label={t('home.reviewsAria')}
       >
         <div className="home-reviews__inner">
           {/* Section heading */}
@@ -1157,8 +1157,8 @@ export default function HomePage() {
             animate={isReviewsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <p className="home-reviews__eyebrow">Testimonials</p>
-            <h2 className="home-reviews__title">Trusted by Watch Collectors Worldwide</h2>
+            <p className="home-reviews__eyebrow">{t('home.testimonials')}</p>
+            <h2 className="home-reviews__title">{t('home.trustedCollectors')}</h2>
           </Motion.div>
 
           {/* Current review page cards */}
@@ -1192,7 +1192,7 @@ export default function HomePage() {
                 <StarRating
                   rating={testimonial.rating}
                   className="home-review-card__stars"
-                  ariaLabel={`${testimonial.rating} out of 5 stars`}
+                  ariaLabel={t('review.ratingOutOfFive', { rating: testimonial.rating })}
                 />
 
                 <p className="home-review-card__quote">&quot;{testimonial.quote}&quot;</p>
@@ -1200,18 +1200,18 @@ export default function HomePage() {
             ))}
           </Motion.div>
 
-          <div className="home-reviews__controls" aria-label="Reviews navigation">
+          <div className="home-reviews__controls" aria-label={t('home.reviewsNavigation')}>
             {/* Previous page */}
             <Button
               variant="home-review-arrow"
               className="home-reviews__arrow"
               onClick={goToPreviousReviewPage}
-              aria-label="Show previous reviews"
+              aria-label={t('home.previousReviews')}
             >
               ←
             </Button>
 
-            <div className="home-reviews__dots" role="tablist" aria-label="Review pages">
+            <div className="home-reviews__dots" role="tablist" aria-label={t('home.reviewPages')}>
               {/* Dot buttons map 1:1 to available review pages. */}
               {Array.from({ length: totalReviewPages }, (_, pageIndex) => (
                 <Button
@@ -1220,7 +1220,7 @@ export default function HomePage() {
                   className="home-reviews__dot"
                   active={clampedReviewPage === pageIndex}
                   onClick={() => goToReviewPage(pageIndex)}
-                  aria-label={`Show reviews page ${pageIndex + 1}`}
+                  aria-label={t('home.showReviewsPage', { page: pageIndex + 1 })}
                   aria-selected={clampedReviewPage === pageIndex}
                   role="tab"
                 />
@@ -1232,7 +1232,7 @@ export default function HomePage() {
               variant="home-review-arrow"
               className="home-reviews__arrow"
               onClick={goToNextReviewPage}
-              aria-label="Show next reviews"
+              aria-label={t('home.nextReviews')}
             >
               →
             </Button>
@@ -1244,7 +1244,7 @@ export default function HomePage() {
       <section
         ref={heritageSectionRef}
         className="home-heritage"
-        aria-label="Our heritage"
+        aria-label={t('home.heritageAria')}
         style={{ '--home-heritage-bg': `url(${heritageImage})` }}
       >
         {/* Foreground glassmorphism panel over full-bleed heritage image */}
@@ -1255,22 +1255,21 @@ export default function HomePage() {
           animate={isHeritageInView ? 'visible' : 'hidden'}
         >
           <Motion.p className="home-heritage__eyebrow" variants={heritageItemVariants}>
-            OUR HERITAGE
+            {t('home.ourHeritage')}
           </Motion.p>
 
           <Motion.h2 className="home-heritage__title" variants={heritageItemVariants}>
-            <span>Crafting&nbsp;time&nbsp;since</span>
+            <span>{t('home.craftingSince')}</span>
             <span>1875</span>
           </Motion.h2>
 
           <Motion.p className="home-heritage__lead" variants={heritageItemVariants}>
-            From a discreet Geneva workshop to a global community of collectors, Van Der Linde
-            has remained devoted to precision, restraint, and timeless design.
+            {t('home.heritageLead')}
           </Motion.p>
 
           <Motion.div variants={heritageItemVariants}>
             <Link className="home-heritage__cta" to="/about">
-              Explore Our Heritage
+              {t('home.exploreHeritage')}
             </Link>
           </Motion.div>
         </Motion.div>

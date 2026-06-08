@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import ProductGrid from '@/components/product/ProductGrid'
+import { useLanguage } from '@/context/LanguageContext'
 import { resolveCollectionCoverImage } from '@/utils/watchImageResolver'
 import heroVideo from '@/assets/videos/Patek Philippe Background Video.mp4'
 import galleryVideo from '@/assets/videos/Audemars Piguet - Royal Oak.mp4'
@@ -62,23 +63,23 @@ const craftItemProps = prefersReducedMotion
 const CRAFT_FEATURES = [
   {
     icon: craftSwiss,
-    title: 'Swiss Atelier',
-    description: 'Hand-finished movements refined in the heart of Swiss watchmaking.',
+    titleKey: 'collection.swissAtelier',
+    descriptionKey: 'collection.swissAtelierBody',
   },
   {
     icon: craftCrown,
-    title: 'Gilded Precision',
-    description: 'Gold-toned detailing framed by meticulous polishing and brushed contours.',
+    titleKey: 'collection.gildedPrecision',
+    descriptionKey: 'collection.gildedPrecisionBody',
   },
   {
     icon: craftHorse,
-    title: 'Endurance',
-    description: 'Built for daily ceremony, with resilient seals and enduring materials.',
+    titleKey: 'collection.endurance',
+    descriptionKey: 'collection.enduranceBody',
   },
   {
     icon: craftKey,
-    title: 'Heritage Codes',
-    description: 'Each case echoes archival signatures and modern engineering.',
+    titleKey: 'collection.heritageCodes',
+    descriptionKey: 'collection.heritageCodesBody',
   },
 ]
 
@@ -93,13 +94,14 @@ const CATEGORY_BY_SLUG = {
 
 export default function CollectionDetailPage() {
   const data = useLoaderData()
+  const { t } = useLanguage()
   const collection = data?.collection
   const watches = useMemo(() => (Array.isArray(data?.watches) ? data.watches : []), [data])
 
-  const collectionName = collection?.name ?? 'Van Der Linde Collection'
+  const collectionName = collection?.name ?? t('collection.fallbackName')
   const collectionDescription =
     collection?.description ??
-    'An elevated selection of timepieces curated to express balance, refinement, and presence.'
+    t('collection.fallbackDescription')
   const collectionHeroPoster = resolveCollectionCoverImage(collection?.coverImage)
 
   const curatedWatches = useMemo(() => {
@@ -120,19 +122,19 @@ export default function CollectionDetailPage() {
           <div className="collection-hero__overlay" aria-hidden="true" />
 
           <div className="collection-hero__content">
-            <p className="collection-hero__eyebrow">Van Der Linde Collections</p>
+            <p className="collection-hero__eyebrow">{t('collection.heroEyebrow')}</p>
             <h1 className="collection-hero__title">{collectionName}</h1>
             <p className="collection-hero__description">{collectionDescription}</p>
             <div className="collection-hero__actions">
               <Button href="#signature" variant="primary">
-                Shop Collection
+                {t('collection.shopCollection')}
               </Button>
               <Button href="#craft" variant="secondary">
-                Explore Craft
+                {t('collection.exploreCraft')}
               </Button>
             </div>
             <Link className="collection-hero__link" to="/collections">
-              Back to collections
+              {t('collection.back')}
             </Link>
           </div>
         </section>
@@ -140,18 +142,15 @@ export default function CollectionDetailPage() {
         <motion.section className="collection-section collection-story" aria-labelledby="collection-story" {...sectionRevealProps}>
           <div className="collection-section__inner collection-story__layout">
             <div className="collection-story__content">
-              <p className="collection-section__eyebrow">Collection Story</p>
+              <p className="collection-section__eyebrow">{t('collection.storyEyebrow')}</p>
               <h2 id="collection-story" className="collection-section__title">
-                Crafted for the modern heirloom
+                {t('collection.storyTitle')}
               </h2>
               <p className="collection-section__body">
-                {collectionName} brings together modern silhouettes and heritage cues. Each reference balances
-                understated glamour with exceptional build quality, offering a quiet statement for collectors who
-                value precision and presence.
+                {t('collection.storyBody1', { name: collectionName })}
               </p>
               <p className="collection-section__body">
-                From brushed bezels to sculpted lugs, every detail is tuned to feel composed and luxurious. This is
-                a collection made to move from boardroom to evening engagement without losing its poise.
+                {t('collection.storyBody2')}
               </p>
             </div>
             <div className="collection-story__media">
@@ -164,13 +163,13 @@ export default function CollectionDetailPage() {
           <div className="collection-section__inner">
             <div className="collection-section__header">
               <div>
-                <p className="collection-section__eyebrow">Signature pieces</p>
+                <p className="collection-section__eyebrow">{t('collection.signatureEyebrow')}</p>
                 <h2 id="collection-signature" className="collection-section__title">
-                  Curated highlights
+                  {t('collection.signatureTitle')}
                 </h2>
               </div>
               <p className="collection-section__subtitle">
-                A focused lineup of references chosen to represent the collection’s character.
+                {t('collection.signatureSubtitle')}
               </p>
             </div>
             <ProductGrid watches={curatedWatches} />
@@ -181,21 +180,21 @@ export default function CollectionDetailPage() {
           <div className="collection-section__inner">
             <div className="collection-section__header">
               <div>
-                <p className="collection-section__eyebrow">Craftsmanship</p>
+                <p className="collection-section__eyebrow">{t('collection.craftEyebrow')}</p>
                 <h2 id="collection-craft" className="collection-section__title">
-                  Materials & mastery
+                  {t('collection.craftTitle')}
                 </h2>
               </div>
               <p className="collection-section__subtitle">
-                Every component is selected to deliver longevity, refinement, and mechanical clarity.
+                {t('collection.craftSubtitle')}
               </p>
             </div>
             <motion.div className="collection-craft__grid" {...craftContainerProps}>
               {CRAFT_FEATURES.map((feature) => (
-                <motion.article key={feature.title} className="collection-craft__card" {...craftItemProps}>
+                <motion.article key={feature.titleKey} className="collection-craft__card" {...craftItemProps}>
                   <img className="collection-craft__icon" src={feature.icon} alt="" aria-hidden="true" />
-                  <h3 className="collection-craft__title">{feature.title}</h3>
-                  <p className="collection-craft__body">{feature.description}</p>
+                  <h3 className="collection-craft__title">{t(feature.titleKey)}</h3>
+                  <p className="collection-craft__body">{t(feature.descriptionKey)}</p>
                 </motion.article>
               ))}
             </motion.div>
@@ -205,16 +204,15 @@ export default function CollectionDetailPage() {
         <motion.section className="collection-section collection-motion" aria-labelledby="collection-motion" {...sectionRevealProps}>
           <div className="collection-section__inner collection-motion__layout">
             <div className="collection-motion__content">
-              <p className="collection-section__eyebrow">Gallery</p>
+              <p className="collection-section__eyebrow">{t('collection.galleryEyebrow')}</p>
               <h2 id="collection-motion" className="collection-section__title">
-                Motion study
+                {t('collection.motionTitle')}
               </h2>
               <p className="collection-section__body">
-                The collection’s signature movement is showcased in motion, highlighting sculpted lines and the
-                subtle light play of polished steel.
+                {t('collection.motionBody')}
               </p>
               <Button to="/shop" variant="secondary">
-                Discover the range
+                {t('collection.discoverRange')}
               </Button>
             </div>
             <div className="collection-motion__frame">
@@ -226,21 +224,21 @@ export default function CollectionDetailPage() {
           </div>
         </motion.section>
 
-        <motion.section className="collection-section collection-cta" aria-label="Collection call to action" {...sectionRevealProps}>
+        <motion.section className="collection-section collection-cta" aria-label={t('collection.ctaAria')} {...sectionRevealProps}>
           <div className="collection-section__inner collection-cta__inner">
             <div>
-              <p className="collection-section__eyebrow">Ready to explore</p>
-              <h2 className="collection-section__title">Begin your Van Der Linde collection journey</h2>
+              <p className="collection-section__eyebrow">{t('collection.ready')}</p>
+              <h2 className="collection-section__title">{t('collection.journeyTitle')}</h2>
               <p className="collection-section__body">
-                Compare references, review movements, and reserve the piece that best reflects your signature style.
+                {t('collection.journeyBody')}
               </p>
             </div>
             <div className="collection-cta__actions">
               <Button to="/shop" variant="primary">
-                Shop all watches
+                {t('collection.shopAllWatches')}
               </Button>
               <Button to="/contact" variant="ghost">
-                Speak to concierge
+                {t('collection.concierge')}
               </Button>
             </div>
           </div>

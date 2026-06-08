@@ -1,8 +1,10 @@
 import { motion as Motion } from 'framer-motion'
 import Button from '@/components/common/Button'
+import { useLanguage } from '@/context/LanguageContext'
 import './GiftRegistryPage.css'
 
 export default function GiftRegistryPage() {
+  const { t } = useLanguage()
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { 
@@ -20,14 +22,14 @@ export default function GiftRegistryPage() {
         animate="visible"
         variants={fadeInUp}
       >
-        <span className="registry-hero__label">Celebrations</span>
-        <h1 className="registry-hero__title">Gift Registry</h1>
+        <span className="registry-hero__label">{t('registry.label')}</span>
+        <h1 className="registry-hero__title">{t('registry.title')}</h1>
         <p className="registry-hero__text">
-          Create a curated list of Van Der Linde timepieces for your special occasion. Whether it's a wedding, anniversary, or milestone celebration, help your loved ones choose a gift that will be cherished for generations.
+          {t('registry.text')}
         </p>
         <div className="registry-hero__actions">
-          <Button to="/register" variant="primary" size="lg">Create Your Registry</Button>
-          <Button to="/contact" variant="outline" size="lg" style={{ marginLeft: '1rem' }}>Find a Registry</Button>
+          <Button to="/register" variant="primary" size="lg">{t('registry.create')}</Button>
+          <Button to="/contact" variant="outline" size="lg" style={{ marginLeft: '1rem' }}>{t('registry.find')}</Button>
         </div>
       </Motion.section>
 
@@ -40,18 +42,18 @@ export default function GiftRegistryPage() {
       >
         <div className="registry-step">
           <span className="registry-step__number">01</span>
-          <h3 className="registry-step__title">Curate</h3>
-          <p className="registry-step__text">Explore our collections and add your favorite timepieces to your personal registry.</p>
+          <h3 className="registry-step__title">{t('registry.curate')}</h3>
+          <p className="registry-step__text">{t('registry.curateText')}</p>
         </div>
         <div className="registry-step">
           <span className="registry-step__number">02</span>
-          <h3 className="registry-step__title">Share</h3>
-          <p className="registry-step__text">Send your unique registry link to friends and family or share it on your event website.</p>
+          <h3 className="registry-step__title">{t('registry.share')}</h3>
+          <p className="registry-step__text">{t('registry.shareText')}</p>
         </div>
         <div className="registry-step">
           <span className="registry-step__number">03</span>
-          <h3 className="registry-step__title">Receive</h3>
-          <p className="registry-step__text">Each gift is elegantly wrapped and delivered with a personalized note from the giver.</p>
+          <h3 className="registry-step__title">{t('registry.receive')}</h3>
+          <p className="registry-step__text">{t('registry.receiveText')}</p>
         </div>
       </Motion.div>
 
@@ -62,9 +64,9 @@ export default function GiftRegistryPage() {
         viewport={{ once: true }}
         variants={fadeInUp}
       >
-        <h2 className="registry-cta__title">Start Your Journey</h2>
-        <p className="registry-cta__text">Make your next milestone truly timeless with a Van Der Linde registry.</p>
-        <Button to="/register" variant="primary">Get Started Now</Button>
+        <h2 className="registry-cta__title">{t('registry.start')}</h2>
+        <p className="registry-cta__text">{t('registry.startText')}</p>
+        <Button to="/register" variant="primary">{t('registry.getStarted')}</Button>
       </Motion.section>
     </div>
   )

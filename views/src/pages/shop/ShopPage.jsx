@@ -6,29 +6,49 @@ import PageTransition from '@/components/common/PageTransition'
 import ProductFilter from '@/components/product/ProductFilter'
 import ProductGrid from '@/components/product/ProductGrid'
 import useMediaQuery from '@/hooks/useMediaQuery'
+import { useLanguage } from '@/context/LanguageContext'
 import { CATEGORIES } from '@/utils/constants'
 import longinesHeader from '@/assets/Models/longines-header.avif'
 import './ShopPage.css'
 
 const ITEMS_PER_PAGE = 6
 
-const getCategoryLabel = (value) => {
+const getCategoryLabel = (value, t) => {
   if (!value || value === 'all') {
     return null
   }
 
-  return CATEGORIES.find((option) => option.value === value)?.label ?? value
+  const category = CATEGORIES.find((option) => option.value === value)
+  return category ? t(`category.${category.value}`) : value
+}
+
+const getGenderLabel = (value, t) => {
+  if (!value || value === 'all') {
+    return null
+  }
+
+  if (value === 'men') {
+    return t('filter.men')
+  }
+
+  if (value === 'women') {
+    return t('filter.women')
+  }
+
+  return value
 }
 
 export default function ShopPage() {
   const data = useLoaderData()
   const [searchParams, setSearchParams] = useSearchParams()
+  const { t } = useLanguage()
   const previousFilterSignature = useRef('')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const isMobile = useMediaQuery('(max-width: 960px)')
 
   const watches = Array.isArray(data) ? data : []
   const category = searchParams.get('category') || 'all'
+  const collection = searchParams.get('collection') || 'all'
   const brand = searchParams.get('brand') || 'all'
   const gender = searchParams.get('gender') || 'all'
   const rating = searchParams.get('rating') || 'all'
@@ -37,16 +57,21 @@ export default function ShopPage() {
   const search = (searchParams.get('search') || '').trim()
 
   const activeFilters = [
-    search ? `Search: "${search}"` : null,
-    getCategoryLabel(category),
+    search ? t('shop.searchFilter', { query: search }) : null,
+    getCategoryLabel(category, t),
+    collection !== 'all' ? collection : null,
     brand !== 'all' ? brand : null,
-    gender !== 'all' ? gender : null,
-    rating !== 'all' ? `${rating}+ stars` : null,
-    minPrice || maxPrice ? `Price: ${minPrice || '0'} - ${maxPrice || 'Any'}` : null,
+    getGenderLabel(gender, t),
+    rating !== 'all' ? t('shop.ratingFilter', { rating }) : null,
+    minPrice || maxPrice
+      ? t('shop.priceFilter', { min: minPrice || '0', max: maxPrice || t('shop.any') })
+      : null,
   ].filter(Boolean)
 
   const summaryText =
-    activeFilters.length > 0 ? `Filtered by ${activeFilters.join(' | ')}` : 'Showing all watches'
+    activeFilters.length > 0
+      ? t('shop.filteredBy', { filters: activeFilters.join(' | ') })
+      : t('shop.showingAll')
   const currentPageParam = Number.parseInt(searchParams.get('page') || '1', 10)
   const currentPage = Number.isFinite(currentPageParam) && currentPageParam > 0 ? currentPageParam : 1
   const totalPages = Math.max(1, Math.ceil(watches.length / ITEMS_PER_PAGE))
@@ -55,7 +80,7 @@ export default function ShopPage() {
     const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE
     return watches.slice(startIndex, startIndex + ITEMS_PER_PAGE)
   }, [safeCurrentPage, watches])
-  const filterSignature = [category, brand, gender, rating, minPrice, maxPrice, search].join('|')
+  const filterSignature = [category, collection, brand, gender, rating, minPrice, maxPrice, search].join('|')
 
   useEffect(() => {
     if (previousFilterSignature.current === '') {
@@ -74,7 +99,7 @@ export default function ShopPage() {
         })
       }
     }
-  }, [category, brand, gender, rating, minPrice, maxPrice, search, currentPage, filterSignature, setSearchParams])
+  }, [category, collection, brand, gender, rating, minPrice, maxPrice, search, currentPage, filterSignature, setSearchParams])
 
   const goToPage = (page) => {
     setSearchParams((prev) => {
@@ -111,10 +136,10 @@ export default function ShopPage() {
             <div className="shop-page__hero-content">
               <header className="shop-page__header">
                 <div className="shop-page__heading">
-                  <p className="shop-page__eyebrow">The Collection</p>
-                  <h1 className="shop-page__title">Shop Van Der Linde Watches</h1>
+                  <p className="shop-page__eyebrow">{t('shop.collectionEyebrow')}</p>
+                  <h1 className="shop-page__title">{t('shop.title')}</h1>
                   <p className="shop-page__subtitle">
-                    Precision engineering, refined silhouettes, and modern heritage.
+                    {t('shop.subtitle')}
                   </p>
                 </div>
                 <div className="shop-page__meta">
@@ -131,10 +156,10 @@ export default function ShopPage() {
                             <path d="M4 6h16M4 12h16m-7 6h7" />
                           </svg>
                         </span>
-                        Filter By
+                        {t('shop.filterBy')}
                       </Button>
                     )}
-                    <span className="shop-page__count">{watches.length} Watches</span>
+                    <span className="shop-page__count">{t('shop.watchCount', { count: watches.length })}</span>
                   </div>
                   <p className="shop-page__summary">{summaryText}</p>
                 </div>
@@ -167,11 +192,11 @@ export default function ShopPage() {
                     transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                   >
                     <div className="shop-page__drawer-header">
-                      <h2 className="shop-page__drawer-title">Filters</h2>
+                      <h2 className="shop-page__drawer-title">{t('shop.filters')}</h2>
                       <button
                         className="shop-page__drawer-close"
                         onClick={() => setIsFilterOpen(false)}
-                        aria-label="Close filters"
+                        aria-label={t('shop.closeFilters')}
                       >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M18 6L6 18M6 6l12 12" />
@@ -186,7 +211,7 @@ export default function ShopPage() {
                           className="shop-page__drawer-apply"
                           onClick={() => setIsFilterOpen(false)}
                         >
-                          Apply Filters
+                          {t('shop.applyFilters')}
                         </Button>
                       </div>
                     </div>
@@ -199,9 +224,9 @@ export default function ShopPage() {
               <ProductGrid watches={paginatedWatches} />
 
               {totalPages > 1 && (
-                <nav className="shop-page__pagination" aria-label="Shop pagination">
+                <nav className="shop-page__pagination" aria-label={t('shop.pagination')}>
                   <div className="shop-page__pagination-status">
-                    Page {safeCurrentPage} of {totalPages}
+                    {t('shop.pageStatus', { current: safeCurrentPage, total: totalPages })}
                   </div>
                   <div className="shop-page__pagination-controls">
                     <Button
@@ -211,10 +236,10 @@ export default function ShopPage() {
                       onClick={goToPreviousPage}
                       disabled={safeCurrentPage === 1}
                     >
-                      Previous
+                      {t('shop.previous')}
                     </Button>
 
-                    <div className="shop-page__pagination-pages" aria-label="Page numbers">
+                    <div className="shop-page__pagination-pages" aria-label={t('shop.pageNumbers')}>
                       {Array.from({ length: totalPages }, (_, index) => {
                         const pageNumber = index + 1
                         const isActive = pageNumber === safeCurrentPage
@@ -242,7 +267,7 @@ export default function ShopPage() {
                       onClick={goToNextPage}
                       disabled={safeCurrentPage === totalPages}
                     >
-                      Next
+                      {t('shop.next')}
                     </Button>
                   </div>
                 </nav>

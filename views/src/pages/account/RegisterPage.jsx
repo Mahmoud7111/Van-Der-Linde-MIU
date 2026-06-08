@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 
 import { registerSchema } from '@/utils/validators'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import authHeroImage from '@/assets/Models/Dutch Van Der Linde1.png'
@@ -13,6 +14,7 @@ import './AuthPage.css'
 
 export default function RegisterPage() {
   const { register: registerUser } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
 
   const [showPassword, setShowPassword] = useState(false)
@@ -56,13 +58,13 @@ export default function RegisterPage() {
       }
 
       await registerUser(payload)
-      toast.success('Account created successfully!')
+      toast.success(t('auth.accountCreated'))
       navigate('/account', { replace: true })
     } catch (error) {
       const message =
         error?.response?.data?.message ||
         error?.message ||
-        'Could not create account'
+        t('auth.createAccountError')
       setServerError(message)
       toast.error(message)
     }
@@ -80,9 +82,7 @@ export default function RegisterPage() {
           <div className="auth-hero__content">
             <div className="auth-hero__text-wrap">
               <p className="auth-hero__quote">
-                "Time is the most valuable
-                <br />
-                thing a man can spend."
+                {t('auth.quote')}
               </p>
               <p className="auth-hero__author">— THEOPHRASTUS</p>
 
@@ -96,12 +96,12 @@ export default function RegisterPage() {
 
         <div className="auth-panel">
           <div className="auth-panel__inner">
-            <div className="auth-tabs" role="tablist" aria-label="Authentication tabs">
+            <div className="auth-tabs" role="tablist" aria-label={t('auth.tabs')}>
               <Link to="/login" className="auth-tab" role="tab" aria-selected="false">
-                SIGN IN
+                {t('auth.signIn')}
               </Link>
               <Link to="/register" className="auth-tab auth-tab--active" role="tab" aria-selected="true">
-                REGISTER
+                {t('auth.register')}
               </Link>
             </div>
 
@@ -113,7 +113,7 @@ export default function RegisterPage() {
                 </div>
               )}
               <div className="auth-vdl-field">
-                <label htmlFor="firstName" className="auth-vdl-label">FIRST NAME</label>
+                <label htmlFor="firstName" className="auth-vdl-label">{t('auth.firstName')}</label>
                 <input
                   id="firstName"
                   type="text"
@@ -125,7 +125,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="auth-vdl-field">
-                <label htmlFor="lastName" className="auth-vdl-label">LAST NAME</label>
+                <label htmlFor="lastName" className="auth-vdl-label">{t('auth.lastName')}</label>
                 <input
                   id="lastName"
                   type="text"
@@ -137,7 +137,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="auth-vdl-field">
-                <label htmlFor="email" className="auth-vdl-label">EMAIL</label>
+                <label htmlFor="email" className="auth-vdl-label">{t('auth.email')}</label>
                 <input
                   id="email"
                   type="email"
@@ -151,7 +151,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="auth-vdl-field">
-                <label htmlFor="phone" className="auth-vdl-label">PHONE</label>
+                <label htmlFor="phone" className="auth-vdl-label">{t('auth.phone')}</label>
                 <input
                   id="phone"
                   type="tel"
@@ -165,7 +165,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="auth-vdl-field">
-                <label htmlFor="password" className="auth-vdl-label">PASSWORD</label>
+                <label htmlFor="password" className="auth-vdl-label">{t('auth.password')}</label>
                 <div className="auth-vdl-password-wrap">
                   <input
                     id="password"
@@ -180,7 +180,7 @@ export default function RegisterPage() {
                     className="auth-vdl-eye"
                     onClick={() => setShowPassword((v) => !v)}
                     disabled={isSubmitting}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                   >
                     👁
                   </button>
@@ -189,7 +189,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="auth-vdl-field">
-                <label htmlFor="confirmPassword" className="auth-vdl-label">CONFIRM PASSWORD</label>
+                <label htmlFor="confirmPassword" className="auth-vdl-label">{t('auth.confirmPassword')}</label>
                 <div className="auth-vdl-password-wrap">
                   <input
                     id="confirmPassword"
@@ -204,7 +204,7 @@ export default function RegisterPage() {
                     className="auth-vdl-eye"
                     onClick={() => setShowConfirmPassword((v) => !v)}
                     disabled={isSubmitting}
-                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showConfirmPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                   >
                     👁
                   </button>
@@ -217,7 +217,7 @@ export default function RegisterPage() {
               {/* DATE OF BIRTH + GENDER (2 columns like screenshot) */}
               <div className="auth-vdl-grid-2">
                 <div className="auth-vdl-field">
-                  <label htmlFor="dateOfBirth" className="auth-vdl-label">DATE OF BIRTH</label>
+                  <label htmlFor="dateOfBirth" className="auth-vdl-label">{t('auth.dateOfBirth')}</label>
                   <input
                     id="dateOfBirth"
                     type="date"
@@ -229,16 +229,16 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="auth-vdl-field">
-                  <label htmlFor="gender" className="auth-vdl-label">GENDER</label>
+                  <label htmlFor="gender" className="auth-vdl-label">{t('auth.gender')}</label>
                   <select
                     id="gender"
                     className={`auth-vdl-input auth-vdl-select${errors.gender ? ' auth-vdl-input--error' : ''}`}
                     disabled={isSubmitting}
                     {...register('gender')}
                   >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="">{t('auth.select')}</option>
+                    <option value="male">{t('auth.male')}</option>
+                    <option value="female">{t('auth.female')}</option>
                   </select>
                   {errors.gender && <p className="auth-vdl-error">{errors.gender.message}</p>}
                 </div>
@@ -246,19 +246,19 @@ export default function RegisterPage() {
 
               {/* INTERESTS */}
               <div className="auth-vdl-field">
-                <label className="auth-vdl-label">INTERESTS</label>
+                <label className="auth-vdl-label">{t('auth.interests')}</label>
                 <div className="auth-vdl-interests">
                   <label className="auth-vdl-checkbox">
                     <input type="checkbox" value="mens" {...register('interests')} />
-                    <span>Men&apos;s</span>
+                    <span>{t('auth.mens')}</span>
                   </label>
                   <label className="auth-vdl-checkbox">
                     <input type="checkbox" value="womens" {...register('interests')} />
-                    <span>Women&apos;s</span>
+                    <span>{t('auth.womens')}</span>
                   </label>
                   <label className="auth-vdl-checkbox">
                     <input type="checkbox" value="limited_edition" {...register('interests')} />
-                    <span>Limited Edition</span>
+                    <span>{t('auth.limitedEdition')}</span>
                   </label>
                 </div>
               </div>
@@ -267,7 +267,7 @@ export default function RegisterPage() {
               <div className="auth-vdl-row">
                 <label className="auth-vdl-checkbox">
                   <input type="checkbox" {...register('agree')} />
-                  <span>I agree to the Terms & Conditions and Privacy Policy</span>
+                  <span>{t('auth.termsAgree')}</span>
                 </label>
               </div>
               {errors.agree && <p className="auth-vdl-error">{errors.agree.message}</p>}
@@ -278,7 +278,7 @@ export default function RegisterPage() {
                 isLoading={isSubmitting}
                 disabled={!isValid || isSubmitting}
               >
-                REGISTER
+                {t('auth.register')}
               </Button>
             </form>
           </div>

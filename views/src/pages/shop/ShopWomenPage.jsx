@@ -6,11 +6,13 @@ import PageTransition from '@/components/common/PageTransition'
 import ProductFilter from '@/components/product/ProductFilter'
 import ProductGrid from '@/components/product/ProductGrid'
 import useMediaQuery from '@/hooks/useMediaQuery'
+import { useLanguage } from '@/context/LanguageContext'
 import './ShopPage.css'
 
 export default function ShopWomenPage() {
   const data = useLoaderData()
   const [searchParams] = useSearchParams()
+  const { t } = useLanguage()
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const isMobile = useMediaQuery('(max-width: 960px)')
 
@@ -22,14 +24,14 @@ export default function ShopWomenPage() {
   const minPrice = searchParams.get('minPrice') || ''
   const maxPrice = searchParams.get('maxPrice') || ''
   const category = searchParams.get('category') || 'all'
-  const genderLabel = gender === 'men' ? 'Men' : gender === 'women' ? 'Women' : null
+  const genderLabel = gender === 'men' ? t('filter.men') : gender === 'women' ? t('filter.women') : null
 
   const activeFilters = [
-    search ? `Search: "${search}"` : null,
+    search ? t('shop.searchFilter', { query: search }) : null,
     category !== 'all' ? category : null,
     brand !== 'all' ? brand : null,
-    rating !== 'all' ? `${rating}+ stars` : null,
-    minPrice || maxPrice ? `Price: ${minPrice || '0'} - ${maxPrice || 'Any'}` : null,
+    rating !== 'all' ? t('shop.ratingFilter', { rating }) : null,
+    minPrice || maxPrice ? t('shop.priceFilter', { min: minPrice || '0', max: maxPrice || t('shop.any') }) : null,
   ].filter(Boolean)
 
   if (activeFilters.length > 0 && genderLabel) {
@@ -38,10 +40,10 @@ export default function ShopWomenPage() {
 
   const summaryText =
     activeFilters.length > 0
-      ? `Filtered by ${activeFilters.join(' | ')}`
+      ? t('shop.filteredBy', { filters: activeFilters.join(' | ') })
       : gender === 'men'
-        ? "Showing men's watches"
-        : "Showing women's watches"
+        ? t('shop.showingMens')
+        : t('shop.showingWomens')
 
   return (
     <PageTransition>
@@ -49,10 +51,10 @@ export default function ShopWomenPage() {
         <div className="shop-page__inner">
           <header className="shop-page__header">
             <div className="shop-page__heading">
-              <p className="shop-page__eyebrow">Women&apos;s Collection</p>
-              <h1 className="shop-page__title">Shop Women&apos;s Watches</h1>
+              <p className="shop-page__eyebrow">{t('shop.womensCollection')}</p>
+              <h1 className="shop-page__title">{t('shop.womensTitle')}</h1>
               <p className="shop-page__subtitle">
-                Elegant profiles refined for contemporary sophistication.
+                {t('shop.womensSubtitle')}
               </p>
             </div>
             <div className="shop-page__meta">
@@ -69,10 +71,10 @@ export default function ShopWomenPage() {
                         <path d="M4 6h16M4 12h16m-7 6h7" />
                       </svg>
                     </span>
-                    Filter By
+                    {t('shop.filterBy')}
                   </Button>
                 )}
-                <span className="shop-page__count">{watches.length} Watches</span>
+                <span className="shop-page__count">{t('shop.watchCount', { count: watches.length })}</span>
               </div>
               <p className="shop-page__summary">{summaryText}</p>
             </div>
@@ -102,11 +104,11 @@ export default function ShopWomenPage() {
                   transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                 >
                   <div className="shop-page__drawer-header">
-                    <h2 className="shop-page__drawer-title">Filters</h2>
+                    <h2 className="shop-page__drawer-title">{t('shop.filters')}</h2>
                     <button
                       className="shop-page__drawer-close"
                       onClick={() => setIsFilterOpen(false)}
-                      aria-label="Close filters"
+                      aria-label={t('shop.closeFilters')}
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M18 6L6 18M6 6l12 12" />
@@ -121,7 +123,7 @@ export default function ShopWomenPage() {
                         className="shop-page__drawer-apply"
                         onClick={() => setIsFilterOpen(false)}
                       >
-                        Apply Filters
+                        {t('shop.applyFilters')}
                       </Button>
                     </div>
                   </div>

@@ -7,6 +7,7 @@ import { FiSearch, FiX } from 'react-icons/fi'
 import { watchService } from '@/services/watchService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { CATEGORIES } from '@/utils/constants'
 import { motion, AnimatePresence } from 'framer-motion'
 import './SearchOverlay.css'
@@ -24,6 +25,7 @@ export default function SearchOverlay ({
   const [results, setResults] = useState([])
   const [allWatches, setAllWatches] = useState([])
   const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
   const fallbackInputRef = useRef(null)
   const resolvedInputRef = inputRef || fallbackInputRef
   const isQueryEmpty = !query.trim()
@@ -91,10 +93,10 @@ export default function SearchOverlay ({
             <div className="sov__inner">
               <div className="sov__top">
                 <div className="sov__title-area">
-                  <h2 className="sov__title">Products</h2>
-                  <p className="sov__subtitle">Search the live catalogue — names, brands, and categories.</p>
+                  <h2 className="sov__title">{t('search.products')}</h2>
+                  <p className="sov__subtitle">{t('search.subtitle')}</p>
                 </div>
-                <button className="sov__close" onClick={onClose} aria-label="Close">
+                <button className="sov__close" onClick={onClose} aria-label={t('search.close')}>
                   <FiX />
                 </button>
               </div>
@@ -109,10 +111,10 @@ export default function SearchOverlay ({
                     placeholder={placeholder}
                     value={query}
                     onChange={(e) => onQueryChange(e.target.value)}
-                    aria-label="Search"
+                    aria-label={t('filter.search')}
                   />
                   {query && (
-                    <button className="sov__search-clear" onClick={() => onQueryChange('')} aria-label="Clear search">
+                    <button className="sov__search-clear" onClick={() => onQueryChange('')} aria-label={t('search.clear')}>
                       <FiX />
                     </button>
                   )}
@@ -122,15 +124,15 @@ export default function SearchOverlay ({
               {isQueryEmpty ? (
                 <div className="sov__empty">
                   <div className="sov__empty-box">
-                    <p className="sov__empty-heading">Start typing to search</p>
-                    <p className="sov__empty-hint">Type to see products from the catalogue.</p>
+                    <p className="sov__empty-heading">{t('search.startTyping')}</p>
+                    <p className="sov__empty-hint">{t('search.typeHint')}</p>
                   </div>
                 </div>
               ) : results.length === 0 ? (
                 <div className="sov__empty">
                   <div className="sov__empty-box">
-                    <p className="sov__empty-heading">No matches for "{query}"</p>
-                    <p className="sov__empty-hint">Try a brand, collection name, or part of a product name.</p>
+                    <p className="sov__empty-heading">{t('search.noMatches', { query })}</p>
+                    <p className="sov__empty-hint">{t('search.tryHint')}</p>
                   </div>
                 </div>
               ) : (
@@ -138,7 +140,7 @@ export default function SearchOverlay ({
                   {Object.entries(grouped).map(([cat, items]) => (
                     <div key={cat} className="sov__category">
                       <h3 className="sov__cat-label">
-                        {CATEGORIES.find(c => c.value === cat)?.label || cat}
+                        {CATEGORIES.find(c => c.value === cat) ? t(`category.${cat}`) : cat}
                       </h3>
                       <div className="sov__grid">
                         {items.map(w => (

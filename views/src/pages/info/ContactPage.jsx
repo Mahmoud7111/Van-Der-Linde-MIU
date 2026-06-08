@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { motion as Motion } from 'framer-motion'
 import Button from '@/components/common/Button'
+import { useLanguage } from '@/context/LanguageContext'
 import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi'
 import './ContactPage.css'
 
 export default function ContactPage() {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -46,7 +48,7 @@ export default function ContactPage() {
           animate="visible"
           variants={fadeInUp}
         >
-          Contact Us
+          {t('contact.title')}
         </Motion.h1>
         <Motion.p 
           className="contact-page__subtitle"
@@ -54,7 +56,7 @@ export default function ContactPage() {
           animate="visible"
           variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
         >
-          We are here to assist you. Reach out to our concierges for any inquiries regarding our collections, services, or your order.
+          {t('contact.subtitle')}
         </Motion.p>
       </header>
 
@@ -65,12 +67,12 @@ export default function ContactPage() {
           animate="visible"
           variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.4 } } }}
         >
-          <h2 className="contact-info__heading">Our Atelier</h2>
+          <h2 className="contact-info__heading">{t('contact.atelier')}</h2>
           
           <div className="contact-info__item">
             <FiMapPin className="contact-info__icon" />
             <div>
-              <h3>Address</h3>
+              <h3>{t('contact.address')}</h3>
               <p>12 Rue du Rhône<br/>1204 Geneva, Switzerland</p>
             </div>
           </div>
@@ -78,7 +80,7 @@ export default function ContactPage() {
           <div className="contact-info__item">
             <FiPhone className="contact-info__icon" />
             <div>
-              <h3>Telephone</h3>
+              <h3>{t('contact.telephone')}</h3>
               <p>+41 22 312 45 67</p>
             </div>
           </div>
@@ -86,7 +88,7 @@ export default function ContactPage() {
           <div className="contact-info__item">
             <FiMail className="contact-info__icon" />
             <div>
-              <h3>Email</h3>
+              <h3>{t('checkout.email')}</h3>
               <p>concierge@vanderlinde.ch</p>
             </div>
           </div>
@@ -94,8 +96,8 @@ export default function ContactPage() {
           <div className="contact-info__item">
             <FiClock className="contact-info__icon" />
             <div>
-              <h3>Opening Hours</h3>
-              <p>Monday - Friday: 10:00 - 18:30<br/>Saturday: 10:00 - 17:00<br/>Sunday: Closed</p>
+              <h3>{t('contact.openingHours')}</h3>
+              <p>{t('contact.hours').split('\n').map((line) => <span key={line}>{line}<br /></span>)}</p>
             </div>
           </div>
         </Motion.div>
@@ -106,18 +108,18 @@ export default function ContactPage() {
           animate="visible"
           variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.6 } } }}
         >
-          <h2 className="contact-form__heading">Send a Message</h2>
+          <h2 className="contact-form__heading">{t('contact.sendMessage')}</h2>
           
           {status === 'success' ? (
             <div className="contact-form__success">
-              <h3>Thank you for reaching out.</h3>
-              <p>Our concierge team will reply to you within 24 hours.</p>
-              <Button variant="primary" onClick={() => setStatus('idle')}>Send Another Message</Button>
+              <h3>{t('contact.thankYou')}</h3>
+              <p>{t('contact.reply')}</p>
+              <Button variant="primary" onClick={() => setStatus('idle')}>{t('contact.sendAnother')}</Button>
             </div>
           ) : (
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="name">Full Name</label>
+                <label htmlFor="name">{t('contact.fullName')}</label>
                 <input 
                   type="text" 
                   id="name" 
@@ -130,7 +132,7 @@ export default function ContactPage() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="email">Email Address</label>
+                <label htmlFor="email">{t('contact.emailAddress')}</label>
                 <input 
                   type="email" 
                   id="email" 
@@ -143,7 +145,7 @@ export default function ContactPage() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="subject">Subject</label>
+                <label htmlFor="subject">{t('contact.subject')}</label>
                 <select 
                   id="subject" 
                   name="subject" 
@@ -151,16 +153,16 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                 >
-                  <option value="" disabled>Select a subject</option>
-                  <option value="General Inquiry">General Inquiry</option>
-                  <option value="Product Information">Product Information</option>
-                  <option value="After-Sales Service">After-Sales Service</option>
-                  <option value="Press & Media">Press & Media</option>
+                  <option value="" disabled>{t('contact.selectSubject')}</option>
+                  <option value="General Inquiry">{t('contact.general')}</option>
+                  <option value="Product Information">{t('contact.productInfo')}</option>
+                  <option value="After-Sales Service">{t('contact.afterSales')}</option>
+                  <option value="Press & Media">{t('contact.press')}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label htmlFor="message">Message</label>
+                <label htmlFor="message">{t('contact.message')}</label>
                 <textarea 
                   id="message" 
                   name="message" 
@@ -168,12 +170,12 @@ export default function ContactPage() {
                   onChange={handleChange} 
                   required 
                   rows="5"
-                  placeholder="How can we assist you today?"
+                  placeholder={t('contact.messagePlaceholder')}
                 ></textarea>
               </div>
 
               <Button type="submit" variant="primary" disabled={status === 'submitting'}>
-                {status === 'submitting' ? 'Sending...' : 'Send Message'}
+                {status === 'submitting' ? t('contact.sending') : t('contact.send')}
               </Button>
             </form>
           )}

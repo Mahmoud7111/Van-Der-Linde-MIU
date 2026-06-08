@@ -1,7 +1,9 @@
 import { motion as Motion } from 'framer-motion'
+import { useLanguage } from '@/context/LanguageContext'
 import './SizeGuidePage.css'
 
 export default function SizeGuidePage() {
+  const { t } = useLanguage()
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -15,8 +17,8 @@ export default function SizeGuidePage() {
         animate="visible"
         variants={fadeInUp}
       >
-        <h1 className="size-guide-header__title">Size Guide</h1>
-        <p className="size-guide-header__subtitle">Finding the perfect fit for your wrist.</p>
+        <h1 className="size-guide-header__title">{t('size.title')}</h1>
+        <p className="size-guide-header__subtitle">{t('size.subtitle')}</p>
       </Motion.header>
 
       <Motion.section 
@@ -26,34 +28,34 @@ export default function SizeGuidePage() {
         viewport={{ once: true }}
         variants={fadeInUp}
       >
-        <h2 className="size-guide-section__title">Case Diameters</h2>
+        <h2 className="size-guide-section__title">{t('size.caseDiameters')}</h2>
         <div className="size-table-wrapper">
           <table className="size-table">
             <thead>
               <tr>
-                <th>Size</th>
-                <th>Diameter (mm)</th>
-                <th>Wrist Circumference Recommendation</th>
+                <th>{t('size.size')}</th>
+                <th>{t('size.diameter')}</th>
+                <th>{t('size.wrist')}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Small</td>
+                <td>{t('size.small')}</td>
                 <td>34mm - 36mm</td>
                 <td>14cm - 16cm (6.0" - 6.3")</td>
               </tr>
               <tr>
-                <td>Medium</td>
+                <td>{t('size.medium')}</td>
                 <td>38mm - 40mm</td>
                 <td>16cm - 18cm (6.3" - 7.1")</td>
               </tr>
               <tr>
-                <td>Large</td>
+                <td>{t('size.large')}</td>
                 <td>42mm - 44mm</td>
                 <td>18cm - 20cm (7.1" - 7.9")</td>
               </tr>
               <tr>
-                <td>Extra Large</td>
+                <td>{t('size.extraLarge')}</td>
                 <td>46mm+</td>
                 <td>20cm+ (7.9"+)</td>
               </tr>
@@ -69,15 +71,15 @@ export default function SizeGuidePage() {
         viewport={{ once: true }}
         variants={fadeInUp}
       >
-        <h2 className="size-guide-section__title">Strap Widths</h2>
+        <h2 className="size-guide-section__title">{t('size.strapWidths')}</h2>
         <div className="size-guide-grid">
           <div className="size-visual">
-            <h3 className="size-table-th">Common Widths</h3>
+            <h3 className="size-table-th">{t('size.commonWidths')}</h3>
             <table className="size-table">
               <thead>
                 <tr>
-                  <th>Case Size</th>
-                  <th>Lug Width</th>
+                  <th>{t('size.caseSize')}</th>
+                  <th>{t('size.lugWidth')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -97,9 +99,9 @@ export default function SizeGuidePage() {
             </table>
           </div>
           <div className="size-visual">
-            <h3 className="size-table-th">How to Measure</h3>
+            <h3 className="size-table-th">{t('size.howMeasure')}</h3>
             <p className="size-visual__text">
-              To find your lug width, measure the distance between the two lugs (the "arms" of the watch case) using a metric ruler. This distance is the width of the strap you will need.
+              {t('size.measureText')}
             </p>
           </div>
         </div>

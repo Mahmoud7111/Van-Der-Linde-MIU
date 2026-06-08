@@ -1,10 +1,12 @@
 import { motion as Motion } from 'framer-motion'
 import { Link, useLoaderData } from 'react-router-dom'
+import { useLanguage } from '@/context/LanguageContext'
 import { resolveCollectionCoverImage } from '@/utils/watchImageResolver'
 import './CollectionsPage.css'
 
 export default function CollectionsPage() {
   const collectionsData = useLoaderData()
+  const { t } = useLanguage()
   const collections = Array.isArray(collectionsData) ? collectionsData : []
 
   const fadeInUp = {
@@ -21,7 +23,7 @@ export default function CollectionsPage() {
           animate="visible"
           variants={fadeInUp}
         >
-          Our Collections
+          {t('collections.title')}
         </Motion.h1>
         <Motion.p
           className="collections-page__subtitle"
@@ -29,7 +31,7 @@ export default function CollectionsPage() {
           animate="visible"
           variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } } }}
         >
-          Discover our curated ranges of exceptional timepieces, each defined by distinct design philosophies and masterful craftsmanship.
+          {t('collections.subtitle')}
         </Motion.p>
       </header>
 
@@ -63,7 +65,7 @@ export default function CollectionsPage() {
                 <p className="collection-row__description">{collection.description}</p>
                 <Link to={`/collections/${collection.slug}`} className="collection-row__link">
                   <span className="cta-line"></span>
-                  View Collection
+                  {t('collections.viewCollection')}
                 </Link>
               </Motion.div>
             </div>
