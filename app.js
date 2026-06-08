@@ -36,12 +36,18 @@ app.use('/api', routes) // routes are mounted at /api/...
 
 app.use(errorHandler) // must be last
 
-connectDB().then(() => {
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
-})
-.catch(err => {
-    console.error('DB connection failed:', err)
-    process.exit(1)
-})
+// For local development, bind to PORT
+if (process.env.NODE_ENV !== 'production') {
+    connectDB().then(() => {
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+    })
+    .catch(err => {
+        console.error('DB connection failed:', err)
+        process.exit(1)
+    })
+} else {
+    // For Vercel Serverless, just connect to the DB and export the app
+    connectDB().catch(err => console.error('DB connection failed:', err));
+}
 
 module.exports = app
