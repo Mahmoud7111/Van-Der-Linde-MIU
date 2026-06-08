@@ -146,7 +146,7 @@ export default function SearchOverlay ({
                         {items.map(w => (
                           <Link
                             key={w._id}
-                            to={`/product/${w._id}`}
+                            to={`/watch/${w._id}`}
                             className="sov__item"
                             onClick={onClose}
                           >
