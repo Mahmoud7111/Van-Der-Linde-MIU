@@ -162,86 +162,105 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Beginning Section */}
-      <section className="about-milestone about-milestone--image-left">
-        <div className="about-milestone__inner">
-          <Motion.div
-            className="about-milestone__image-wrapper"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInDown}
-          >
-            <img src={beginningImage} alt="The Beginning of Van Der Linde" className="about-milestone__image" />
-          </Motion.div>
-          <Motion.div
-            className="about-milestone__text"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
-          >
-            <h2 className="about-milestone__heading">Our Humble Origins</h2>
-            <p>
-              The story of Van Der Linde began in a small, moonlit workshop in Geneva. Driven by a singular vision to capture the essence of time itself, our founder began hand-assembling movements that would eventually set the gold standard for horological excellence. What started as a pursuit of perfection by a lone craftsman has blossomed into a global legacy.
-            </p>
-          </Motion.div>
+      {/* ── Timeline Section ── */}
+      <section className="about-timeline">
+        <div className="about-timeline__inner">
+
+          {/* Central vertical line */}
+          <div className="about-timeline__line">
+            <Motion.div
+              className="about-timeline__line-fill"
+              initial={{ scaleY: 0 }}
+              whileInView={{ scaleY: 1 }}
+              viewport={{ once: true, margin: '-100px' }}
+              transition={{ duration: 1.6, ease: 'easeInOut' }}
+            />
+          </div>
+
+          {/* ── Entry 1: Our Humble Origins ── */}
+          <div className="about-timeline__entry about-timeline__entry--left">
+            <Motion.div
+              className="about-timeline__content"
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+            >
+              <span className="about-timeline__year">1875</span>
+              <h2 className="about-timeline__heading">Our Humble Origins</h2>
+              <p>
+                The story of Van Der Linde began in a small, moonlit workshop in Geneva. Driven by a singular vision to capture the essence of time itself, our founder began hand-assembling movements that would eventually set the gold standard for horological excellence. What started as a pursuit of perfection by a lone craftsman has blossomed into a global legacy.
+              </p>
+            </Motion.div>
+            <div className="about-timeline__dot" />
+            <Motion.div
+              className="about-timeline__image-wrapper"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+            >
+              <img src={beginningImage} alt="Our Humble Origins" className="about-timeline__image" />
+            </Motion.div>
+          </div>
+
+          {/* ── Entry 2: The Automatic Revolution ── */}
+          <div className="about-timeline__entry about-timeline__entry--right">
+            <Motion.div
+              className="about-timeline__image-wrapper"
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+            >
+              <img src={movementImage} alt="Automatic Movement Innovation" className="about-timeline__image" />
+            </Motion.div>
+            <div className="about-timeline__dot" />
+            <Motion.div
+              className="about-timeline__content"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+            >
+              <span className="about-timeline__year">1921</span>
+              <h2 className="about-timeline__heading">The Automatic Revolution</h2>
+              <p>
+                In the early 20th century, we pioneered one of the first reliable automatic winding mechanisms. This breakthrough allowed our timepieces to be powered by the natural motion of the wearer, eliminating the need for daily winding. It was a fusion of mechanical ingenuity and effortless luxury that redefined what a luxury watch could be.
+              </p>
+            </Motion.div>
+          </div>
+
+          {/* ── Entry 3: A Royal Legacy ── */}
+          <div className="about-timeline__entry about-timeline__entry--left">
+            <Motion.div
+              className="about-timeline__content"
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+            >
+              <span className="about-timeline__year">1953</span>
+              <h2 className="about-timeline__heading">A Royal Legacy</h2>
+              <p>
+                Our commitment to excellence eventually caught the attention of European royalty. Van Der Linde became the choice of monarchs and statesmen, commissioned to create bespoke timepieces for coronation ceremonies and royal gifts. This period cemented our position as a symbol of status, power, and refined taste across the continent.
+              </p>
+            </Motion.div>
+            <div className="about-timeline__dot" />
+            <Motion.div
+              className="about-timeline__image-wrapper"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+            >
+              <img src={recognitionImage} alt="Royal Recognition" className="about-timeline__image" />
+            </Motion.div>
+          </div>
+
         </div>
       </section>
 
-      {/* Movement Section */}
-      <section className="about-milestone about-milestone--image-right">
-        <div className="about-milestone__inner">
-          <Motion.div
-            className="about-milestone__text"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInDown}
-          >
-            <h2 className="about-milestone__heading">The Automatic Revolution</h2>
-            <p>
-              In the early 20th century, we pioneered one of the first reliable automatic winding mechanisms. This breakthrough allowed our timepieces to be powered by the natural motion of the wearer, eliminating the need for daily winding. It was a fusion of mechanical ingenuity and effortless luxury that redefined what a luxury watch could be.
-            </p>
-          </Motion.div>
-          <Motion.div
-            className="about-milestone__image-wrapper"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
-          >
-            <img src={movementImage} alt="Automatic Movement Innovation" className="about-milestone__image" />
-          </Motion.div>
-        </div>
-      </section>
-
-      {/* Royal Recognition Section */}
-      <section className="about-milestone about-milestone--image-left">
-        <div className="about-milestone__inner">
-          <Motion.div
-            className="about-milestone__image-wrapper"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInDown}
-          >
-            <img src={recognitionImage} alt="Royal Recognition" className="about-milestone__image" />
-          </Motion.div>
-          <Motion.div
-            className="about-milestone__text"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ ...fadeInDown, visible: { ...fadeInDown.visible, transition: { ...fadeInDown.visible.transition, delay: 0.2 } } }}
-          >
-            <h2 className="about-milestone__heading">A Royal Legacy</h2>
-            <p>
-              Our commitment to excellence eventually caught the attention of European royalty. Van Der Linde became the choice of monarchs and statesmen, commissioned to create bespoke timepieces for coronation ceremonies and royal gifts. This period cemented our position as a symbol of status, power, and refined taste across the continent.
-            </p>
-          </Motion.div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <Motion.section
