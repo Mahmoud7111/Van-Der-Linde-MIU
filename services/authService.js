@@ -7,6 +7,8 @@ const PasswordToken = require('../models/PasswordToken')
 const { signToken } = require('../utils/jwt')
 const { hashToken } = require('../utils/securityUtils')
 const { assertLength, isEmail, normalizeEmail, cleanString } = require('../utils/validationUtils')
+const { sendEmail } = require('../utils/emailService')
+const { FRONTEND_URL } = require('../config/env')
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -15,6 +17,13 @@ const makeError = (msg, code) => {
     err.statusCode = code
     return err
 }
+
+const escapeHtml = (value = '') => String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
 
 // ─── register ───────────────────────────────────────────────────────────────
 
@@ -85,6 +94,7 @@ const forgotPassword = async (email) => {
     // Generate a cryptographically secure raw token
     const rawToken = crypto.randomBytes(32).toString('hex')
     const hashedToken = hashToken(rawToken)
+    const resetUrl = `${FRONTEND_URL.replace(/\/$/, '')}/reset-password?token=${rawToken}`
 
     await PasswordToken.create({
         user:      user._id,
@@ -93,8 +103,29 @@ const forgotPassword = async (email) => {
         isUsed:    false,
     })
 
-    // Email sending is deferred — return raw token for now
-    return { token: rawToken }
+    await sendEmail({
+        to: cleanEmail,
+        subject: 'Reset your Van Der Linde password',
+        text: `Reset your password using this link: ${resetUrl}. This link expires in 1 hour.`,
+        html: `
+            <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2933;">
+                <h2 style="color:#111827;">Reset Your Password</h2>
+                <p>Dear ${escapeHtml(cleanString(user.name) || 'Van Der Linde customer')},</p>
+                <p>We received a request to reset your password. Use the button below to create a new password.</p>
+                <p>
+                    <a href="${resetUrl}" style="display:inline-block;background:#111827;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:4px;">
+                        Reset Password
+                    </a>
+                </p>
+                <p>If the button does not work, copy this link into your browser:</p>
+                <p style="word-break:break-all;color:#8a6a2f;">${resetUrl}</p>
+                <p>This link expires in 1 hour. If you did not request this, you can ignore this email.</p>
+                <p style="margin-top:24px;color:#8a6a2f;"><em>Van Der Linde - Crafting Legacy Since 1874</em></p>
+            </div>
+        `,
+    })
+
+    return { sent: true }
 }
 
 // ─── resetPassword ──────────────────────────────────────────────────────────

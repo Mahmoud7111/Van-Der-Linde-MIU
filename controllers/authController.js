@@ -52,7 +52,7 @@ const forgotPassword = async (req, res, next) => {
     try {
         const { email } = req.body
         const data = await authService.forgotPassword(email)
-        res.status(200).json({ success: true, message: 'Reset token generated', data })
+        res.status(200).json({ success: true, message: 'Password reset email sent', data })
     } catch (err) {
         next(err)
     }
