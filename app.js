@@ -37,7 +37,7 @@ app.use('/api', routes) // routes are mounted at /api/...
 app.use(errorHandler) // must be last
 
 // For local development, bind to PORT
-if (process.env.NODE_ENV !== 'production') {
+if (!process.env.VERCEL) {
     connectDB().then(() => {
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
     })
