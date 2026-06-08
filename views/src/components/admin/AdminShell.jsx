@@ -22,11 +22,8 @@ const primaryNavItems = [
 const managementNavItems = [
   { label: 'Products', to: '/admin/watches' },
   { label: 'Orders', to: '/admin/orders' },
-]
-
-const secondaryNavItems = [
-  { label: 'Users', disabled: true },
-  { label: 'Reviews', disabled: true },
+  { label: 'Users', to: '/admin/users' },
+  { label: 'Reviews', to: '/admin/reviews' },
 ]
 
 const getAdminName = (user) => {
@@ -74,16 +71,6 @@ export default function AdminShell({ children }) {
             <NavLink key={item.to} to={item.to} className={navLinkClassName} end>
               {item.label}
             </NavLink>
-          ))}
-          {secondaryNavItems.map((item) => (
-            <span
-              key={item.label}
-              className={cn('admin-shell__nav-link', 'admin-shell__nav-link--disabled')}
-              aria-disabled="true"
-            >
-              {item.label}
-              <span className="admin-shell__nav-badge">Soon</span>
-            </span>
           ))}
         </nav>
 

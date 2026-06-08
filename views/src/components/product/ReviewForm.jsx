@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import Button from '@/components/common/Button'
 import { useLanguage } from '@/context/LanguageContext'
+import { reviewService } from '@/services/reviewService'
+import toast from 'react-hot-toast'
 import './ReviewForm.css'
 
 const initialValues = {
-  name: '',
   rating: '',
-  title: '',
-  body: '',
+  comment: '',
 }
 
-export default function ReviewForm() {
+export default function ReviewForm({ watchId, onReviewSubmit }) {
   const [values, setValues] = useState(initialValues)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { t } = useLanguage()
 
   const handleChange = (event) => {
@@ -19,9 +20,23 @@ export default function ReviewForm() {
     setValues((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setValues(initialValues)
+    if (!watchId) return
+
+    setIsSubmitting(true)
+    try {
+      const response = await reviewService.create(watchId, values)
+      setValues(initialValues)
+      toast.success(t('review.submitSuccess') || 'Review submitted!')
+      if (onReviewSubmit) {
+        onReviewSubmit(response?.data || response)
+      }
+    } catch (err) {
+      toast.error(err?.message || 'Failed to submit review')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -35,23 +50,7 @@ export default function ReviewForm() {
       </div>
 
       <div className="review-form__grid">
-        <div className="review-form__field">
-          <label className="review-form__label" htmlFor="reviewer-name">
-            {t('review.name')} <span className="review-form__required">*</span>
-          </label>
-          <input
-            id="reviewer-name"
-            name="name"
-            type="text"
-            className="review-form__input"
-            placeholder={t('review.yourName')}
-            value={values.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="review-form__field">
+        <div className="review-form__field review-form__field--full">
           <label className="review-form__label" htmlFor="reviewer-rating">
             {t('review.rating')} <span className="review-form__required">*</span>
           </label>
@@ -75,32 +74,16 @@ export default function ReviewForm() {
         </div>
 
         <div className="review-form__field review-form__field--full">
-          <label className="review-form__label" htmlFor="review-title">
-            {t('review.title')} <span className="review-form__required">*</span>
-          </label>
-          <input
-            id="review-title"
-            name="title"
-            type="text"
-            className="review-form__input"
-            placeholder={t('review.titlePlaceholder')}
-            value={values.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="review-form__field review-form__field--full">
           <label className="review-form__label" htmlFor="review-body">
             {t('review.review')} <span className="review-form__required">*</span>
           </label>
           <textarea
             id="review-body"
-            name="body"
+            name="comment"
             className="review-form__textarea"
             placeholder={t('review.bodyPlaceholder')}
             rows={4}
-            value={values.body}
+            value={values.comment}
             onChange={handleChange}
             required
           />
@@ -109,8 +92,8 @@ export default function ReviewForm() {
 
       <div className="review-form__actions">
         <p className="review-form__note">{t('review.requiredFields')}</p>
-        <Button type="submit" variant="primary">
-          {t('review.submit')}
+        <Button type="submit" variant="primary" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : t('review.submit')}
         </Button>
       </div>
     </form>

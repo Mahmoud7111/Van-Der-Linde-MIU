@@ -1,5 +1,4 @@
-// getReviews, createReview
-// getReviews, createReview
+// getReviews, createReview, getAllReviews (admin), deleteReview (admin)
 const reviewService = require('../services/reviewService')
 
 // GET /api/watches/:watchId/reviews
@@ -26,4 +25,24 @@ const createReview = async (req, res, next) => {
     }
 }
 
-module.exports = { getReviews, createReview }
+// GET /api/reviews — admin only
+const getAllReviews = async (req, res, next) => {
+    try {
+        const reviews = await reviewService.getAllReviews()
+        res.status(200).json({ success: true, message: 'OK', data: reviews })
+    } catch (err) {
+        next(err)
+    }
+}
+
+// DELETE /api/reviews/:id — admin only
+const deleteReview = async (req, res, next) => {
+    try {
+        await reviewService.deleteReview(req.params.id)
+        res.status(200).json({ success: true, message: 'Review deleted', data: null })
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports = { getReviews, createReview, getAllReviews, deleteReview }

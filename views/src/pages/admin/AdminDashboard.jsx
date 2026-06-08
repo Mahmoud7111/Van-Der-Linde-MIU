@@ -186,7 +186,8 @@ const buildCatalogActivity = (watches) => {
 const shortcuts = [
   { label: 'Manage Catalog', to: '/admin/watches' },
   { label: 'Review Orders', to: '/admin/orders' },
-  { label: 'Audit Inventory', to: '/admin/watches' },
+  { label: 'Manage Users', to: '/admin/users' },
+  { label: 'Manage Reviews', to: '/admin/reviews' },
 ]
 
 export default function AdminDashboard() {

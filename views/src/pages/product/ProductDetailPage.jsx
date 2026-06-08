@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { FiHeart } from 'react-icons/fi'
 import { useLoaderData } from 'react-router-dom'
 import PageTransition from '@/components/common/PageTransition'
@@ -12,6 +13,7 @@ import { useCurrency } from '@/context/CurrencyContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { cn } from '@/utils/cn'
+import { reviewService } from '@/services/reviewService'
 import './ProductDetailPage.css'
 
 const prefersReducedMotion =
@@ -54,6 +56,25 @@ export default function ProductDetailPage() {
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist()
   const { formatPrice } = useCurrency()
   const { t } = useLanguage()
+
+  const [reviews, setReviews] = useState([])
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false)
+
+  useEffect(() => {
+    if (watch?._id) {
+      let active = true
+      setIsLoadingReviews(true)
+      reviewService.getByWatch(watch._id)
+        .then((data) => {
+          if (active) setReviews(Array.isArray(data) ? data : [])
+        })
+        .catch(console.error)
+        .finally(() => {
+          if (active) setIsLoadingReviews(false)
+        })
+      return () => { active = false }
+    }
+  }, [watch?._id])
 
   if (!watch) {
     return (
@@ -188,12 +209,29 @@ export default function ProductDetailPage() {
               </p>
             </div>
             <div className="product-detail__reviews-grid">
-              {Array.from({ length: 2 }, (_, index) => (
-                <ReviewCard key={`review-${index}`} />
-              ))}
+              {isLoadingReviews ? (
+                <p>Loading reviews...</p>
+              ) : reviews.length > 0 ? (
+                reviews.map((r) => (
+                  <ReviewCard 
+                    key={r._id} 
+                    review={r} 
+                    name={r.user?.name || r.user?.email} 
+                    rating={r.rating} 
+                    date={r.createdAt} 
+                    title={null} 
+                    body={r.comment} 
+                  />
+                ))
+              ) : (
+                <p>No reviews yet. Be the first to share your experience!</p>
+              )}
             </div>
             <div className="product-detail__review-form">
-              <ReviewForm />
+              <ReviewForm 
+                watchId={watch?._id} 
+                onReviewSubmit={(newReview) => setReviews((prev) => [newReview, ...prev])} 
+              />
             </div>
           </section>
         </div>

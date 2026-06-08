@@ -1,16 +1,12 @@
-// const router = require('express').Router()
-
-// // /watches/:id/reviews: public GET, protected POST (verified purchase)
-// //! Note that we might not be doing reviews at all, but if we do, this is where they would go.
-
-// module.exports = router
-
-
 const router = require('express').Router({ mergeParams: true })
-const { getReviews, createReview } = require('../controllers/reviewController')
-const { protect } = require('../middleware/authMiddleware')
+const { getReviews, createReview, getAllReviews, deleteReview } = require('../controllers/reviewController')
+const { protect, adminOnly } = require('../middleware/authMiddleware')
 
-router.get('/',  getReviews)            // public
-router.post('/', protect, createReview) // protected — verified purchase check inside service
+// Mounted at /api/watches/:watchId/reviews
+router.get('/',  getReviews)             // public
+router.post('/', protect, createReview)  // protected — verified purchase check inside service
+
+// Admin: delete a specific review by ID
+router.delete('/:id', protect, adminOnly, deleteReview)
 
 module.exports = router

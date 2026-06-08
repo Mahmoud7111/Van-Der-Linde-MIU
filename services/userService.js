@@ -52,6 +52,23 @@ const uploadProfilePicture = async (userId, filePath) => {
     return user
 }
 
+// ─── getAllUsers (admin) ──────────────────────────────────────────────────────
+
+const getAllUsers = async () => {
+    return User.find().select('-password').sort({ createdAt: -1 })
+}
+
+// ─── deleteUser (admin) ───────────────────────────────────────────────────────
+
+const deleteUser = async (userId, requestingUserId) => {
+    if (userId === requestingUserId.toString()) {
+        throw makeError('Cannot delete your own admin account', 400)
+    }
+    const user = await User.findByIdAndDelete(userId)
+    if (!user) throw makeError('User not found', 404)
+    return user
+}
+
 // ─── exports ─────────────────────────────────────────────────────────────────
 
-module.exports = { getProfile, updateProfile, uploadProfilePicture }
+module.exports = { getProfile, updateProfile, uploadProfilePicture, getAllUsers, deleteUser }

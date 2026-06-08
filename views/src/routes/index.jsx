@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Application router configuration using createBrowserRouter.
  *
  * What this file is:
@@ -64,6 +64,8 @@ const ConfiguratorPage = lazy(() => import('@/pages/configurator/ConfiguratorPag
 const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard.jsx'))
 const ManageProducts = lazy(() => import('@/pages/admin/ManageProducts.jsx'))
 const ManageOrders = lazy(() => import('@/pages/admin/ManageOrders.jsx'))
+const ManageUsers = lazy(() => import('@/pages/admin/ManageUsers.jsx'))
+const ManageReviews = lazy(() => import('@/pages/admin/ManageReviews.jsx'))
 
 const getShopFilters = (request, defaultGender = 'all') => {
   const url = new URL(request.url)
@@ -260,6 +262,22 @@ export const router = createBrowserRouter([
           </AdminRoute>
         ),
         loader: () => orderService.getAll(), // Admin order management page needs full order list to display and manage orders.
+      },
+      {
+        path: 'admin/users',
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: 'admin/reviews',
+        element: (
+          <AdminRoute>
+            <ManageReviews />
+          </AdminRoute>
+        ),
       },
 
       // Catch-all route for unknown URLs.

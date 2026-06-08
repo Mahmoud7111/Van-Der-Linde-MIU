@@ -1,30 +1,62 @@
+// getReviews, createReview, getAllReviews (admin), deleteReview (admin)
+const Review = require('../models/Review')
+const Order  = require('../models/Order')
 
+// ─── helpers ────────────────────────────────────────────────────────────────
 
-// getReviews, createReview
-const reviewService = require('../services/reviewService')
-
-// GET /api/watches/:watchId/reviews
-const getReviews = async (req, res, next) => {
-    try {
-        const reviews = await reviewService.getReviews(req.params.watchId)
-        res.status(200).json({ success: true, message: 'OK', data: reviews })
-    } catch (err) {
-        next(err)
-    }
+const makeError = (msg, code) => {
+    const err = new Error(msg)
+    err.statusCode = code
+    return err
 }
 
-// POST /api/watches/:watchId/reviews
-const createReview = async (req, res, next) => {
-    try {
-        const review = await reviewService.createReview(
-            req.params.watchId,
-            req.user._id,
-            req.body
-        )
-        res.status(201).json({ success: true, message: 'Review submitted', data: review })
-    } catch (err) {
-        next(err)
-    }
+// ─── getReviews ───────────────────────────────────────────────────────────────
+
+const getReviews = async (watchId) => {
+    return Review.find({ watch: watchId })
+        .populate('user', 'name email')
+        .sort({ createdAt: -1 })
 }
 
-module.exports = { getReviews, createReview }
+// ─── createReview ─────────────────────────────────────────────────────────────
+
+const createReview = async (watchId, userId, { rating, comment }) => {
+    // Check verified purchase
+    const hasOrder = await Order.findOne({
+        user:   userId,
+        'items.watch': watchId,
+        status: 'delivered',
+    })
+
+    const review = await Review.create({
+        user:               userId,
+        watch:              watchId,
+        rating:             Number(rating),
+        comment:            comment || '',
+        isVerifiedPurchase: Boolean(hasOrder),
+    })
+
+    return review
+}
+
+// ─── getAllReviews (admin) ────────────────────────────────────────────────────
+
+const getAllReviews = async () => {
+    return Review.find()
+        .populate('user', 'name email')
+        .populate('watch', 'name slug')
+        .sort({ createdAt: -1 })
+}
+
+// ─── deleteReview (admin) ────────────────────────────────────────────────────
+
+const deleteReview = async (reviewId) => {
+    const review = await Review.findById(reviewId)
+    if (!review) throw makeError('Review not found', 404)
+    await review.deleteOne()
+    return review
+}
+
+// ─── exports ─────────────────────────────────────────────────────────────────
+
+module.exports = { getReviews, createReview, getAllReviews, deleteReview }
