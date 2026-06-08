@@ -6,8 +6,6 @@ const nameFromImage = (fileName) => fileName.replace(/\.[^.]+$/, '')
 
 const slugFromName = (name) =>
     name
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
         .replace(/&/g, 'and')
         .replace(/[^a-z0-9]+/g, '-')
@@ -127,27 +125,37 @@ module.exports = async (brands, collections) => {
             description: "A revived vintage-style luxury sports watch with elegant proportions."
         },
         {
-            image: "A. Lange & Söhne Zeitwerk Striking Time.png",
-            brand: "A.Lange & SÃ¶hne",
+            image: "Rolex GMT-Master II.webp",
+            brand: "Rolex",
             collection: "Noir Series",
             gender: "men",
-            price: 119990,
+            price: 17990,
             category: "luxury",
-            rating: 4.9,
-            numReviews: 37,
-            stock: 4,
-            description: "A German mechanical statement piece with a distinctive digital time display."
+            rating: 4.8,
+            numReviews: 88,
+            stock: 9,
+            description: "A travel-focused luxury watch with bold bezel colors and dual-time practicality."
         }
     ]
 
     const watches = watchSeeds.map((watch) => {
         const name = nameFromImage(watch.image)
+        const brand = getBrand(watch.brand)
+        const collection = getCollection(watch.collection)
+
+        if (!brand) {
+            throw new Error(`Missing brand for watch seed "${name}": ${watch.brand}`)
+        }
+
+        if (!collection) {
+            throw new Error(`Missing collection for watch seed "${name}": ${watch.collection}`)
+        }
 
         return {
             name,
             slug: slugFromName(name),
-            brand: getBrand(watch.brand),
-            collection: getCollection(watch.collection),
+            brand,
+            collection,
             gender: watch.gender,
             price: watch.price,
             category: watch.category,
