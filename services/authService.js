@@ -84,7 +84,7 @@ const logout = async () => {}
 
 // ─── forgotPassword ─────────────────────────────────────────────────────────
 
-const forgotPassword = async (email) => {
+const forgotPassword = async (email, frontendOrigin) => {
     const cleanEmail = normalizeEmail(email)
     if (!isEmail(cleanEmail)) throw makeError('Please enter a valid email', 400)
 
@@ -94,7 +94,8 @@ const forgotPassword = async (email) => {
     // Generate a cryptographically secure raw token
     const rawToken = crypto.randomBytes(32).toString('hex')
     const hashedToken = hashToken(rawToken)
-    const resetUrl = `${FRONTEND_URL.replace(/\/$/, '')}/reset-password?token=${rawToken}`
+    const frontendBaseUrl = cleanString(frontendOrigin || FRONTEND_URL).replace(/\/$/, '')
+    const resetUrl = `${frontendBaseUrl}/reset-password?token=${rawToken}`
 
     await PasswordToken.create({
         user:      user._id,

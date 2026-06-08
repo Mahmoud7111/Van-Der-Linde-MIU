@@ -51,7 +51,7 @@ const getMe = async (req, res, next) => {
 const forgotPassword = async (req, res, next) => {
     try {
         const { email } = req.body
-        const data = await authService.forgotPassword(email)
+        const data = await authService.forgotPassword(email, req.get('origin'))
         res.status(200).json({ success: true, message: 'Password reset email sent', data })
     } catch (err) {
         next(err)
