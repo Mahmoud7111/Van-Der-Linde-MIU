@@ -2,10 +2,13 @@
 const mongoose = require('mongoose')
 
 const configurationSchema = new mongoose.Schema({
+    model:         { type: String, default: '' },
     caseColor:     { type: String, default: '' },
+    bezelColor:    { type: String, default: '' },
     dialColor:     { type: String, default: '' },
     strapMaterial: { type: String, default: '' },
     strapColor:    { type: String, default: '' },
+    estimatedPrice:{ type: Number, default: 0 },
     notes:         { type: String, default: '' },
 }, { _id: false })
 

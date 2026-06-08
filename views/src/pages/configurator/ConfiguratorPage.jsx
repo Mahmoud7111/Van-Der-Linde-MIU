@@ -534,10 +534,13 @@ export default function ConfiguratorPage() {
                       name:  values.name,
                       email: values.email,
                       configuration: {
+                        model:         selectedModel.label,
                         caseColor:     selectedCase.label,
+                        bezelColor:    selectedBezel.label,
                         dialColor:     selectedDial.label,
                         strapMaterial: selectedStrap.label,
                         strapColor:    selectedStrap.color,
+                        estimatedPrice: totalPrice,
                         notes:         values.notes || '',
                       },
                     })

@@ -1,54 +1,87 @@
-// configurator logic: save configuration request, send admin + customer emails
 const ConfigurationRequest = require('../models/ConfigurationRequest')
 const { sendEmail } = require('../utils/emailService')
 const { ADMIN_EMAIL } = require('../config/env')
 
+const escapeHtml = (value = '') => String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+
+const formatPrice = (value) => {
+    const amount = Number(value)
+    if (!Number.isFinite(amount)) return 'Not provided'
+    return `$${amount.toLocaleString('en-US')}`
+}
+
+const buildConfigurationRows = (configuration = {}) => {
+    const rows = [
+        ['Model', configuration.model],
+        ['Case', configuration.caseColor],
+        ['Bezel', configuration.bezelColor],
+        ['Dial', configuration.dialColor],
+        ['Strap', configuration.strapMaterial],
+        ['Strap Color', configuration.strapColor],
+        ['Estimated Price', formatPrice(configuration.estimatedPrice)],
+        ['Notes', configuration.notes],
+    ]
+
+    return rows.map(([label, value]) => `
+        <tr>
+            <td style="padding:8px 12px;border:1px solid #ddd;"><strong>${label}</strong></td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${escapeHtml(value || 'Not provided')}</td>
+        </tr>
+    `).join('')
+}
+
+const buildEmailLayout = (title, bodyHtml) => `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2933;">
+        <h2 style="color:#111827;">${escapeHtml(title)}</h2>
+        ${bodyHtml}
+        <p style="margin-top:24px;color:#8a6a2f;"><em>Van Der Linde - Crafting Legacy Since 1874</em></p>
+    </div>
+`
+
 const submitConfiguration = async ({ userId, name, email, configuration }) => {
-    const docData = { name, email, configuration }
+    const normalizedEmail = email.toLowerCase()
+    const docData = { name, email: normalizedEmail, configuration }
     if (userId) docData.user = userId
 
-    const request = await new ConfigurationRequest(docData).save()
+    const request = await ConfigurationRequest.create(docData)
+    const rows = buildConfigurationRows(configuration)
 
-    // Fire-and-forget: admin notification
-    try {
-        await sendEmail({
-            to: ADMIN_EMAIL,
-            subject: `New Watch Configuration Request — ${name}`,
-            html: `
-                <h2>New Configuration Request</h2>
-                <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
-                <h3>Configuration Details</h3>
-                <ul>
-                    <li><strong>Case Colour:</strong> ${configuration.caseColor || '—'}</li>
-                    <li><strong>Dial Colour:</strong> ${configuration.dialColor || '—'}</li>
-                    <li><strong>Strap Material:</strong> ${configuration.strapMaterial || '—'}</li>
-                    <li><strong>Strap Colour:</strong> ${configuration.strapColor || '—'}</li>
-                    <li><strong>Notes:</strong> ${configuration.notes || '—'}</li>
-                </ul>
-            `,
-        })
-    } catch (err) {
-        console.error('Admin notification email failed:', err.message)
+    if (!ADMIN_EMAIL) {
+        console.error('Admin email failed: ADMIN_EMAIL is missing')
+    } else {
+        try {
+            await sendEmail({
+                to: ADMIN_EMAIL,
+                subject: `New configuration request from ${name}`,
+                html: buildEmailLayout('New Configuration Request', `
+                    <p><strong>Customer:</strong> ${escapeHtml(name)} &lt;${escapeHtml(normalizedEmail)}&gt;</p>
+                    <p><strong>Request ID:</strong> ${request._id}</p>
+                    <table style="border-collapse:collapse;width:100%;max-width:640px;">
+                        ${rows}
+                    </table>
+                `),
+            })
+        } catch (err) {
+            console.error('Admin notification email failed:', err.message)
+        }
     }
 
-    // Fire-and-forget: customer confirmation
     try {
         await sendEmail({
-            to: email,
-            subject: 'Your Van Der Linde Configuration Request',
-            html: `
-                <p>Dear ${name},</p>
-                <p>Thank you for your personalised watch configuration request. We have received the following details:</p>
-                <ul>
-                    <li><strong>Case Colour:</strong> ${configuration.caseColor || '—'}</li>
-                    <li><strong>Dial Colour:</strong> ${configuration.dialColor || '—'}</li>
-                    <li><strong>Strap Material:</strong> ${configuration.strapMaterial || '—'}</li>
-                    <li><strong>Strap Colour:</strong> ${configuration.strapColor || '—'}</li>
-                    <li><strong>Notes:</strong> ${configuration.notes || '—'}</li>
-                </ul>
-                <p>Our team will be in touch with you within 2–3 business days.</p>
-                <p><em>Crafting Legacy Since 1874</em></p>
-            `,
+            to: normalizedEmail,
+            subject: 'We received your Van Der Linde configuration request',
+            html: buildEmailLayout('Your Configuration Request Is Confirmed', `
+                <p>Dear ${escapeHtml(name)},</p>
+                <p>Thank you for submitting your personalized watch request. Our team received your configuration and will contact you within 2-3 business days.</p>
+                <table style="border-collapse:collapse;width:100%;max-width:640px;">
+                    ${rows}
+                </table>
+            `),
         })
     } catch (err) {
         console.error('Customer confirmation email failed:', err.message)
