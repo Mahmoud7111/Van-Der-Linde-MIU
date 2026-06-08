@@ -22,10 +22,16 @@ const getProfile = async (userId) => {
 
 const updateProfile = async (userId, data) => {
     // Whitelist — prevent mass-assignment of role, password, etc.
-    const allowed = ['name', 'address']
+    const allowed = ['name', 'email', 'phone', 'address']
     const update = Object.fromEntries(
         Object.entries(data).filter(([k]) => allowed.includes(k))
     )
+
+    if (update.email) {
+        update.email = update.email.toLowerCase()
+        const existing = await User.findOne({ email: update.email, _id: { $ne: userId } })
+        if (existing) throw makeError('Email already in use', 400)
+    }
 
     const user = await User.findByIdAndUpdate(userId, update, { new: true }).select('-password')
     if (!user) throw makeError('User not found', 404)

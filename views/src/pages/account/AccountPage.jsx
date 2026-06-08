@@ -33,25 +33,20 @@ export default function AccountPage() {
   const [isSaving, setIsSaving] = useState(false)
   // Form state for editable fields
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
     phone: '',
   })
 
   const fullName = useMemo(() => {
-    const first = user?.firstName || ''
-    const last = user?.lastName || ''
-    const combined = `${first} ${last}`.trim()
-    return combined || user?.name || 'Guest User'
+    return user?.name || 'Guest User'
   }, [user])
 
   const initials = useMemo(() => getInitials(fullName) || 'GU', [fullName])
 
   useEffect(() => {
     setFormData({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
+      name: user?.name || '',
       email: user?.email || '',
       phone: user?.phone || '',
     })
@@ -65,8 +60,7 @@ export default function AccountPage() {
 
   const handleEdit = () => {
     setFormData({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
+      name: user?.name || '',
       email: user?.email || '',
       phone: user?.phone || '',
     })
@@ -133,31 +127,17 @@ export default function AccountPage() {
                 <div className="account-profile-form">
                   <div className="account-card__rows">
                     <label className="account-field">
-                      <span>First Name</span>
+                      <span>Full Name</span>
                       {isEditing ? (
                         <input
-                          name="firstName"
-                          value={formData.firstName}
+                          name="name"
+                          value={formData.name}
                           onChange={handleFieldChange}
                           className="account-input"
-                          autoComplete="given-name"
+                          autoComplete="name"
                         />
                       ) : (
-                        <strong>{user?.firstName || '-'}</strong>
-                      )}
-                    </label>
-                    <label className="account-field">
-                      <span>Last Name</span>
-                      {isEditing ? (
-                        <input
-                          name="lastName"
-                          value={formData.lastName}
-                          onChange={handleFieldChange}
-                          className="account-input"
-                          autoComplete="family-name"
-                        />
-                      ) : (
-                        <strong>{user?.lastName || '-'}</strong>
+                        <strong>{user?.name || '-'}</strong>
                       )}
                     </label>
                     <label className="account-field">

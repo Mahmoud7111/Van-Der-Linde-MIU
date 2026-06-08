@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
         unique:  true,
         sparse:  true, // allows multiple null values
     },
+    phone:    { type: String, default: '' },
     address:  { type: addressSchema, default: () => ({}) },
     isActive: { type: Boolean, default: true },
 }, { timestamps: true })

@@ -16,6 +16,7 @@
  */
 import { createContext, useContext, useEffect, useState } from 'react'
 import { authService } from '@/services/authService'
+import { userService } from '@/services/userService'
 
 import toast from 'react-hot-toast' 
 
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }) => {
 
   // Profile update action used by the account page.
   const updateProfile = async (data) => {
-    const result = await authService.updateProfile(data)
+    const result = await userService.updateProfile(data)
     setUser(result.user || result)
     toast.success('Profile updated successfully.')
     return result
