@@ -50,7 +50,7 @@ const collectionImageByBaseName = Object.entries(collectionImageAssets).reduce(
 
 // Product-specific overrides for assets that need cleaner alternatives in UI.
 const favoriteImageOverrides = {
-  // Overrides removed — now uses the dynamic path from products.json
+  // Overrides removed; watch image paths now come from backend product data.
 }
 
 // Resolve a generic product image string to a displayable URL.
