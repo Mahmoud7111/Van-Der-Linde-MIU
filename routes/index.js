@@ -14,7 +14,6 @@ router.use('/brands',       require('./brandRoutes'))
 router.use('/configurator', require('./configuratorRoutes'))
 router.use('/chatbot',      require('./chatbotRoutes'))
 router.use('/admin',        require('./adminRoutes'))
-router.use('/payment',      require('./paymentRoutes'))
 router.use('/shipping',     require('./shippingRoutes'))
 
 module.exports = router

@@ -1,7 +1,0 @@
-// /payment: POST create-intent, POST webhook (no auth on webhook)
-//! if we used Stripe, we would have a webhook route here to handle payment events.
-//! We might also have a route to create payment intents, but that could also be handled in the order routes.
-//! For now, this is a placeholder.
-const router = require('express').Router()
-
-module.exports = router

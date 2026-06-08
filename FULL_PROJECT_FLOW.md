@@ -155,7 +155,7 @@ Dev 3 owns:
 
 - Cart backend
 - Orders backend
-- Payment backend
+- Payment handling inside checkout/order creation
 - Shipping backend
 - Checkout order creation
 - Cart persistence in MongoDB
@@ -471,7 +471,6 @@ User clicks wishlist heart
 Backend routes:
 
 - `orderRoutes.js`
-- `paymentRoutes.js`
 - `shippingRoutes.js`
 
 Model:
