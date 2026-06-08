@@ -39,51 +39,88 @@ const findRelevantWatches = (message, watches = []) => {
     if (matchedCategory) return watches.filter((watch) => watch.category === matchedCategory)
 
     if (text.includes('cheap') || text.includes('affordable') || text.includes('budget')) {
-        return [...watches].sort((a, b) => Number(a.price) - Number(b.price))
+        return [...watches].sort((a, b) => Number(a.price) - Number(b.price)).slice(0, 5)
     }
 
     if (text.includes('best') || text.includes('recommend') || text.includes('suggest')) {
-        return [...watches].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
+        return [...watches].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0)).slice(0, 5)
     }
 
-    return watches
+    return [] // ← was: return watches — this was making every message show the catalog
 }
 
 const buildFallbackReply = (message, watches = []) => {
     const text = normalise(message)
+
+    // Greetings
+    if (['hello', 'hi', 'hey', 'good morning', 'good evening'].some(w => text.includes(w))) {
+        return 'Hello! I am the Van Der Linde Assistant. I can help you find a watch, explore collections, use the configurator, or assist with checkout and gifting.'
+    }
+
+    // Farewell
+    if (['thank you', 'thanks', 'bye', 'goodbye', 'that\'s all'].some(w => text.includes(w))) {
+        return 'It was a pleasure assisting you. If you need anything else, feel free to ask. Have a wonderful day.'
+    }
+
+    // Warranty
+    if (text.includes('warrant') || text.includes('guarantee')) {
+        return 'All Van Der Linde timepieces carry a 5-year international warranty covering manufacturing defects.'
+    }
+
+    // Authenticity
+    if (['authentic', 'original', 'genuine', 'fake', 'real'].some(w => text.includes(w))) {
+        return 'Every watch we offer is 100% authentic. We are an authorised dealer for all brands in our catalog.'
+    }
+
+    // Delivery time
+    if (['deliver', 'shipping', 'how long', 'arrive', 'days'].some(w => text.includes(w)) && !text.includes('cost') && !text.includes('price') && !text.includes('fee')) {
+        return 'We offer two options:\n1. Standard delivery — 5 business days.\n2. Express delivery — 2 business days.'
+    }
+
+    // Delivery cost
+    if (['shipping cost', 'delivery cost', 'shipping price', 'delivery fee', 'how much'].some(w => text.includes(w))) {
+        return 'Shipping rates:\n1. Standard delivery — $20.\n2. Express delivery — $40.'
+    }
+
+    // Configurator
+    if (text.includes('config') || text.includes('custom') || text.includes('personaliz')) {
+        return 'Use the Configurator page to choose your model, case, bezel, dial, and strap. Submit the form and our team will contact you with a confirmation.'
+    }
+
+    // Gifting
+    if (text.includes('gift')) {
+        return 'Visit the Gifting page to select a watch and wrapping options. Gift details are saved with your order at checkout.'
+    }
+
+    // Checkout / payment
+    if (['checkout', 'payment', 'pay', 'cart', 'order'].some(w => text.includes(w))) {
+        return 'Checkout has three steps: shipping, payment, and review. You can pay by card or choose cash on delivery. Your order is saved to your account history.'
+    }
+
+    // Support / contact
+    if (['contact', 'support', 'help', 'reach', 'email', 'phone'].some(w => text.includes(w))) {
+        return 'You can reach our concierge team from the Contact page. For configuration requests, the form sends a confirmation to both you and our admin.'
+    }
+
+    // Working hours
+    if (text.includes('hour') || text.includes('open') || text.includes('schedule')) {
+        return 'Our concierge is available:\nMonday – Friday: 9:00 AM – 6:00 PM\nSaturday: 10:00 AM – 4:00 PM\nSunday: Closed'
+    }
+
+    // Product / catalog inquiry
     const relevant = findRelevantWatches(message, watches)
-        .filter((watch) => watch.isActive !== false)
+        .filter(w => w.isActive !== false)
         .slice(0, 3)
 
-    if (text.includes('hello') || text.includes('hi') || text.includes('hey')) {
-        return 'Hello, I am the Van Der Linde Assistant. I can help you choose a watch, compare categories, use the configurator, or explain checkout and gifting.'
-    }
-
-    if (text.includes('config') || text.includes('custom')) {
-        return 'You can use the Configurator page to choose the model, case, bezel, dial, and strap, then submit the request form. Our team receives the configuration and you receive a confirmation email.'
-    }
-
-    if (text.includes('gift')) {
-        return 'For gifts, open the Gifting page, choose the watch and wrapping options, then add it to cart. The gift details are saved with the cart and checkout order.'
-    }
-
-    if (text.includes('checkout') || text.includes('payment') || text.includes('cart')) {
-        return 'Checkout has three steps: shipping, payment, and review. You can pay by card or cash on delivery, then the order is saved to your account history.'
-    }
-
-    if (text.includes('contact') || text.includes('support')) {
-        return 'You can reach the concierge team from the Contact page. For configuration requests, the form also sends a confirmation email to you and a notification to the admin.'
-    }
-
     if (relevant.length) {
-        const recommendations = relevant
-            .map((watch) => `${getWatchBrand(watch)} ${watch.name} - ${formatPrice(watch.price)} (${watch.stock > 0 ? 'in stock' : 'currently unavailable'})`)
+        const list = relevant
+            .map(w => `${getWatchBrand(w)} ${w.name} — ${formatPrice(w.price)} (${w.stock > 0 ? 'in stock' : 'currently unavailable'})`)
             .join('\n')
-
-        return `Here are good matches from our catalog:\n${recommendations}\n\nYou can open the Shop page to view details or use the Configurator for a custom request.`
+        return `Here are some matches from our catalog:\n${list}\n\nVisit the Shop page for full details or use the Configurator for a custom request.`
     }
 
-    return 'I can help with Van Der Linde watches, collections, configurator requests, gifting, cart, checkout, and account support. Ask me what style or budget you prefer and I will guide you.'
+    // Default
+    return 'I can assist with watches, collections, the configurator, gifting, cart, checkout, and account support. Try asking about a style, budget, or specific model.'
 }
 
 const buildPrompt = ({ message, pageUrl, watches }) => `You are the Van Der Linde Assistant for a luxury watch website.
