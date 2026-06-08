@@ -48,6 +48,9 @@ export default function OrderReview({
             {cart.items.map((item, index) => {
               const itemId = item?._id || item?.id || `${item?.name || 'item'}-${index}`
               const imageSource = item?.image || item?.images?.[0] || ''
+              const quantity = Number(item?.quantity) || 1
+              const giftWrappingPrice = Number(item?.giftWrappingPrice) || 0
+              const linePrice = ((Number(item?.price) || 0) + giftWrappingPrice) * quantity
 
               return (
                 <li key={itemId} className="order-review__item">
@@ -66,12 +69,19 @@ export default function OrderReview({
                     <figcaption className="order-review__item-details">
                       <span className="order-review__item-brand">{(typeof item?.brand === 'object' ? item.brand?.name : item?.brand) || 'Van Der Linde'}</span>
                       <h3 className="order-review__item-name">{item?.name || t('product.watchFallbackAlt')}</h3>
-                      <span className="order-review__item-qty">{t('checkout.qty', { quantity: item?.quantity || 1 })}</span>
+                      <span className="order-review__item-qty">{t('checkout.qty', { quantity })}</span>
+                      {item?.isGift && (
+                        <span className="order-review__item-qty">
+                          Gift for {item.recipientName || 'recipient'}
+                          {item.giftWrappingName ? `, ${item.giftWrappingName}` : ''}
+                          {giftWrappingPrice > 0 ? ` (+${formatPrice(giftWrappingPrice)})` : ''}
+                        </span>
+                      )}
                     </figcaption>
                   </figure>
                   <div className="order-review__item-price-wrapper">
                     <span className="order-review__item-price">
-                      {formatPrice((Number(item?.price) || 0) * (Number(item?.quantity) || 1))}
+                      {formatPrice(linePrice)}
                     </span>
                   </div>
                 </li>

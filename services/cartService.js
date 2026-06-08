@@ -14,6 +14,17 @@ const makeError = (msg, code) => {
 const populateCart = (cartQuery) =>
     cartQuery.populate('items.watch', 'name images price stock')
 
+const normalizeGiftOptions = (giftOptions = {}) => ({
+    isGift: Boolean(giftOptions.isGift),
+    giftWrapping: Boolean(giftOptions.giftWrapping),
+    giftWrappingName: String(giftOptions.giftWrappingName || '').trim(),
+    giftWrappingPrice: Math.max(0, Number(giftOptions.giftWrappingPrice) || 0),
+    giftCard: Boolean(giftOptions.giftCard),
+    giftCardName: String(giftOptions.giftCardName || '').trim(),
+    recipientName: String(giftOptions.recipientName || '').trim(),
+    giftMessage: String(giftOptions.giftMessage || '').trim(),
+})
+
 // ─── getCart ─────────────────────────────────────────────────────────────────
 
 const getCart = async (userId) => {
@@ -23,10 +34,11 @@ const getCart = async (userId) => {
 
 // ─── addItem ─────────────────────────────────────────────────────────────────
 
-const addItem = async (userId, watchId, quantity) => {
+const addItem = async (userId, watchId, quantity, giftOptions = {}) => {
     const watch = await Watch.findById(watchId)
     if (!watch) throw makeError('Watch not found', 404)
     if (watch.stock < quantity) throw makeError('Insufficient stock', 400)
+    const normalizedGiftOptions = normalizeGiftOptions(giftOptions)
 
     let cart = await Cart.findOne({ user: userId })
     if (!cart) {
@@ -41,9 +53,12 @@ const addItem = async (userId, watchId, quantity) => {
         // Item already in cart — increment, capped at available stock
         const newQty = cart.items[existingIndex].qty + quantity
         cart.items[existingIndex].qty = Math.min(newQty, watch.stock)
+        if (normalizedGiftOptions.isGift) {
+            Object.assign(cart.items[existingIndex], normalizedGiftOptions)
+        }
     } else {
         // New item
-        cart.items.push({ watch: watchId, qty: quantity })
+        cart.items.push({ watch: watchId, qty: quantity, ...normalizedGiftOptions })
     }
 
     await cart.save()

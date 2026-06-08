@@ -65,6 +65,14 @@ const createOrder = async (userId, { items, shippingAddress, shippingMethod, pay
         price: item.price,
         image: item.image || '',
         qty:   item.quantity ?? item.qty,
+        isGift: Boolean(item.isGift),
+        giftWrapping: Boolean(item.giftWrapping),
+        giftWrappingName: item.giftWrappingName || '',
+        giftWrappingPrice: Math.max(0, Number(item.giftWrappingPrice) || 0),
+        giftCard: Boolean(item.giftCard),
+        giftCardName: item.giftCardName || '',
+        recipientName: item.recipientName || '',
+        giftMessage: item.giftMessage || '',
     }))
 
     const itemsTotal = calculateOrderTotal(orderItems)

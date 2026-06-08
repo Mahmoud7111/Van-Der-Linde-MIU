@@ -13,7 +13,10 @@ const orderItemSchema = new mongoose.Schema({
     qty:   { type: Number, required: true, min: 1 },
     isGift:        { type: Boolean, default: false },
     giftWrapping:  { type: Boolean, default: false },
+    giftWrappingName:  { type: String, default: '' },
+    giftWrappingPrice: { type: Number, default: 0, min: 0 },
     giftCard:      { type: Boolean, default: false },
+    giftCardName:  { type: String, default: '' },
     recipientName: { type: String, default: '' },
     giftMessage:   { type: String, default: '' },
 }, { _id: false })

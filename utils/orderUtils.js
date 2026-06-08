@@ -6,7 +6,12 @@
  * @returns {number} total rounded to 2 decimal places
  */
 const calculateOrderTotal = (items = []) => {
-    const total = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+    const total = items.reduce((sum, item) => {
+        const itemPrice = Number(item.price) || 0
+        const giftWrappingPrice = Number(item.giftWrappingPrice) || 0
+        const qty = Number(item.qty) || 1
+        return sum + (itemPrice + giftWrappingPrice) * qty
+    }, 0)
     return Math.round(total * 100) / 100
 }
 

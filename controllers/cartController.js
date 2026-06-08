@@ -14,8 +14,8 @@ const getCart = async (req, res, next) => {
 // POST /api/cart/items — body: { watchId, quantity }
 const addItem = async (req, res, next) => {
     try {
-        const { watchId, quantity } = req.body
-        const cart = await cartService.addItem(req.user._id, watchId, quantity)
+        const { watchId, quantity, giftOptions } = req.body
+        const cart = await cartService.addItem(req.user._id, watchId, quantity, giftOptions)
         res.status(200).json({ success: true, message: 'Item added to cart', data: cart })
     } catch (err) {
         next(err)

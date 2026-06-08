@@ -66,6 +66,26 @@
   font-size: 0.95rem;
   color: var(--color-muted);
 }
+.cart-item__gift {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.cart-item__gift-badge {
+  width: fit-content;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  padding: 0.1rem 0.55rem;
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 .cart-item__actions {
   display: flex;
   align-items: center;

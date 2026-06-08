@@ -47,7 +47,7 @@ const cartReducer = (state, action) => {
           const stockLimit = getStockLimit(item)
           const nextQuantity = Math.min(item.quantity + 1, stockLimit)
 
-          return { ...item, quantity: nextQuantity }
+          return { ...item, ...incomingItem, quantity: nextQuantity }
         })
       }
 
@@ -96,6 +96,14 @@ const normalizeServerCart = (serverCart) => {
     .map((item) => ({
       ...item.watch,
       quantity: item.qty || 1,
+      isGift: Boolean(item.isGift),
+      giftWrapping: Boolean(item.giftWrapping),
+      giftWrappingName: item.giftWrappingName || '',
+      giftWrappingPrice: Number(item.giftWrappingPrice) || 0,
+      giftCard: Boolean(item.giftCard),
+      giftCardName: item.giftCardName || '',
+      recipientName: item.recipientName || '',
+      giftMessage: item.giftMessage || '',
     }))
 }
 
@@ -143,7 +151,7 @@ export const CartProvider = ({ children }) => {
     try {
       if (action.type === 'ADD') {
         const watchId = action.payload?._id || action.payload?.id
-        const serverCart = await cartService.addItem(watchId, 1)
+        const serverCart = await cartService.addItem(watchId, 1, action.payload?.giftOptions)
         baseDispatch({ type: 'SET', payload: normalizeServerCart(serverCart) })
         toast.success('Added to cart')
         return
@@ -184,7 +192,12 @@ export const CartProvider = ({ children }) => {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
 
   // Total price used in cart summary and checkout review screens.
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const totalPrice = cart.reduce((sum, item) => {
+    const itemPrice = Number(item.price) || 0
+    const giftWrappingPrice = Number(item.giftWrappingPrice) || 0
+    const quantity = Number(item.quantity) || 1
+    return sum + (itemPrice + giftWrappingPrice) * quantity
+  }, 0)
 
   return (
     // Expose reducer data + dispatcher so cart operations stay centralized and predictable.

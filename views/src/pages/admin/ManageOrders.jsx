@@ -128,7 +128,13 @@ const getOrderItemLines = (order, maxItems = 3) => {
 const getPaidLabel = (order) => (order?.isPaid ? 'Yes' : 'No')
 
 const isGiftOrder = (order) =>
-  Boolean(order?.isGift || order?.gift || order?.giftOrder || order?.giftMessage)
+  Boolean(
+    order?.isGift ||
+    order?.gift ||
+    order?.giftOrder ||
+    order?.giftMessage ||
+    getOrderItems(order).some((item) => item?.isGift || item?.giftMessage)
+  )
 
 const getGiftLabel = (order) => {
   if (order?.giftType === 'hybrid') return 'Hybrid'

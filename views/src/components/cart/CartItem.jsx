@@ -22,10 +22,19 @@ export default function CartItem({ item }) {
     images = [],
     quantity = 1,
     stock,
+    isGift,
+    giftWrappingName = '',
+    giftWrappingPrice = 0,
+    giftCardName = '',
+    recipientName = '',
+    giftMessage = '',
   } = item
 
   const stockLimit = Number.isFinite(Number(stock)) ? stock : Infinity
   const imageUrl = resolveWatchProductImage(images?.[0] || image)
+  const itemPrice = Number(price) || 0
+  const wrapPrice = Number(giftWrappingPrice) || 0
+  const linePrice = (itemPrice + wrapPrice) * (Number(quantity) || 1)
 
   const handleIncrease = () => {
     if (quantity < stockLimit) {
@@ -66,8 +75,23 @@ export default function CartItem({ item }) {
         <h4 className="cart-item__title">{name}</h4>
 
         <div className="cart-item__price">
-          {formatPrice(price)}
+          {formatPrice(linePrice)}
         </div>
+
+        {isGift && (
+          <div className="cart-item__gift">
+            <span className="cart-item__gift-badge">Gift</span>
+            {recipientName && <span>For: {recipientName}</span>}
+            {giftWrappingName && (
+              <span>
+                Wrap: {giftWrappingName}
+                {wrapPrice > 0 ? ` (+${formatPrice(wrapPrice)})` : ''}
+              </span>
+            )}
+            {giftCardName && <span>Card: {giftCardName}</span>}
+            {giftMessage && <span>Message: "{giftMessage}"</span>}
+          </div>
+        )}
 
         <div className="cart-item__actions">
           <div className="cart-item__quantity-controls">

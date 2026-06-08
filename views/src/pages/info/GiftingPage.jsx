@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/common/Button'
 import { FiGift, FiPenTool, FiMail, FiCheckCircle, FiX, FiInfo, FiTruck, FiClock } from 'react-icons/fi'
+import { useCart } from '@/context/CartContext'
 import { useCurrency } from '@/context/CurrencyContext'
 import { watchService } from '@/services/watchService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
@@ -13,6 +15,8 @@ import './GiftingPage.css'
 
 export default function GiftingPage() {
   const { formatPrice } = useCurrency()
+  const { dispatch } = useCart()
+  const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
@@ -90,6 +94,33 @@ export default function GiftingPage() {
     setMessage('')
     setCurrentStep(1)
     setIsModalOpen(false)
+  }
+
+  const handleAddGiftToCart = async () => {
+    if (!selectedProduct || !selectedWrap || !selectedCard || !recipientName || !message) return
+
+    const giftOptions = {
+      isGift: true,
+      giftWrapping: true,
+      giftWrappingName: selectedWrap.name,
+      giftWrappingPrice: selectedWrap.price,
+      giftCard: true,
+      giftCardName: selectedCard.name,
+      recipientName,
+      giftMessage: message,
+    }
+
+    await dispatch({
+      type: 'ADD',
+      payload: {
+        ...selectedProduct,
+        ...giftOptions,
+        giftOptions,
+      },
+    })
+
+    resetGift()
+    navigate('/cart')
   }
 
   return (
@@ -431,7 +462,7 @@ export default function GiftingPage() {
 
                   <div className="step-actions">
                     <Button variant="outline" onClick={handleBack}>Back</Button>
-                    <Button variant="primary" onClick={resetGift}>Complete Order</Button>
+                    <Button variant="primary" onClick={handleAddGiftToCart}>Add Gift to Cart</Button>
                   </div>
                 </Motion.div>
               )}

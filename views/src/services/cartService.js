@@ -7,7 +7,7 @@ import { apiGet, apiPost, apiPut, apiDelete } from '@/services/http'
 
 export const cartService = {
   getCart: () => apiGet('/cart'),
-  addItem: (watchId, quantity) => apiPost('/cart/items', { watchId, quantity }),
+  addItem: (watchId, quantity, giftOptions) => apiPost('/cart/items', { watchId, quantity, giftOptions }),
   updateItem: (watchId, quantity) => apiPut(`/cart/items/${watchId}`, { quantity }),
   removeItem: (watchId) => apiDelete(`/cart/items/${watchId}`),
   clearCart: () => apiDelete('/cart'),
