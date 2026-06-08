@@ -16,6 +16,8 @@
 
 import { createContext, useContext, useEffect, useReducer } from 'react'
 import toast from 'react-hot-toast' 
+import { useAuth } from '@/context/AuthContext'
+import { cartService } from '@/services/cartService'
 
 // Create cart context for reducer state and computed totals.
 const CartContext = createContext(null)
@@ -26,6 +28,10 @@ const getStockLimit = (item) => (Number.isFinite(Number(item?.stock)) ? Number(i
 // Reducer handles all cart operations with explicit action cases.
 const cartReducer = (state, action) => {
   switch (action.type) {
+    case 'SET': {
+      return Array.isArray(action.payload) ? action.payload : []
+    }
+
     case 'ADD': {
       // Incoming item to add to cart.
       const incomingItem = action.payload
@@ -82,6 +88,17 @@ const cartReducer = (state, action) => {
   }
 }
 
+const normalizeServerCart = (serverCart) => {
+  const items = Array.isArray(serverCart?.items) ? serverCart.items : []
+
+  return items
+    .filter((item) => item?.watch)
+    .map((item) => ({
+      ...item.watch,
+      quantity: item.qty || 1,
+    }))
+}
+
 // Safe localStorage parser for initial cart hydration.
 const getInitialCart = () => {
   try {
@@ -95,13 +112,66 @@ const getInitialCart = () => {
 // Provider exposes cart state, dispatcher, and computed totals.
 export const CartProvider = ({ children }) => {
   const [cart, baseDispatch] = useReducer(cartReducer, [], getInitialCart)
+  const { user } = useAuth()
 
-  const dispatch = (action) => {
-    baseDispatch(action)
-    if (action.type === 'ADD') {
-      toast.success('Added to cart')
-    } else if (action.type === 'REMOVE') {
-      toast.success('Removed from cart')
+  useEffect(() => {
+    const loadServerCart = async () => {
+      if (!user) return
+
+      try {
+        const serverCart = await cartService.getCart()
+        baseDispatch({ type: 'SET', payload: normalizeServerCart(serverCart) })
+      } catch (err) {
+        toast.error(err.message || 'Could not load cart')
+      }
+    }
+
+    loadServerCart()
+  }, [user])
+
+  const dispatch = async (action) => {
+    if (!user) {
+      baseDispatch(action)
+      if (action.type === 'ADD') {
+        toast.success('Added to cart')
+      } else if (action.type === 'REMOVE') {
+        toast.success('Removed from cart')
+      }
+      return
+    }
+
+    try {
+      if (action.type === 'ADD') {
+        const watchId = action.payload?._id || action.payload?.id
+        const serverCart = await cartService.addItem(watchId, 1)
+        baseDispatch({ type: 'SET', payload: normalizeServerCart(serverCart) })
+        toast.success('Added to cart')
+        return
+      }
+
+      if (action.type === 'UPDATE_QTY') {
+        const { id, qty } = action.payload
+        const serverCart = await cartService.updateItem(id, qty)
+        baseDispatch({ type: 'SET', payload: normalizeServerCart(serverCart) })
+        return
+      }
+
+      if (action.type === 'REMOVE') {
+        const serverCart = await cartService.removeItem(action.payload)
+        baseDispatch({ type: 'SET', payload: normalizeServerCart(serverCart) })
+        toast.success('Removed from cart')
+        return
+      }
+
+      if (action.type === 'CLEAR') {
+        await cartService.clearCart()
+        baseDispatch({ type: 'CLEAR' })
+        return
+      }
+
+      baseDispatch(action)
+    } catch (err) {
+      toast.error(err.message || 'Could not update cart')
     }
   }
 
