@@ -3,6 +3,7 @@ import { FiHeart } from 'react-icons/fi'
 import { useCart } from '@/context/CartContext'
 import { useWishlist } from '@/context/WishlistContext'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import { cn } from '@/utils/cn'
 import StarRating from '@/components/common/StarRating'
@@ -13,6 +14,7 @@ export default function ProductCard({ watch, viewMode = 'grid', className = '' }
   const { dispatch } = useCart()
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist()
   const { formatPrice } = useCurrency()
+  const { t } = useLanguage()
 
   if (!watch) return null
 
@@ -41,7 +43,7 @@ export default function ProductCard({ watch, viewMode = 'grid', className = '' }
   return (
     <article className={cn('product-card', isOutOfStock && 'product-card--sold-out', `product-card--${viewMode}`, className)}>
       <div className="product-card__media">
-        <Link className="product-card__media-link" to={productPath} aria-label={`View ${watch.name}`}>
+        <Link className="product-card__media-link" to={productPath} aria-label={t('product.view', { name: watch.name })}>
           <img className="product-card__image" src={imageUrl} alt={watch.name} loading="lazy" />
         </Link>
 
@@ -49,7 +51,7 @@ export default function ProductCard({ watch, viewMode = 'grid', className = '' }
           type="button"
           className={cn('product-card__wishlist', isSaved && 'product-card__wishlist--active')}
           aria-pressed={isSaved}
-          aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
+          aria-label={isSaved ? t('product.removeFromWishlist') : t('product.saveToWishlist')}
           onClick={handleToggleWishlist}
         >
           <FiHeart aria-hidden="true" fill={isSaved ? 'currentColor' : 'none'} />
@@ -63,7 +65,7 @@ export default function ProductCard({ watch, viewMode = 'grid', className = '' }
             size="sm"
             disabled={isOutOfStock}
           >
-            Add to Cart
+            {t('btn.addToCart')}
           </Button>
         </div>
       </div>

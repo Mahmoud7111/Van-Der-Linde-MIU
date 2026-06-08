@@ -115,7 +115,7 @@ export default function MobileMenu({ isOpen, onClose }) {
                 className={cn('mobile-menu__lang-btn', lang === 'ar' && 'mobile-menu__lang-btn--active')}
                 onClick={() => setLang('ar')}
               >
-                عربي
+                AR
               </button>
             </div>
           </div>
@@ -130,3 +130,4 @@ export default function MobileMenu({ isOpen, onClose }) {
 
   return createPortal(menu, document.body)
 }
+

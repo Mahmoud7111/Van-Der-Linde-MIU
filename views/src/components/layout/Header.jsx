@@ -156,7 +156,7 @@ export default function Header() {
               ) : (
                 <>
                   <NavLink to="/contact" className="header__contact-btn">
-                    <FiPhone /> <span>Contact us</span>
+                    <FiPhone /> <span>{t('nav.contactUs')}</span>
                   </NavLink>
 
                   <LanguageSwitcher className="header__icon-control header__lang-btn" />
@@ -215,7 +215,7 @@ export default function Header() {
                 <>
                   <NavLink aria-label={accountLabel} className={iconLinkClassName} to={accountPath}>
                     <FiUser aria-hidden="true" />
-                    <span className="header__icon-label">Profile</span>
+                    <span className="header__icon-label">{accountLabel}</span>
                   </NavLink>
 
                   <NavLink
@@ -229,7 +229,7 @@ export default function Header() {
                         {wishlistCount}
                       </span>
                     </div>
-                    <span className="header__icon-label">Wishlist</span>
+                    <span className="header__icon-label">{t('nav.wishlist')}</span>
                   </NavLink>
 
                   <button
@@ -244,7 +244,7 @@ export default function Header() {
                         {totalItems}
                       </span>
                     </div>
-                    <span className="header__icon-label">Cart</span>
+                    <span className="header__icon-label">{t('nav.cart')}</span>
                   </button>
                 </>
               )}
@@ -266,27 +266,27 @@ export default function Header() {
 
 
               <NavLink className={navLinkClassName} to="/shop">
-                SHOP ALL
+                {t('nav.shopAll')}
               </NavLink>
 
               <NavLink className={navLinkClassName} to="/collections">
-                COLLECTIONS
+                {t('nav.collections')}
               </NavLink>
 
               <NavLink className={navLinkClassName} to="/quiz">
-                FIND YOUR WATCH
+                {t('nav.findYourWatch')}
               </NavLink>
 
               <NavLink className={navLinkClassName} to="/configurator">
-                CONFIGURATOR
+                {t('nav.configurator')}
               </NavLink>
 
               <NavLink className={navLinkClassName} to="/about">
-                OUR STORY
+                {t('nav.ourStory')}
               </NavLink>
 
               <NavLink className={navLinkClassName} to="/services">
-                SERVICES
+                {t('nav.services')}
               </NavLink>
 
             </nav>
