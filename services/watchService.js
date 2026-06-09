@@ -98,9 +98,19 @@ const getWatchById = async (id) => {
     return watch
 }
 
+const ensureUniqueSlug = async (baseSlug) => {
+    let slug = baseSlug
+    let counter = 1
+    while (await Watch.exists({ slug })) {
+        slug = `${baseSlug}-${counter}`
+        counter++
+    }
+    return slug
+}
+
 const createWatch = async (data) => {
     if (data.name && !data.slug) {
-        data.slug = slugify(data.name)
+        data.slug = await ensureUniqueSlug(slugify(data.name))
     }
 
     if (data.brand) {
@@ -115,8 +125,8 @@ const createWatch = async (data) => {
 }
 
 const updateWatch = async (id, data) => {
-    if (data.name && !data.slug) {
-        data.slug = slugify(data.name)
+    if (data.slug) {
+        data.slug = await ensureUniqueSlug(data.slug)
     }
 
     if (data.brand) {

@@ -25,7 +25,7 @@ const createTransporter = () => {
     // Configure the transport layer with host, port, security settings, and authentication
     return nodemailer.createTransport({
         host: EMAIL_HOST,
-        port: Number(EMAIL_PORT) || 587, // Default to port 587 if not specified
+        port: Number(EMAIL_PORT) || 587, // Default to port 587 if not specified 
         secure: String(EMAIL_PORT) === '465', // True if using port 465 (SSL/TLS), false otherwise
         auth: {
             user: EMAIL_USER,

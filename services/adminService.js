@@ -4,13 +4,13 @@ const Watch = require('../models/Watch')
 
 const getDashboardStats = async () => {
   const [revenueResult, ordersByStatus, totalUsers, totalWatches, recentOrders] =
-    await Promise.all([
+    await Promise.all([ // they all start at same time
       Order.aggregate([
-        { $match: { isPaid: true } },
-        { $group: { _id: null, total: { $sum: '$totalPrice' } } },
+        { $match: { isPaid: true } }, // find
+        { $group: { _id: null, total: { $sum: '$totalPrice' } } }, 
       ]),
       Order.aggregate([
-        { $group: { _id: '$status', count: { $sum: 1 } } },
+        { $group: { _id: '$status', count: { $sum: 1 } } }, // look at all orders, group them by statues and count how many order are in each group
       ]),
       User.countDocuments(),
       Watch.countDocuments(),

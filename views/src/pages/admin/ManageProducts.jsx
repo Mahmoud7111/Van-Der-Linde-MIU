@@ -257,8 +257,8 @@ export default function ManageProducts() {
       setIsFormOpen(false)
       setEditingId(null)
       setFormMode('create')
-    } catch {
-      toast.error('Unable to save this watch right now.')
+    } catch (err) {
+      toast.error(err?.message || 'Unable to save this watch right now.')
     } finally {
       setIsSaving(false)
     }
@@ -275,8 +275,8 @@ export default function ManageProducts() {
       await watchService.remove(watch._id)
       setCatalog((prev) => prev.filter((item) => item._id !== watch._id))
       toast.success('Watch removed from the catalog.')
-    } catch {
-      toast.error('Unable to remove that watch right now.')
+    } catch (err) {
+      toast.error(err?.message || 'Unable to remove that watch right now.')
     } finally {
       setDeletingId(null)
     }

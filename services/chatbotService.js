@@ -11,7 +11,7 @@ const includesAny = (text, words) => words.some((word) => text.includes(word))
 const formatPrice = (value) => {
     const amount = Number(value)
 
-    if (!Number.isFinite(amount)) return 'Price available on request'
+    if (!Number.isFinite(amount)) return 'Price available on request' //check
 
     return `$${amount.toLocaleString('en-US')}`
 }
