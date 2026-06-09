@@ -3,29 +3,16 @@
   "builds": [
     {
       "src": "app.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "views/dist/**",
-      "use": "@vercel/static"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": "views/dist/**"
+      }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "app.js"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/views/dist/assets/$1"
-    },
-    {
-      "src": "/(.*)\\.(.*)",
-      "dest": "/views/dist/$1.$2"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/views/dist/index.html"
+      "dest": "app.js"
     }
   ]
 }
