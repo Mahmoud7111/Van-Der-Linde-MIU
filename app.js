@@ -21,6 +21,20 @@ app.use(express.json())   //it read the body of the request and parse it to json
 app.use(cookieParser())   // must be before routes so req.cookies is populated
 app.use(morgan('dev'))    // for logging
 
+// For Vercel Serverless — ensure DB is ready before every request.
+// The cached promise from connectDB means only the first cold-start pays the wait.
+if (process.env.VERCEL) {
+    app.use(async (req, res, next) => {
+        try {
+            await connectDB()
+            next()
+        } catch (err) {
+            console.error('DB connection failed:', err)
+            res.status(503).json({ success: false, message: 'Database unavailable', data: null })
+        }
+    })
+}
+
 app.get('/api/health', (req, res) => {
     res.json({ success: true, message: 'API is running' })
 })
@@ -46,9 +60,6 @@ if (!process.env.VERCEL) {
         console.error('DB connection failed:', err)
         process.exit(1)
     })
-} else {
-    // For Vercel Serverless, just connect to the DB and export the app
-    connectDB().catch(err => console.error('DB connection failed:', err));
 }
 
 module.exports = app
