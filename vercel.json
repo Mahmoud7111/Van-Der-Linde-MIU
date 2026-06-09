@@ -4,31 +4,12 @@
     {
       "src": "app.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "views/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "app.js"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "views/dist/assets/$1"
-    },
-    {
-      "src": "/(.*)\\.(js|css|svg|png|jpg|jpeg|gif|ico|webp|woff2?|ttf|eot|glb)",
-      "dest": "views/dist/$1.$2"
-    },
-    {
       "src": "/(.*)",
-      "dest": "views/dist/index.html"
+      "dest": "app.js"
     }
   ]
 }
