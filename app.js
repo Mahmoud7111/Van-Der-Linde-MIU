@@ -16,19 +16,6 @@ const routes = require('./routes/index')
 
 const app = express()
 
-// On Vercel, ensure DB is connected before every request (cached promise makes it fast).
-// Must NOT be async — Express 5's async wrapper can crash the serverless function.
-if (process.env.VERCEL) {
-    app.use((req, res, next) => {
-        connectDB()
-            .then(() => next())
-            .catch(err => {
-                console.error('DB connection failed:', err)
-                res.status(503).json({ success: false, message: 'Database unavailable', data: null })
-            })
-    })
-}
-
 app.use(helmet())
 app.use(cors(corsOptions))
 app.use(express.json())
