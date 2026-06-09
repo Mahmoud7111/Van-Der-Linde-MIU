@@ -6,11 +6,8 @@
       "use": "@vercel/node"
     },
     {
-      "src": "views/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "src": "views/dist/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -20,15 +17,15 @@
     },
     {
       "src": "/assets/(.*)",
-      "dest": "views/dist/assets/$1"
+      "dest": "/views/dist/assets/$1"
     },
     {
-      "src": "/(.*)\\.(js|css|svg|png|jpg|jpeg|gif|ico|webp|woff2?|ttf|eot|glb)",
-      "dest": "views/dist/$1.$2"
+      "src": "/(.*)\\.(.*)",
+      "dest": "/views/dist/$1.$2"
     },
     {
       "src": "/(.*)",
-      "dest": "views/dist/index.html"
+      "dest": "/views/dist/index.html"
     }
   ]
 }
