@@ -1,9 +1,7 @@
-//* Express config: middleware chain + route mounting + static frontend serving
+//* Express config: middleware chain + route mounting
 require('dotenv').config()
 
 const express = require('express')
-const path = require('path')
-const fs = require('fs')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const { connectDB } = require('./config/db')
@@ -16,8 +14,6 @@ const routes = require('./routes/index')
 
 const app = express()
 
-// On Vercel, ensure DB is connected before every request (cached promise makes it fast).
-// Must NOT be async — Express 5's async wrapper can crash the serverless function.
 if (process.env.VERCEL) {
     app.use((req, res, next) => {
         connectDB()
@@ -40,15 +36,6 @@ app.get('/api/health', (req, res) => {
 })
 
 app.use('/api', routes)
-
-// Serve frontend from the same Express app so auth is same-origin.
-const staticDir = path.join(__dirname, 'views', 'dist')
-if (fs.existsSync(staticDir)) {
-    app.use(express.static(staticDir))
-    app.use((req, res) => {
-        res.sendFile(path.join(staticDir, 'index.html'))
-    })
-}
 
 app.use(errorHandler)
 
