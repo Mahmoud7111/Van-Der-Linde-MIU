@@ -17,9 +17,9 @@ const app = express()
 // Middlewares - Order matters
 app.use(helmet())   
 app.use(cors(corsOptions))
-app.use(express.json())   //it read the body of the request and parse it to json
-app.use(cookieParser())   // must be before routes so req.cookies is populated
-app.use(morgan('dev'))    // for logging
+app.use(express.json())
+app.use(cookieParser())
+app.use(morgan('dev'))
 
 // For Vercel Serverless — ensure DB is ready before every request.
 // The cached promise from connectDB means only the first cold-start pays the wait.
@@ -39,15 +39,7 @@ app.get('/api/health', (req, res) => {
     res.json({ success: true, message: 'API is running' })
 })
 
-app.use('/api', routes) // routes are mounted at /api/... 
-// The reason exists is to separate backend responses from frontend pages. Without it you'd have a collision:
-// yoursite.com/watches  ← does React Router handle this? or Express?
-// With the prefix there's no ambiguity:
-// yoursite.com/watches      → React Router renders ShopPage
-// yoursite.com/api/watches  → Express returns JSON
-
-//It also makes the Vite proxy work cleanly. In vite.config.js you tell Vite: "any request starting with /api, forward it to the backend." Anything else stays in React. The prefix is what makes that rule possible.
-
+app.use('/api', routes)
 
 app.use(errorHandler) // must be last
 
