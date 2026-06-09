@@ -5,6 +5,7 @@
 import { apiPost } from '@/services/http'
 
 export const chatbotService = {
-  sendMessage: (message, pageUrl) =>
-    apiPost('/chatbot/message', { message, pageUrl }).then((data) => data.reply),
+    sendMessage: (message, pageUrl) =>
+        apiPost('/chatbot/message', { message, pageUrl })
+            .then((data) => data.reply),
 }

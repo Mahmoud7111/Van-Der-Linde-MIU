@@ -1,6 +1,8 @@
 // Chatbot logic: backend-only rule and catalog assistant, no external AI calls.
+
 const Watch = require('../models/Watch')
-require('../models/Brand') // Required for population
+
+require('../models/Brand')
 
 const normalise = (value = '') => String(value).toLowerCase()
 
@@ -8,22 +10,35 @@ const includesAny = (text, words) => words.some((word) => text.includes(word))
 
 const formatPrice = (value) => {
     const amount = Number(value)
+
     if (!Number.isFinite(amount)) return 'Price available on request'
+
     return `$${amount.toLocaleString('en-US')}`
 }
 
 const getWatchBrand = (watch) => watch.brand?.name || 'Van Der Linde'
 
 const extractBudget = (text) => {
+    // match() searches text using a regular expression.  // This looks for phrases like // "under 5000", "below $3000", "budget 10000", etc.
+
     const match = text.match(/(?:under|below|less than|max|maximum|budget|up to)\s*\$?\s*(\d{3,7})/)
+
+    // If a match exists, return the captured number as a real number // If not, return null.
     return match ? Number(match[1]) : null
 }
 
+
 const findRelevantWatches = (message, watches = []) => {
+    // Make the user message lowercase so comparisons are easier.
     const text = normalise(message)
+
     const categoryHints = ['sport', 'classic', 'luxury', 'smart', 'dress', 'dive', 'pilot', 'casual']
+
     const matchedCategory = categoryHints.find((category) => text.includes(category))
+
+    // Try to extract a budget from the message.
     const budget = extractBudget(text)
+
     const gender = text.includes('women') || text.includes('female') || text.includes('ladies')
         ? 'women'
         : text.includes('men') || text.includes('male') || text.includes('gentlemen')
@@ -32,44 +47,61 @@ const findRelevantWatches = (message, watches = []) => {
 
     const directMatches = watches.filter((watch) => {
         const haystack = normalise(`${getWatchBrand(watch)} ${watch.name} ${watch.category}`)
+
+        // split(/\s+/) splits the message into words using spaces.
+        // .some() checks whether at least one word from the message exists in the watch text.
         return text
             .split(/\s+/)
             .some((word) => word.length > 3 && haystack.includes(word))
     })
 
+    // If there are direct matches, use them.
+    // Otherwise fall back to the full watch list.
     let matches = directMatches.length ? directMatches : watches
 
     if (matchedCategory) matches = matches.filter((watch) => watch.category === matchedCategory)
+
     if (gender) matches = matches.filter((watch) => watch.gender === gender || watch.gender === 'unisex')
+
     if (budget) matches = matches.filter((watch) => Number(watch.price) <= budget)
 
+    
     if (matches.length !== watches.length) {
         return matches.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
     }
 
+    // If the user asked for cheap/budget watches, return the cheapest ones. // .sort to sort them from lowest price to highest price and slice(0, 5) to get the first 5 cheapest watches. 
     if (includesAny(text, ['cheap', 'affordable', 'budget', 'lowest price'])) {
         return [...watches].sort((a, b) => Number(a.price) - Number(b.price)).slice(0, 5)
     }
 
+    // If the user asked for best/top-rated watches, return the highest-rated ones.
     if (includesAny(text, ['best', 'recommend', 'suggest', 'top rated'])) {
         return [...watches].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0)).slice(0, 5)
     }
 
+    // If nothing useful was found, return an empty list.
     return []
 }
 
 const buildCatalogReply = (message, watches = []) => {
     const relevant = findRelevantWatches(message, watches)
+        // Keep only watches that are active.
         .filter((watch) => watch.isActive !== false)
+        // Show only the first 3 results.
         .slice(0, 3)
 
+    // If there are no relevant watches, return null.
     if (!relevant.length) return null
 
     const list = relevant
         .map((watch) => {
             const stock = watch.stock > 0 ? 'in stock' : 'currently unavailable'
+
+            // Build one readable line per watch.
             return `${getWatchBrand(watch)} ${watch.name} - ${formatPrice(watch.price)} (${stock})`
         })
+        // Put each watch on a new line.
         .join('\n')
 
     return `Here are some matches from our catalog:\n${list}\n\nOpen the Shop page for full details, or use the Configurator if you want a custom request.`
@@ -301,22 +333,37 @@ const buildStaticReply = (message) => {
     return null
 }
 
+// Main chatbot function.
+// It first checks for a blank message,
+// then checks simple FAQ-style replies,
+// then searches the database for matching watches,
+// and finally returns a fallback reply if nothing matches.
 const handleMessage = async (message) => {
     const cleanMessage = String(message || '').trim()
+
+    // If the user sent an empty message, ask them to type something.
     if (!cleanMessage) return 'Please type a question and I will help you.'
 
+    // Try to answer from the built-in FAQ replies first.
     const staticReply = buildStaticReply(cleanMessage)
     if (staticReply) return staticReply
 
+    // Load active watches from MongoDB.
     const watches = await Watch.find({ isActive: { $ne: false } })
+        // Pull in brand name from the Brand model.
         .populate('brand', 'name')
+        // Only load the fields needed by the chatbot.
         .select('name price category gender brand rating stock isActive specs')
+        // Sort higher-rated watches first, then cheaper ones.
         .sort({ rating: -1, price: 1 })
+        // Limit the number of results for performance.
         .limit(40)
 
+    // Build a reply from matching watches.
     const catalogReply = buildCatalogReply(cleanMessage, watches)
     if (catalogReply) return catalogReply
 
+    // Fallback response if nothing specific matched.
     return 'I can assist with watches, brands, collections, configurator requests, gifting, wishlist, cart, checkout, reviews, and account support. Try asking about a style, budget, or specific model.'
 }
 

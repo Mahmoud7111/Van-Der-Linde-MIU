@@ -3,7 +3,7 @@ const { sendEmail } = require('../utils/emailService')
 const { ADMIN_EMAIL } = require('../config/env')
 const { cleanString, normalizeEmail } = require('../utils/validationUtils')
 
-const escapeHtml = (value = '') => String(value)
+const escapeHtml = (value = '') => String(value) //Prevents HTML injection. 
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -16,7 +16,7 @@ const formatPrice = (value) => {
     return `$${amount.toLocaleString('en-US')}`
 }
 
-const buildConfigurationRows = (configuration = {}) => {
+const buildConfigurationRows = (configuration = {}) => { // builds the configuration rows for the email
     const rows = [
         ['Model', configuration.model],
         ['Case', configuration.caseColor],
@@ -45,8 +45,8 @@ const buildEmailLayout = (title, bodyHtml) => `
 `
 
 const submitConfiguration = async ({ userId, name, email, configuration }) => {
-    const normalizedEmail = normalizeEmail(email)
-    const cleanName = cleanString(name)
+    const normalizedEmail = normalizeEmail(email) // removes extra spaces from email and converts it to lowercase
+    const cleanName = cleanString(name) // removes extra spaces from name and converts it to lowercase
     const cleanConfiguration = {
         model:          cleanString(configuration?.model),
         caseColor:      cleanString(configuration?.caseColor),
@@ -60,14 +60,14 @@ const submitConfiguration = async ({ userId, name, email, configuration }) => {
     const docData = { name: cleanName, email: normalizedEmail, configuration: cleanConfiguration }
     if (userId) docData.user = userId
 
-    const request = await ConfigurationRequest.create(docData)
-    const rows = buildConfigurationRows(cleanConfiguration)
+    const request = await ConfigurationRequest.create(docData) // save configuration request to database
+    const rows = buildConfigurationRows(cleanConfiguration) // builds the configuration rows for the email
 
     if (!ADMIN_EMAIL) {
-        console.error('Admin email failed: ADMIN_EMAIL is missing')
+        console.error('Admin email failed: ADMIN_EMAIL is missing') 
     } else {
-        try {
-            await sendEmail({
+        try { // try sending admin email
+            await sendEmail({ //sending admin email
                 to: ADMIN_EMAIL,
                 subject: `New configuration request from ${cleanName}`,
                 html: buildEmailLayout('New Configuration Request', `
@@ -83,7 +83,7 @@ const submitConfiguration = async ({ userId, name, email, configuration }) => {
         }
     }
 
-    try {
+    try { // sending customer email
         await sendEmail({
             to: normalizedEmail,
             subject: 'We received your Van Der Linde configuration request',
@@ -99,13 +99,13 @@ const submitConfiguration = async ({ userId, name, email, configuration }) => {
         console.error('Customer confirmation email failed:', err.message)
     }
 
-    return request
+    return request // returns the configuration request
 }
 
 const getRequests = async () => {
-    return ConfigurationRequest.find()
-        .sort({ createdAt: -1 })
-        .populate('user', 'name email')
+    return ConfigurationRequest.find() // finds all configuration requests
+        .sort({ createdAt: -1 }) // sorts configuration requests by creation date in descending order
+        .populate('user', 'name email') // populates the user field with name and email
 }
 
 module.exports = { submitConfiguration, getRequests }

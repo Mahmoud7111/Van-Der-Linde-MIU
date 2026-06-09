@@ -10,7 +10,7 @@ const configurationSchema = new mongoose.Schema({
     strapColor:    { type: String, default: '' },
     estimatedPrice:{ type: Number, default: 0 },
     notes:         { type: String, default: '' },
-}, { _id: false })
+}, { _id: false }) // _id: false means that the configurationSchema will not have its own _id
 
 const configurationRequestSchema = new mongoose.Schema({
     user: {
@@ -21,7 +21,7 @@ const configurationRequestSchema = new mongoose.Schema({
     email: { type: String, required: true, trim: true, lowercase: true },
     configuration: {
         type:    configurationSchema,
-        default: () => ({}),
+        default: () => ({}), // default configuration is an empty object
     },
     status: {
         type:    String,

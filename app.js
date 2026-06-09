@@ -14,6 +14,7 @@ const routes = require('./routes/index')
 
 const app = express()
 
+// Middlewares - Order matters
 app.use(helmet())   
 app.use(cors(corsOptions))
 app.use(express.json())   //it read the body of the request and parse it to json
