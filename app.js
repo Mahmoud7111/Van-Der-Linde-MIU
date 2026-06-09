@@ -3,6 +3,7 @@ require('dotenv').config() // must be first — populates process.env before any
 
 const express = require('express')
 const path = require('path')
+const fs = require('fs')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const { connectDB } = require('./config/db')
@@ -42,14 +43,16 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api', routes)
 
-// Serve frontend static files from the same Express app.
-// This keeps frontend and backend on the same origin, so the auth cookie
-// is a first-party cookie that no browser (desktop or mobile) blocks.
+// Serve frontend from the same Express app so everything is same-origin.
+// The auth cookie is then first-party — no mobile browser blocks it.
 const staticDir = path.join(__dirname, 'views', 'dist')
-app.use(express.static(staticDir))
-app.get('*', (req, res) => {
-    res.sendFile(path.join(staticDir, 'index.html'))
-})
+const indexFile = path.join(staticDir, 'index.html')
+if (fs.existsSync(indexFile)) {
+    app.use(express.static(staticDir))
+    app.get('*', (req, res) => {
+        res.sendFile(indexFile)
+    })
+}
 
 app.use(errorHandler) // must be last
 
