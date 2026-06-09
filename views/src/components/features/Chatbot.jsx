@@ -10,7 +10,6 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([
     { from: 'bot', text: 'Hello! I\'m the Van Der Linde Assistant. How can I help you find your perfect timepiece today? ⌚' }
   ])
-  const [history, setHistory] = useState([])
   const [input, setInput]   = useState('')
   const [loading, setLoading] = useState(false)
   const chatEndRef = useRef(null)
@@ -32,14 +31,7 @@ export default function Chatbot() {
     setLoading(true)
 
     try {
-      const reply = await chatbotService.sendMessage(text, location.pathname, history)
-
-      // Update conversation history for next turn (Gemini format)
-      setHistory(prev => [
-        ...prev,
-        { role: 'user',  parts: [{ text }] },
-        { role: 'model', parts: [{ text: reply }] },
-      ])
+      const reply = await chatbotService.sendMessage(text, location.pathname)
 
       setMessages(prev => [...prev, { from: 'bot', text: reply }])
     } catch (err) {

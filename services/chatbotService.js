@@ -1,13 +1,10 @@
-// chatbot logic: Gemini-first with a local catalog fallback when quota is exhausted
-const { GoogleGenerativeAI } = require('@google/generative-ai')
-const { GEMINI_API_KEY } = require('../config/env')
+// Chatbot logic: backend-only rule and catalog assistant, no external AI calls.
 const Watch = require('../models/Watch')
 require('../models/Brand') // Required for population
 
-const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null
-const model = genAI ? genAI.getGenerativeModel({ model: 'gemini-2.0-flash' }) : null
-
 const normalise = (value = '') => String(value).toLowerCase()
+
+const includesAny = (text, words) => words.some((word) => text.includes(word))
 
 const formatPrice = (value) => {
     const amount = Number(value)
@@ -17,14 +14,6 @@ const formatPrice = (value) => {
 
 const getWatchBrand = (watch) => watch.brand?.name || 'Van Der Linde'
 
-const summarizeWatches = (watches = [], limit = 18) => watches
-    .slice(0, limit)
-    .map((w) => {
-        const availability = w.stock > 0 ? `In stock (${w.stock})` : 'Currently unavailable'
-        return `- ${getWatchBrand(w)} ${w.name} | ${w.category} | ${formatPrice(w.price)} | ${availability}`
-    })
-    .join('\n')
-
 const findRelevantWatches = (message, watches = []) => {
     const text = normalise(message)
     const categoryHints = ['sport', 'classic', 'luxury', 'smart', 'dress', 'dive', 'pilot', 'casual']
@@ -32,143 +21,129 @@ const findRelevantWatches = (message, watches = []) => {
 
     const directMatches = watches.filter((watch) => {
         const haystack = normalise(`${getWatchBrand(watch)} ${watch.name} ${watch.category}`)
-        return text.split(/\s+/).some((word) => word.length > 3 && haystack.includes(word))
+        return text
+            .split(/\s+/)
+            .some((word) => word.length > 3 && haystack.includes(word))
     })
 
     if (directMatches.length) return directMatches
     if (matchedCategory) return watches.filter((watch) => watch.category === matchedCategory)
 
-    if (text.includes('cheap') || text.includes('affordable') || text.includes('budget')) {
+    if (includesAny(text, ['cheap', 'affordable', 'budget', 'lowest price'])) {
         return [...watches].sort((a, b) => Number(a.price) - Number(b.price)).slice(0, 5)
     }
 
-    if (text.includes('best') || text.includes('recommend') || text.includes('suggest')) {
+    if (includesAny(text, ['best', 'recommend', 'suggest', 'top rated'])) {
         return [...watches].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0)).slice(0, 5)
     }
 
-    return [] // ← was: return watches — this was making every message show the catalog
+    return []
 }
 
-const buildFallbackReply = (message, watches = []) => {
+const buildCatalogReply = (message, watches = []) => {
+    const relevant = findRelevantWatches(message, watches)
+        .filter((watch) => watch.isActive !== false)
+        .slice(0, 3)
+
+    if (!relevant.length) return null
+
+    const list = relevant
+        .map((watch) => {
+            const stock = watch.stock > 0 ? 'in stock' : 'currently unavailable'
+            return `${getWatchBrand(watch)} ${watch.name} - ${formatPrice(watch.price)} (${stock})`
+        })
+        .join('\n')
+
+    return `Here are some matches from our catalog:\n${list}\n\nOpen the Shop page for full details, or use the Configurator if you want a custom request.`
+}
+
+const buildStaticReply = (message) => {
     const text = normalise(message)
 
-    // Greetings
-    if (['hello', 'hi', 'hey', 'good morning', 'good evening'].some(w => text.includes(w))) {
-        return 'Hello! I am the Van Der Linde Assistant. I can help you find a watch, explore collections, use the configurator, or assist with checkout and gifting.'
+    if (includesAny(text, ['hello', 'hi', 'hey', 'good morning', 'good evening'])) {
+        return 'Hello! I am the Van Der Linde Assistant. I can help you find watches, explore collections, use the configurator, or understand checkout and gifting.'
     }
 
-    // Farewell
-    if (['thank you', 'thanks', 'bye', 'goodbye', 'that\'s all'].some(w => text.includes(w))) {
-        return 'It was a pleasure assisting you. If you need anything else, feel free to ask. Have a wonderful day.'
+    if (includesAny(text, ['thank you', 'thanks', 'bye', 'goodbye', 'that is all', "that's all"])) {
+        return 'It was a pleasure assisting you. If you need anything else, feel free to ask.'
     }
 
-    // Warranty
-    if (text.includes('warrant') || text.includes('guarantee')) {
+    if (includesAny(text, ['warranty', 'guarantee'])) {
         return 'All Van Der Linde timepieces carry a 5-year international warranty covering manufacturing defects.'
     }
 
-    // Authenticity
-    if (['authentic', 'original', 'genuine', 'fake', 'real'].some(w => text.includes(w))) {
-        return 'Every watch we offer is 100% authentic. We are an authorised dealer for all brands in our catalog.'
+    if (includesAny(text, ['authentic', 'original', 'genuine', 'fake', 'real'])) {
+        return 'Every watch in our catalog is authentic and connected to a real brand record in our system.'
     }
 
-    // Delivery time
-    if (['deliver', 'shipping', 'how long', 'arrive', 'days'].some(w => text.includes(w)) && !text.includes('cost') && !text.includes('price') && !text.includes('fee')) {
-        return 'We offer two options:\n1. Standard delivery — 5 business days.\n2. Express delivery — 2 business days.'
+    if (includesAny(text, ['shipping cost', 'delivery cost', 'shipping price', 'delivery fee'])) {
+        return 'Shipping rates are simple: standard delivery is $20 and express delivery is $40.'
     }
 
-    // Delivery cost
-    if (['shipping cost', 'delivery cost', 'shipping price', 'delivery fee', 'how much'].some(w => text.includes(w))) {
-        return 'Shipping rates:\n1. Standard delivery — $20.\n2. Express delivery — $40.'
+    if (includesAny(text, ['deliver', 'shipping', 'arrive', 'how long'])) {
+        return 'Standard delivery takes around 5 business days. Express delivery takes around 2 business days.'
     }
 
-    // Configurator
-    if (text.includes('config') || text.includes('custom') || text.includes('personaliz')) {
-        return 'Use the Configurator page to choose your model, case, bezel, dial, and strap. Submit the form and our team will contact you with a confirmation.'
+    if (includesAny(text, ['config', 'custom', 'personalize', 'personalise'])) {
+        return 'Use the Configurator page to choose the model, case, bezel, dial, and strap. After submitting the form, the customer receives a confirmation email and the admin receives the request details.'
     }
 
-    // Gifting
     if (text.includes('gift')) {
-        return 'Visit the Gifting page to select a watch and wrapping options. Gift details are saved with your order at checkout.'
+        return 'Use the Gifting page to choose a watch and wrapping options. Gift details are saved with the cart item and then copied into the checkout order.'
     }
 
-    // Checkout / payment
-    if (['checkout', 'payment', 'pay', 'cart', 'order'].some(w => text.includes(w))) {
-        return 'Checkout has three steps: shipping, payment, and review. You can pay by card or choose cash on delivery. Your order is saved to your account history.'
+    if (includesAny(text, ['checkout', 'payment', 'pay', 'cart', 'order'])) {
+        return 'Checkout has three steps: shipping, payment, and review. The backend validates the order, saves it in MongoDB, and connects it to the logged-in user.'
     }
 
-    // Support / contact
-    if (['contact', 'support', 'help', 'reach', 'email', 'phone'].some(w => text.includes(w))) {
-        return 'You can reach our concierge team from the Contact page. For configuration requests, the form sends a confirmation to both you and our admin.'
+    if (includesAny(text, ['wishlist', 'favorite', 'favourite'])) {
+        return 'Wishlist items are stored in MongoDB for the logged-in user, so they stay available across devices after the frontend and backend are deployed together.'
     }
 
-    // Working hours
-    if (text.includes('hour') || text.includes('open') || text.includes('schedule')) {
-        return 'Our concierge is available:\nMonday – Friday: 9:00 AM – 6:00 PM\nSaturday: 10:00 AM – 4:00 PM\nSunday: Closed'
+    if (includesAny(text, ['contact', 'support', 'help', 'reach', 'email', 'phone'])) {
+        return 'You can reach the concierge team from the Contact page. Configuration requests also send email notifications to the customer and admin.'
     }
 
-    // Product / catalog inquiry
-    const relevant = findRelevantWatches(message, watches)
-        .filter(w => w.isActive !== false)
-        .slice(0, 3)
-
-    if (relevant.length) {
-        const list = relevant
-            .map(w => `${getWatchBrand(w)} ${w.name} — ${formatPrice(w.price)} (${w.stock > 0 ? 'in stock' : 'currently unavailable'})`)
-            .join('\n')
-        return `Here are some matches from our catalog:\n${list}\n\nVisit the Shop page for full details or use the Configurator for a custom request.`
+    if (includesAny(text, ['hour', 'open', 'schedule'])) {
+        return 'Our concierge is available Monday to Friday from 9:00 AM to 6:00 PM, Saturday from 10:00 AM to 4:00 PM, and Sunday is closed.'
     }
 
-    // Default
-    return 'I can assist with watches, collections, the configurator, gifting, cart, checkout, and account support. Try asking about a style, budget, or specific model.'
+    if (includesAny(text, ['brand', 'brands'])) {
+        return 'Brands organize watches by maker, such as Rolex, Omega, Cartier, and Patek Philippe. The backend exposes them through GET /api/brands for shop filters and admin product forms.'
+    }
+
+    if (includesAny(text, ['collection', 'collections'])) {
+        return 'Collections group watches into curated families. The backend exposes GET /api/collections and GET /api/collections/:slug for collection pages and filters.'
+    }
+
+    if (includesAny(text, ['review', 'rating'])) {
+        return 'Reviews let logged-in users rate watches from 1 to 5 and write feedback. The backend stores reviews and recalculates the watch rating.'
+    }
+
+    if (includesAny(text, ['login', 'register', 'account', 'profile'])) {
+        return 'Account features use authentication cookies. Users can register, log in, edit profile details, view orders, and keep cart or wishlist data connected to their account.'
+    }
+
+    return null
 }
 
-const buildPrompt = ({ message, pageUrl, watches }) => `You are the Van Der Linde Assistant for a luxury watch website.
-
-Rules:
-- Only answer questions about Van Der Linde watches, collections, configurator, gifting, cart, checkout, account, and support.
-- Keep answers concise and refined.
-- Never invent prices. Use only the product list.
-- If a watch is out of stock, say it is currently unavailable.
-- If asked outside scope, politely redirect to watches.
-
-Brand context:
-- Tagline: "Crafting Legacy Since 1874"
-- Categories: sport, classic, luxury, smart, dress, dive, pilot, casual
-- Current page: ${pageUrl || 'unknown'}
-
-Current catalog sample:
-${summarizeWatches(watches)}
-
-User question:
-${message}`
-
-const handleMessage = async (message, pageUrl = '') => {
+const handleMessage = async (message) => {
     const cleanMessage = String(message || '').trim()
     if (!cleanMessage) return 'Please type a question and I will help you.'
+
+    const staticReply = buildStaticReply(cleanMessage)
+    if (staticReply) return staticReply
 
     const watches = await Watch.find({ isActive: { $ne: false } })
         .populate('brand', 'name')
         .select('name price category brand rating stock isActive')
         .sort({ rating: -1, price: 1 })
-        .limit(30)
+        .limit(40)
 
-    if (!model) {
-        return buildFallbackReply(cleanMessage, watches)
-    }
+    const catalogReply = buildCatalogReply(cleanMessage, watches)
+    if (catalogReply) return catalogReply
 
-    try {
-        const result = await model.generateContent([buildPrompt({ message: cleanMessage, pageUrl, watches })])
-        const responseText = result.response.text()
-        return responseText.replace(/\*/g, '').trim() || buildFallbackReply(cleanMessage, watches)
-    } catch (error) {
-        console.error('Gemini chatbot fallback:', {
-            status: error.status,
-            message: error.message,
-        })
-
-        return buildFallbackReply(cleanMessage, watches)
-    }
+    return 'I can assist with watches, brands, collections, configurator requests, gifting, wishlist, cart, checkout, reviews, and account support. Try asking about a style, budget, or specific model.'
 }
 
 module.exports = { handleMessage }
