@@ -94,6 +94,22 @@ const buildStaticReply = (message) => {
         return 'Returns and exchanges are handled through customer support. Keep the watch unused with its box and documents, then contact the concierge team from the Contact page for the next step.'
     }
 
+    if (includesAny(text, ['size', 'sizing', 'fit', 'wrist', 'diameter'])) {
+        return 'For sizing, check the case diameter in the watch specifications. Smaller wrists usually suit 36-39mm, while 40-44mm gives a stronger wrist presence.'
+    }
+
+    if (includesAny(text, ['compare', 'comparison', 'difference between', 'versus', ' vs '])) {
+        return 'You can compare watches by brand, category, price, rating, stock, and specifications such as movement, case material, water resistance, and bracelet type.'
+    }
+
+    if (includesAny(text, ['new arrival', 'new arrivals', 'latest', 'recent'])) {
+        return 'The Shop page can show the newest watches first. The backend sorts catalog results by creation date unless another sort option is selected.'
+    }
+
+    if (includesAny(text, ['featured', 'popular', 'homepage', 'home page'])) {
+        return 'Featured watches are marked in the catalog with an isFeatured flag. The frontend can use them for home page highlights and favorites sections.'
+    }
+
     if (includesAny(text, ['cancel order', 'cancel my order', 'cancellation'])) {
         return 'If the order is still pending or processing, contact support quickly with your order number. Once it is shipped, cancellation may not be available and support will guide you through return options.'
     }
@@ -106,8 +122,28 @@ const buildStaticReply = (message) => {
         return 'Every watch in our catalog is authentic and connected to a real brand record in our system.'
     }
 
+    if (includesAny(text, ['certificate', 'papers', 'documents', 'box'])) {
+        return 'Each luxury watch should be kept with its box and documents. These help with authenticity, warranty support, and future resale value.'
+    }
+
+    if (includesAny(text, ['discount', 'coupon', 'promo', 'promotion', 'sale'])) {
+        return 'Discounts and promotions depend on the current store policy. Check the checkout page or contact support if you have a specific coupon code.'
+    }
+
+    if (includesAny(text, ['tax', 'taxes', 'vat'])) {
+        return 'Taxes are shown during checkout when applicable. The order review step shows the subtotal, shipping, estimated tax, and final total before placing the order.'
+    }
+
     if (includesAny(text, ['shipping cost', 'delivery cost', 'shipping price', 'delivery fee'])) {
         return 'Shipping rates are simple: standard delivery is $20 and express delivery is $40.'
+    }
+
+    if (includesAny(text, ['international', 'outside country', 'worldwide', 'ship abroad'])) {
+        return 'International delivery depends on the destination and support availability. Contact the concierge team with your country before placing a high-value order.'
+    }
+
+    if (includesAny(text, ['address', 'change address', 'wrong address'])) {
+        return 'If you entered the wrong shipping address, contact support as soon as possible. If the order has not shipped yet, the team may be able to update it.'
     }
 
     if (includesAny(text, ['deliver', 'shipping', 'arrive', 'how long'])) {
@@ -126,8 +162,16 @@ const buildStaticReply = (message) => {
         return 'Use the Gifting page to choose a watch and wrapping options. Gift details are saved with the cart item and then copied into the checkout order.'
     }
 
+    if (includesAny(text, ['gift card', 'message card', 'gift message', 'wrap', 'wrapping'])) {
+        return 'Gift orders can include wrapping and a gift card message. The backend stores gift wrapping name, price, card name, recipient name, and gift message with the cart and order item.'
+    }
+
     if (includesAny(text, ['card', 'cash on delivery', 'cod', 'credit'])) {
         return 'Payment supports card checkout and cash on delivery. Card details are validated during checkout, while cash on delivery lets the customer pay when the order arrives.'
+    }
+
+    if (includesAny(text, ['secure', 'security', 'safe payment', 'safe checkout'])) {
+        return 'Checkout is designed to validate payment inputs and store only safe order details. Sensitive card data is not saved as a full card number in the order.'
     }
 
     if (includesAny(text, ['checkout', 'payment', 'pay', 'cart', 'order'])) {
@@ -144,6 +188,10 @@ const buildStaticReply = (message) => {
 
     if (includesAny(text, ['forgot password', 'reset password', 'password'])) {
         return 'Use the Forgot Password page to request a reset email. The backend creates a secure token, emails a reset link, and then lets the user set a new password.'
+    }
+
+    if (includesAny(text, ['email not sent', 'mail not sent', 'no email', 'spam'])) {
+        return 'If an email does not appear, check Spam first. For reset and configuration emails, the backend sends mail through SMTP and the sender must be verified in the email provider.'
     }
 
     if (includesAny(text, ['dark mode', 'light mode', 'theme'])) {
@@ -170,6 +218,18 @@ const buildStaticReply = (message) => {
         return 'For care, keep the watch dry unless it is rated for water use, clean it with a soft cloth, and contact support for maintenance or repair requests.'
     }
 
+    if (includesAny(text, ['automatic', 'quartz', 'mechanical', 'movement type'])) {
+        return 'The movement type is shown in each watch specification. Automatic and mechanical watches focus on traditional craftsmanship, while quartz watches prioritize accuracy and low maintenance.'
+    }
+
+    if (includesAny(text, ['power reserve', 'battery'])) {
+        return 'Power reserve appears in the watch specifications when available. It tells you how long a mechanical watch can run after being fully wound.'
+    }
+
+    if (includesAny(text, ['crystal', 'sapphire', 'glass'])) {
+        return 'Crystal type is part of the watch specifications. Sapphire crystal is preferred in luxury watches because it is highly scratch resistant.'
+    }
+
     if (includesAny(text, ['hour', 'open', 'schedule'])) {
         return 'Our concierge is available Monday to Friday from 9:00 AM to 6:00 PM, Saturday from 10:00 AM to 4:00 PM, and Sunday is closed.'
     }
@@ -178,24 +238,64 @@ const buildStaticReply = (message) => {
         return 'Brands organize watches by maker, such as Rolex, Omega, Cartier, and Patek Philippe. The backend exposes them through GET /api/brands for shop filters and admin product forms.'
     }
 
+    if (includesAny(text, ['slug', 'url name', 'clean url'])) {
+        return 'A slug is the clean URL name of an item. For example, Noir Series becomes noir-series. It helps pages use readable URLs instead of database IDs.'
+    }
+
     if (includesAny(text, ['collection', 'collections'])) {
         return 'Collections group watches into curated families. The backend exposes GET /api/collections and GET /api/collections/:slug for collection pages and filters.'
+    }
+
+    if (includesAny(text, ['filter', 'filters', 'search', 'sort', 'price range'])) {
+        return 'The watches API supports search, brand, collection, category, gender, rating, min price, max price, and sorting. These power the Shop page filters.'
     }
 
     if (includesAny(text, ['review', 'rating'])) {
         return 'Reviews let logged-in users rate watches from 1 to 5 and write feedback. The backend stores reviews and recalculates the watch rating.'
     }
 
+    if (includesAny(text, ['database', 'mongodb', 'mongo', 'atlas'])) {
+        return 'The backend stores catalog, users, cart, wishlist, orders, reviews, and configuration requests in MongoDB Atlas through Mongoose models.'
+    }
+
+    if (includesAny(text, ['api', 'endpoint', 'backend route', 'route'])) {
+        return 'The backend API follows Route -> Controller -> Service -> Model -> MongoDB. Routes receive requests, controllers return JSON, services handle logic, and models define database shape.'
+    }
+
+    if (includesAny(text, ['validation', 'validate', 'invalid'])) {
+        return 'Forms validate on the frontend for user-friendly errors, and the backend validates again before saving important data like profile, orders, reviews, and configuration requests.'
+    }
+
     if (includesAny(text, ['admin', 'dashboard', 'manage products', 'manage orders'])) {
         return 'The admin dashboard lets admins manage products, orders, users, reviews, and configuration requests. Protected routes require login and admin permission.'
+    }
+
+    if (includesAny(text, ['delete product', 'delete watch', 'remove product'])) {
+        return 'When an admin deletes a watch, the backend also removes that watch from carts and wishlists so users do not keep broken references.'
     }
 
     if (includesAny(text, ['stock', 'available', 'availability', 'in stock'])) {
         return 'Stock is stored on each watch record. If stock is 0, the chatbot and product pages treat the watch as currently unavailable.'
     }
 
+    if (includesAny(text, ['cookie', 'token', 'jwt', 'session'])) {
+        return 'Authentication uses a JWT stored in an HTTP-only cookie. This keeps the frontend from manually storing the token and lets protected routes verify the logged-in user.'
+    }
+
     if (includesAny(text, ['login', 'register', 'account', 'profile'])) {
         return 'Account features use authentication cookies. Users can register, log in, edit profile details, view orders, and keep cart or wishlist data connected to their account.'
+    }
+
+    if (includesAny(text, ['responsive', 'mobile', 'phone screen', 'small screen'])) {
+        return 'The frontend is built responsively so pages like shop, quiz, configurator, cart, and checkout adapt to desktop and mobile screens.'
+    }
+
+    if (includesAny(text, ['loading', 'loader', 'loading page'])) {
+        return 'The website includes loading states and transitions so users see feedback while pages, products, or actions are loading.'
+    }
+
+    if (includesAny(text, ['cursor', 'custom cursor'])) {
+        return 'The custom cursor is a frontend visual feature that improves the luxury interaction style without changing backend data.'
     }
 
     return null
