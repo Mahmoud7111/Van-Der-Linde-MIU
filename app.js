@@ -1,5 +1,5 @@
-//* Express config: middleware chain + route mounting + frontend serving
-require('dotenv').config()
+//* Express config: middleware chain + route mounting + static serving in prod
+require('dotenv').config() // must be first — populates process.env before any other module reads it
 
 const express = require('express')
 const path = require('path')
@@ -16,12 +16,15 @@ const routes = require('./routes/index')
 
 const app = express()
 
+// Middlewares - Order matters
 app.use(helmet())
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan('dev'))
 
+// For Vercel Serverless — ensure DB is ready before every request.
+// The cached promise from connectDB means only the first cold-start pays the wait.
 if (process.env.VERCEL) {
     app.use(async (req, res, next) => {
         try {
@@ -41,17 +44,19 @@ app.get('/api/health', (req, res) => {
 app.use('/api', routes)
 
 // Serve frontend from the same Express app so everything is same-origin.
-// The auth cookie is then first-party — works on every browser including mobile.
+// The auth cookie is then first-party — no mobile browser blocks it.
 const staticDir = path.join(__dirname, 'views', 'dist')
-if (fs.existsSync(staticDir)) {
+const indexFile = path.join(staticDir, 'index.html')
+if (fs.existsSync(indexFile)) {
     app.use(express.static(staticDir))
     app.get('*', (req, res) => {
-        res.sendFile(path.join(staticDir, 'index.html'))
+        res.sendFile(indexFile)
     })
 }
 
-app.use(errorHandler)
+app.use(errorHandler) // must be last
 
+// For local development, bind to PORT
 if (!process.env.VERCEL) {
     connectDB().then(() => {
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
