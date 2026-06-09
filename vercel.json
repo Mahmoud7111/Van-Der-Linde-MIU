@@ -9,7 +9,7 @@
       "src": "views/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "views/dist"
+        "distDir": "dist"
       }
     }
   ],
