@@ -1,5 +1,5 @@
 .shop-page {
-  --shop-hero-offset: 130px;
+  --shop-hero-offset: 170px;
   width: 100%;
   padding: 0 0 clamp(var(--space-xl), 6vw, var(--space-2xl));
   margin-top: calc(-1 * var(--shop-hero-offset));
@@ -385,6 +385,12 @@
 @media (max-width: 1080px) {
   .shop-page {
     --shop-hero-offset: 80px;
+  }
+}
+
+@media (max-width: 520px) {
+  .shop-page {
+    --shop-hero-offset: 70px;
   }
 }
 

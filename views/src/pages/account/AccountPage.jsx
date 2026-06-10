@@ -6,7 +6,9 @@ import { useLanguage } from '@/context/LanguageContext'
 import PageTransition from '@/components/common/PageTransition'
 import Badge from '@/components/common/Badge'
 import Button from '@/components/common/Button'
+import { FiShield } from 'react-icons/fi'
 import { getInitials } from '@/utils/formatters'
+import { USER_ROLES } from '@/utils/constants'
 import './AccountPage.css'
 
 const fadeContainer = {
@@ -218,6 +220,11 @@ export default function AccountPage() {
               <Motion.article className="account-card" variants={fadeItem}>
                 <h2 className="account-card__title">{t('account.quickActions')}</h2>
                 <div className="account-actions">
+                  {user?.role === USER_ROLES.ADMIN && (
+                    <Link className="account-link-btn account-link-btn--admin" to="/admin">
+                      <FiShield size={16} /> Admin Panel
+                    </Link>
+                  )}
                   <Link className="account-link-btn" to="/orders">
                     {t('account.orderHistory')}
                   </Link>

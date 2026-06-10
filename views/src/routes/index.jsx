@@ -30,6 +30,8 @@ import ErrorPage from '@/pages/info/ErrorPage.jsx'  // ← regular import, not l
 //! // With lazy — only the visited page's code downloads on first visit, other pages load when visited later.
 const HomePage = lazy(() => import('@/pages/home/HomePage.jsx'))
 const ShopPage = lazy(() => import('@/pages/shop/ShopPage.jsx'))
+const ShopMenPage = lazy(() => import('@/pages/shop/ShopMenPage.jsx'))
+const ShopWomenPage = lazy(() => import('@/pages/shop/ShopWomenPage.jsx'))
 const ProductDetailPage = lazy(() => import('@/pages/product/ProductDetailPage.jsx'))
 
 const CartPage = lazy(() => import('@/pages/cart/CartPage.jsx'))
@@ -118,24 +120,16 @@ export const router = createBrowserRouter([
       },
       {
         path: 'shop/men',
-        element: <CollectionDetailPage />,
-        loader: async () => {
-          const [collection, watches] = await Promise.all([
-            collectionService.getBySlug('mens-collection'),
-            watchService.getAll(),
-          ])
-          return { collection, watches }
+        element: <ShopMenPage />,
+        loader: ({ request }) => {
+          return watchService.getAll(getShopFilters(request, 'men'))
         },
       },
       {
         path: 'shop/women',
-        element: <CollectionDetailPage />,
-        loader: async () => {
-          const [collection, watches] = await Promise.all([
-            collectionService.getBySlug('womens-collection'),
-            watchService.getAll(),
-          ])
-          return { collection, watches }
+        element: <ShopWomenPage />,
+        loader: ({ request }) => {
+          return watchService.getAll(getShopFilters(request, 'women'))
         },
       },
       {

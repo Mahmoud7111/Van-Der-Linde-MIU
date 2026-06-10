@@ -56,25 +56,21 @@ export default function WatchQuizPage() {
         const list = Array.isArray(raw) ? raw : []
         setWatches(list)
 
-        const genders    = [...new Set(list.map(w => w.gender).filter(Boolean))]
         const categories = [...new Set(list.map(w => w.category).filter(Boolean))]
         const brands     = [...new Set(list.map(w => w.brand?.name).filter(Boolean))]
 
         const qs = []
 
-        if (genders.length > 0) {
-          qs.push({
-            id: 'gender',
-            question: 'WHAT IS YOUR GENDER',
-            hint: 'Select Only 1',
-            layout: 'tiles',
-            options: genders.map(g => ({
-              label: g === 'unisex' ? 'GENDER NEUTRAL' : g.toUpperCase(),
-              value: g,
-              icon: g === 'unisex' ? <FiUsers /> : <FiUser />,
-            })),
-          })
-        }
+        qs.push({
+          id: 'gender',
+          question: 'WHAT IS YOUR GENDER',
+          hint: 'Select Only 1',
+          layout: 'tiles',
+          options: [
+            { label: 'MEN', value: 'male', icon: <FiUser /> },
+            { label: 'WOMEN', value: 'female', icon: <FiUsers /> },
+          ],
+        })
 
         if (categories.length > 0) {
           qs.push({
@@ -231,11 +227,11 @@ export default function WatchQuizPage() {
                     <span className="quiz-select-hint">{currentQ.hint}</span>
                   </div>
                 </div>
-                <div className="quiz-split__right">
+                <div className={`quiz-split__right ${currentQ.id === 'gender' ? 'quiz-split__right--gender' : ''}`}>
                   {currentQ.options.map(opt => (
                     <button
                       key={opt.value}
-                      className={`quiz-option-tile ${answers[currentQ.id] === opt.value ? 'quiz-option-tile--selected' : ''}`}
+                      className={`quiz-option-tile ${currentQ.id === 'gender' ? 'quiz-option-tile--gender' : ''} ${answers[currentQ.id] === opt.value ? 'quiz-option-tile--selected' : ''}`}
                       onClick={() => handleAnswer(currentQ.id, opt.value)}
                     >
                       <span className="quiz-option-tile__icon-wrap">{opt.icon}</span>
