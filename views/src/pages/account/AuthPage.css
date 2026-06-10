@@ -5,10 +5,11 @@
 }
 
 .auth-split {
-  min-height: 100vh;
+  height: 100vh;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   background: #f3efe7;
+  overflow: hidden;
 }
 
 
@@ -88,9 +89,10 @@
 .auth-panel {
   background: #f3efe7;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 44px 34px;
+  overflow-y: auto;
 }
 
 .auth-panel__inner {
@@ -101,6 +103,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-bottom: 1px solid #e1d8c8;
+  margin-top: 66px;
   margin-bottom: 30px;
 }
 

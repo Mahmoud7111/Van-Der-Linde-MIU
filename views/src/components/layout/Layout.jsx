@@ -73,6 +73,7 @@ export default function Layout() {
       <main
         className={cn(
           'layout__main',
+          !isAuthPage &&
           location.pathname !== '/' && 
           location.pathname !== '/shop/men' && 
           location.pathname !== '/shop/women' && 

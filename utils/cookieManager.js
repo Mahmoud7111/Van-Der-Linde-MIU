@@ -3,10 +3,10 @@ const { NODE_ENV } = require('../config/env')
 
 const COOKIE_NAME = 'authToken'
 
-// On Vercel, frontend and backend are on different subdomains, which is a cross-origin
-// context. The cookie MUST use sameSite:'none' + secure:true so the browser sends it on
-// fetch() requests with credentials:'include'.  sameSite:'lax' would block them.
-const isCrossOrigin = process.env.VERCEL || NODE_ENV === 'production'
+// With Vercel rewrites proxying /api/* from the frontend domain to the backend,
+// requests are now same-origin from the browser's perspective.  sameSite:'lax'
+// avoids iOS Safari ITP blocks (Intelligent Tracking Prevention).
+const isCrossOrigin = false
 
 const setCookie = (res, token) => {
     res.cookie(COOKIE_NAME, token, {
