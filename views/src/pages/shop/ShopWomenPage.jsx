@@ -14,6 +14,7 @@ import craftHorse from '@/assets/images/Marquee/horse.png'
 import craftSwiss from '@/assets/images/Marquee/SwissMade.png'
 import craftKey from '@/assets/images/Marquee/key.png'
 import '@/pages/info/CollectionDetailPage.css'
+import './ShopGenderPage.css'
 
 const prefersReducedMotion =
   typeof window !== 'undefined' &&
@@ -67,8 +68,8 @@ export default function ShopWomenPage() {
   return (
     <PageTransition>
       <div className="collection-detail">
-        <section className="collection-hero">
-          <div className="collection-hero__media" aria-hidden="true">
+        <section className="collection-hero shop-gender-hero">
+          <div className="collection-hero__media" aria-hidden="true" style={{ background: `#1a1512 url(${womenHero}) no-repeat center 20% / cover` }}>
             <img className="collection-hero__image" src={womenHero} alt="Women's Watches" />
           </div>
           <div className="collection-hero__overlay" aria-hidden="true" />

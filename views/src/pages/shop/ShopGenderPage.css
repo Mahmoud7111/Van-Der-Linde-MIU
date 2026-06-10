@@ -1,0 +1,5 @@
+@media (max-width: 1080px) {
+  .shop-gender-hero .collection-hero__image {
+    opacity: 0;
+  }
+}
