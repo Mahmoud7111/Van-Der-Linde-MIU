@@ -187,4 +187,13 @@
   .collections-page__header {
     margin-bottom: 5rem;
   }
+
+  .collections-page {
+    padding: 5rem 0 4rem;
+  }
+
+  .collections-page__title {
+    font-size: clamp(2rem, 7vw, 3rem);
+    letter-spacing: 0.10em;
+  }
 }

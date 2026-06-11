@@ -31,7 +31,7 @@ export default function MobileMenu({ isOpen, onClose }) {
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className={cn('mobile-menu', isOpen && 'mobile-menu--open')}>
+      <div className={cn('mobile-menu', isOpen && 'mobile-menu--open', lang === 'ar' && 'mobile-menu--rtl')}>
         <div className="mobile-menu__header">
           <img
             src={theme === 'dark' ? '/Logo2Dark.png' : '/Logo2.png'}

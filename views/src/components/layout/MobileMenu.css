@@ -36,6 +36,18 @@
   transform: translateX(0);
 }
 
+/* RTL: slide from right when Arabic */
+.mobile-menu--rtl {
+  left: auto;
+  right: 0;
+  transform: translateX(100%);
+  box-shadow: -6px 0 28px rgba(0, 0, 0, 0.18);
+}
+
+.mobile-menu--rtl.mobile-menu--open {
+  transform: translateX(0);
+}
+
 .mobile-menu__header {
   display: flex;
   align-items: center;

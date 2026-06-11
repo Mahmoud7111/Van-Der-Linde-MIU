@@ -275,16 +275,16 @@ export default function ConfiguratorPage() {
                     <p className="cfg-panel__desc">
                       {t('config.modelDesc')}
                     </p>
-                    <div className="cfg-swatches" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                    <div className="cfg-swatches cfg-swatches--grid2">
                       {MODEL_OPTIONS.map(opt => (
                         <button
                           key={opt.id}
                           type="button"
-                          className={cn('cfg-swatch', selectedModel.id === opt.id && 'cfg-swatch--selected')}
+                          className={cn('cfg-model-card', selectedModel.id === opt.id && 'cfg-model-card--selected')}
                           onClick={() => setSelectedModel(opt)}
-                          style={{ padding: '0.75rem', height: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--color-surface-elevated)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)' }}
                         >
-                          <span className="cfg-swatch__label" style={{ position: 'static', opacity: 1, color: 'var(--color-text-primary)' }}>{opt.label}</span>
+                          <span className="cfg-model-card__name">{opt.label}</span>
+                          <span className="cfg-model-card__price">{formatPrice(opt.price)}</span>
                         </button>
                       ))}
                     </div>

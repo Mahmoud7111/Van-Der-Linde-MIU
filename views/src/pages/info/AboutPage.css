@@ -432,4 +432,12 @@
   .about-heritage {
     padding: 4rem 1rem;
   }
+
+  .about-craft-image__text {
+    display: none;
+  }
+
+  .about-craft-image__overlay {
+    padding-top: 12rem;
+  }
 }

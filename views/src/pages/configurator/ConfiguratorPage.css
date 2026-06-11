@@ -20,6 +20,7 @@
   min-height: 100vh;
   background: var(--color-surface);
   padding-bottom: var(--space-2xl);
+  overflow-x: hidden;
 }
 
 /* ── HEADER ──────────────────────────────────────────────────────────────── */
@@ -324,6 +325,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
+  white-space: nowrap;
   transition: color var(--transition-normal);
 }
 
@@ -487,7 +489,6 @@
   border: 1px solid var(--color-border);
   background: var(--color-white);
   box-shadow: 0 8px 24px color-mix(in srgb, var(--color-dark) 8%, transparent 92%);
-  margin-top: var(--space-sm);
 }
 
 .cfg-summary__lines {
@@ -591,6 +592,72 @@
 
 /* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
 
+.cfg-swatches--grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.cfg-model-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.75rem 0.5rem;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-normal),
+    transform var(--transition-fast),
+    box-shadow var(--transition-normal);
+}
+
+.cfg-model-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-dark) 10%, transparent 90%);
+}
+
+.cfg-model-card--selected {
+  border-color: var(--color-gold);
+  box-shadow:
+    0 0 0 1px var(--color-gold),
+    0 6px 16px color-mix(in srgb, var(--color-gold) 18%, transparent 82%);
+  transform: translateY(-2px);
+}
+
+.cfg-model-card:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.cfg-model-card__name {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.cfg-model-card__price {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-gold);
+  letter-spacing: 0.04em;
+}
+
+[data-theme='dark'] .cfg-model-card {
+  background: color-mix(in srgb, var(--color-white) 8%, transparent 92%);
+  border-color: color-mix(in srgb, var(--color-border) 50%, transparent 50%);
+}
+
+[data-theme='dark'] .cfg-model-card__name {
+  color: var(--color-dark);
+}
+
 @media (max-width: 900px) {
   .cfg-layout {
     grid-template-columns: 1fr;
@@ -599,13 +666,30 @@
   .cfg-preview {
     position: relative;
     top: auto;
-    /* On mobile the watch preview sits above the panels naturally. */
-    max-width: 240px;
+    max-width: min(340px, 80vw);
     margin: 0 auto;
   }
 }
 
 @media (max-width: 480px) {
+  .cfg-swatches--grid2 {
+    grid-template-columns: 1fr;
+  }
+
+  .cfg-tab {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+
+  .cfg-panel__title {
+    font-size: 1.25rem;
+  }
+
+  .cfg-summary {
+    padding: var(--space-md);
+  }
+
   .cfg-swatches {
     gap: var(--space-xs);
   }

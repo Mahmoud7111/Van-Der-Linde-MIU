@@ -15,6 +15,8 @@ import {
 } from 'react-icons/fi'
 import { useCurrency } from '@/context/CurrencyContext'
 import { watchService } from '@/services/watchService'
+import { brandService } from '@/services/brandService'
+import { collectionService } from '@/services/collectionService'
 import { resolveWatchProductImage } from '@/utils/watchImageResolver'
 import revealImg from '@/assets/quiz-reveal-watch.png'
 import './WatchQuizPage.css'
@@ -48,16 +50,17 @@ export default function WatchQuizPage() {
   const [watches, setWatches]   = useState([])
   const [modal, setModal]       = useState(null) // selected watch for modal
 
-  /* ── Load DB watches & build questions ── */
+  /* ── Load collections & brands, build questions ── */
   useEffect(() => {
     const load = async () => {
       try {
-        const raw = await watchService.getAll()
-        const list = Array.isArray(raw) ? raw : []
-        setWatches(list)
+        const [collectionsRaw, brandsRaw] = await Promise.all([
+          collectionService.getAll(),
+          brandService.getAll(),
+        ])
 
-        const categories = [...new Set(list.map(w => w.category).filter(Boolean))]
-        const brands     = [...new Set(list.map(w => w.brand?.name).filter(Boolean))]
+        const collectionsArr = Array.isArray(collectionsRaw) ? collectionsRaw : []
+        const brandsArr      = Array.isArray(brandsRaw) ? brandsRaw : []
 
         const qs = []
 
@@ -67,52 +70,36 @@ export default function WatchQuizPage() {
           hint: 'Select Only 1',
           layout: 'tiles',
           options: [
-            { label: 'MEN', value: 'male', icon: <FiUser /> },
-            { label: 'WOMEN', value: 'female', icon: <FiUsers /> },
+            { label: 'MEN', value: 'men', icon: <FiUser /> },
+            { label: 'WOMEN', value: 'women', icon: <FiUsers /> },
           ],
         })
 
-        if (categories.length > 0) {
+        if (collectionsArr.length > 0) {
           qs.push({
-            id: 'category',
+            id: 'collection',
             question: 'ANY FAVORITE WATCH STYLE?',
             hint: 'Select 1',
             layout: 'grid',
-            options: categories.map(c => ({
-              label: c.toUpperCase(),
-              value: c,
-              icon: CATEGORY_ICONS[c] || <FiActivity />,
+            options: collectionsArr.map(c => ({
+              label: c.name?.toUpperCase() || '',
+              value: c.name || '',
+              icon: CATEGORY_ICONS[c.name?.toLowerCase()] || <FiActivity />,
             })),
           })
         }
 
-        if (brands.length > 0) {
+        if (brandsArr.length > 0) {
           qs.push({
             id: 'brand',
             question: 'ANY FAVORITE BRAND?',
             hint: 'Select 1',
             layout: 'tiles',
-            options: brands.map(b => ({
-              label: b.toUpperCase(),
-              value: b,
+            options: brandsArr.map(b => ({
+              label: b.name?.toUpperCase() || '',
+              value: b.name || '',
               icon: <FiTag />,
             })),
-          })
-        }
-
-        /* Fallback if DB is empty */
-        if (qs.length === 0) {
-          qs.push({
-            id: 'category',
-            question: 'WHAT STYLE SUITS YOU?',
-            hint: 'Select 1',
-            layout: 'tiles',
-            options: [
-              { label: 'CLASSIC', value: 'classic', icon: <FiBriefcase /> },
-              { label: 'SPORT',   value: 'sport',   icon: <FiActivity /> },
-              { label: 'LUXURY',  value: 'luxury',  icon: <FiAward /> },
-              { label: 'SMART',   value: 'smart',   icon: <FiCpu /> },
-            ],
           })
         }
 
@@ -125,6 +112,16 @@ export default function WatchQuizPage() {
     load()
   }, [])
 
+  /* ── When gender is answered, fetch gender-filtered watches ── */
+  const fetchGenderWatches = useCallback(async (gender) => {
+    try {
+      const raw = await watchService.getAll({ gender })
+      setWatches(Array.isArray(raw) ? raw : [])
+    } catch (err) {
+      console.error('Failed to fetch gender watches:', err)
+    }
+  }, [])
+
   /* ── Scoring ── */
   const computeResults = useCallback((finalAnswers, watchList) => {
     const scored = watchList.map(w => {
@@ -133,8 +130,11 @@ export default function WatchQuizPage() {
         if (w.gender === finalAnswers.gender) score += 15
         else if (w.gender === 'unisex')        score += 5
       }
-      if (finalAnswers.category && w.category === finalAnswers.category) score += 15
-      if (finalAnswers.brand    && w.brand?.name === finalAnswers.brand)  score += 10
+      if (finalAnswers.collection) {
+        const watchCollection = typeof w.collection === 'object' ? w.collection?.name : w.collection
+        if (watchCollection === finalAnswers.collection) score += 15
+      }
+      if (finalAnswers.brand && w.brand?.name === finalAnswers.brand) score += 10
       return { ...w, _quizScore: score }
     })
     const top = scored
@@ -150,6 +150,12 @@ export default function WatchQuizPage() {
   const handleAnswer = (qId, value) => {
     const next = { ...answers, [qId]: value }
     setAnswers(next)
+
+    /* Fetch gender-filtered watches when gender is answered */
+    if (qId === 'gender') {
+      fetchGenderWatches(value)
+    }
+
     if (step < questions.length) {
       setStep(s => s + 1)
     } else {
@@ -245,7 +251,7 @@ export default function WatchQuizPage() {
               <div className="quiz-grid-screen">
                 <div className="quiz-grid-screen__header">
                   <h2 className="quiz-grid-screen__title">
-                    ANY <span>FAVORITE</span> WATCH STYLE?
+                    {currentQ.question}
                   </h2>
                   <div className="quiz-grid-screen__meta">
                     <span className="quiz-select-hint">{currentQ.hint}</span>
@@ -345,7 +351,7 @@ export default function WatchQuizPage() {
               <button className="quiz-results-nav__btn quiz-results-nav__btn--secondary" onClick={handleRestart}>
                 RETAKE QUIZ
               </button>
-              <Link to="/shop" className="quiz-results-nav__btn quiz-results-nav__btn--primary">
+              <Link to="/collections" className="quiz-results-nav__btn quiz-results-nav__btn--primary">
                 SHOP ALL COLLECTION
               </Link>
             </div>
