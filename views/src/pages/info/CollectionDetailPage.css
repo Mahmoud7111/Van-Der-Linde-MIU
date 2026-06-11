@@ -388,3 +388,11 @@
 [data-theme='dark'] .collection-hero::after {
   background: linear-gradient(90deg, transparent, #1a237e, transparent);
 }
+
+[data-theme='dark'] .collection-hero__content,
+[data-theme='dark'] .collection-hero__eyebrow,
+[data-theme='dark'] .collection-hero__title,
+[data-theme='dark'] .collection-hero__description,
+[data-theme='dark'] .collection-hero__link {
+  color: #ffffff;
+}

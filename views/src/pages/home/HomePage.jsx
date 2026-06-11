@@ -538,29 +538,35 @@ export default function HomePage() {
     return () => observer.disconnect()
   }, [])
 
-  // Synchronize mobile scroll button visibility with the horizontal cards container.
+  // Synchronize scroll button visibility with the horizontal scroll containers.
   useEffect(() => {
-    const container = collectionsCardsRef.current
-    if (!container) return undefined
+    const track = scrollTrackRef.current
+    const cards = collectionsCardsRef.current
+    if (!track && !cards) return undefined
 
-    const handleScroll = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = container
-
-      // If the container hasn't calculated dimensions yet, skip update to preserve default "visible" state.
-      if (scrollWidth === 0) return
-
-      // Using a 10px buffer to avoid flickering on sub-pixel rounding or minor layout offsets.
-      setCanScrollCollectionsLeft(scrollLeft > 10)
-      setCanScrollCollectionsRight(scrollLeft < scrollWidth - clientWidth - 10)
+    const getScrollMetrics = (el) => {
+      if (!el) return null
+      return { scrollLeft: el.scrollLeft, scrollWidth: el.scrollWidth, clientWidth: el.clientWidth }
     }
 
-    container.addEventListener('scroll', handleScroll, { passive: true })
+    const update = () => {
+      const t = getScrollMetrics(track)
+      const c = getScrollMetrics(cards)
+      const sl = (t && t.scrollWidth > t.clientWidth) ? t.scrollLeft : (c ? c.scrollLeft : 0)
+      const sw = (t && t.scrollWidth > t.clientWidth) ? t.scrollWidth : (c ? c.scrollWidth : 0)
+      const cw = (t && t.scrollWidth > t.clientWidth) ? t.clientWidth : (c ? c.clientWidth : 0)
+      if (sw === 0) return
+      setCanScrollCollectionsLeft(sl > 10)
+      setCanScrollCollectionsRight(sl < sw - cw - 10)
+    }
 
-    // Initial check with a small delay to ensure layout and scrollWidth are ready.
-    const timer = setTimeout(handleScroll, 200)
+    track?.addEventListener('scroll', update, { passive: true })
+    cards?.addEventListener('scroll', update, { passive: true })
+    const timer = setTimeout(update, 200)
 
     return () => {
-      container.removeEventListener('scroll', handleScroll)
+      track?.removeEventListener('scroll', update)
+      cards?.removeEventListener('scroll', update)
       clearTimeout(timer)
     }
   }, [featured])
@@ -595,9 +601,9 @@ export default function HomePage() {
   // ── Scroll management ─────────────────────────────────────────────────────
 
   const scrollCollections = (direction) => {
-    // On desktop, scrollTrackRef handles the drag/sticky logic.
-    // On mobile, collectionsCardsRef is the horizontal container.
-    const container = collectionsCardsRef.current
+    const track = scrollTrackRef.current
+    const cards = collectionsCardsRef.current
+    const container = (track && track.scrollWidth > track.clientWidth) ? track : cards
     if (!container) return
 
     const scrollAmount = container.offsetWidth * 0.8

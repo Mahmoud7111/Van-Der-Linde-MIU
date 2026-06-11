@@ -7,8 +7,16 @@ import ProductGrid from '@/components/product/ProductGrid'
 import { useLanguage } from '@/context/LanguageContext'
 import { resolveCollectionCoverImage } from '@/utils/watchImageResolver'
 import heroVideo from '@/assets/videos/Patek Philippe Background Video.mp4'
-import galleryVideo from '@/assets/videos/Audemars Piguet - Royal Oak.mp4'
-import storyImage from '@/assets/images/Photos/Luxury and Heritage Cover Image.jpg'
+import galleryVideoDefault from '@/assets/videos/Audemars Piguet - Royal Oak.mp4'
+import galleryVideoHeritage from '@/assets/videos/Patek Philippe - Golden Ellipse Ref. 5738-1R-001 Rose Gold.mp4'
+import galleryVideoCasual from '@/assets/videos/Cartier watchmaking.mp4'
+import galleryVideoSport from '@/assets/videos/Breitling Navitimer GMT & Automatic 41.mp4'
+import galleryVideoNoir from '@/assets/videos/Vacheron Constantin Overseas Moon Phase Retrograde Date.mp4'
+import storyImageDefault from '@/assets/images/Photos/Luxury and Heritage Cover Image.jpg'
+import storyImageHeritage from '@/assets/images/Photos/Begining.png'
+import storyImageCasual from '@/assets/images/Photos/Classic and Dress Cover Image.png'
+import storyImageSport from '@/assets/images/Photos/Sports and Adventure.avif'
+import storyImageNoir from '@/assets/images/Photos/Royal Recognition.jpg'
 import galleryPoster from '@/assets/images/Photos/Rolex Cover Image2.jpg'
 import craftCrown from '@/assets/images/Marquee/crown.png'
 import craftHorse from '@/assets/images/Marquee/horse.png'
@@ -97,6 +105,28 @@ export default function CollectionDetailPage() {
   const { t } = useLanguage()
   const collection = data?.collection
   const watches = useMemo(() => (Array.isArray(data?.watches) ? data.watches : []), [data])
+
+  const slug = collection?.slug
+
+  const storyImage = useMemo(() => {
+    const map = {
+      heritage: storyImageHeritage,
+      'casual-everyday': storyImageCasual,
+      'sport-elite': storyImageSport,
+      'noir-series': storyImageNoir,
+    }
+    return map[slug] || storyImageDefault
+  }, [slug])
+
+  const galleryVideo = useMemo(() => {
+    const map = {
+      heritage: galleryVideoHeritage,
+      'casual-everyday': galleryVideoCasual,
+      'sport-elite': galleryVideoSport,
+      'noir-series': galleryVideoNoir,
+    }
+    return map[slug] || galleryVideoDefault
+  }, [slug])
 
   const collectionName = collection?.name ?? t('collection.fallbackName')
   const collectionDescription =

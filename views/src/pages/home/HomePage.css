@@ -618,7 +618,42 @@
 }
 
 .home-collections__mobile-nav {
-  display: none;
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  justify-content: space-between;
+  padding: 0 var(--space-xs);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.home-collections__nav-btn {
+  pointer-events: auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.9);
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+.home-collections__nav-btn--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
 }
 
 /* ── Responsive ────────────────────────────────────────────────────────── */
@@ -674,52 +709,7 @@
   }
 
   .home-collections__mobile-nav {
-    display: flex;
-    position: absolute;
     top: 60%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
-    justify-content: space-between;
-    padding: 0 var(--space-xs);
-    pointer-events: none;
-    z-index: 10;
-  }
-
-  .home-collections__nav-btn {
-    pointer-events: auto;
-    /* Reset dimensions to match global home-favorites-nav exactly */
-    width: 2.6rem;
-    height: 2.6rem;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Visibility transition */
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.9);
-    transition:
-      opacity 0.3s ease,
-      visibility 0.3s ease,
-      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      background-color var(--transition-normal),
-      color var(--transition-normal),
-      border-color var(--transition-normal);
-  }
-
-  .home-collections__nav-btn--visible {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-  }
-
-  .home-collections__nav-btn--left {
-    /* Inherits radius-full from global .btn style */
-  }
-
-  .home-collections__nav-btn--right {
-    /* Inherits radius-full from global .btn style */
   }
 
   .home-collections__arrows {
@@ -2130,6 +2120,12 @@
 [data-theme='dark'] .home-heritage__title,
 [data-theme='dark'] .home-heritage__lead {
   text-shadow: 0 8px 24px color-mix(in srgb, #000000 56%, transparent 44%);
+}
+
+[data-theme='dark'] .home-hero__content,
+[data-theme='dark'] .home-hero__title,
+[data-theme='dark'] .home-hero__subtitle {
+  color: #ffffff;
 }
 
 @media (max-width: 768px) {
