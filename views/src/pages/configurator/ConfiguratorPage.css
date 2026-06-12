@@ -741,7 +741,6 @@
     width: 40px;
     height: 40px;
   }
-}
 
 [data-theme='dark'] .cfg-page {
   background: var(--color-surface);

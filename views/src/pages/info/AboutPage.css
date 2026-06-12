@@ -48,12 +48,13 @@
 }
 
 .modern-num {
-  font-family: Arial sans-serif !important;
+  font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.05em;
 }
 
 .about-hero__subtitle {
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   color: #ffffff;
   max-width: 800px;
