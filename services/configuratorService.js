@@ -66,38 +66,30 @@ const submitConfiguration = async ({ userId, name, email, configuration }) => {
     if (!ADMIN_EMAIL) {
         console.error('Admin email failed: ADMIN_EMAIL is missing') 
     } else {
-        try { // try sending admin email
-            await sendEmail({ //sending admin email
-                to: ADMIN_EMAIL,
-                subject: `New configuration request from ${cleanName}`,
-                html: buildEmailLayout('New Configuration Request', `
-                    <p><strong>Customer:</strong> ${escapeHtml(cleanName)} &lt;${escapeHtml(normalizedEmail)}&gt;</p>
-                    <p><strong>Request ID:</strong> ${request._id}</p>
-                    <table style="border-collapse:collapse;width:100%;max-width:640px;">
-                        ${rows}
-                    </table>
-                `),
-            })
-        } catch (err) {
-            console.error('Admin notification email failed:', err.message)
-        }
-    }
-
-    try { // sending customer email
         await sendEmail({
-            to: normalizedEmail,
-            subject: 'We received your Van Der Linde configuration request',
-            html: buildEmailLayout('Your Configuration Request Is Confirmed', `
-                <p>Dear ${escapeHtml(cleanName)},</p>
-                <p>Thank you for submitting your personalized watch request. Our team received your configuration and will contact you within 2-3 business days.</p>
+            to: ADMIN_EMAIL,
+            subject: `New configuration request from ${cleanName}`,
+            html: buildEmailLayout('New Configuration Request', `
+                <p><strong>Customer:</strong> ${escapeHtml(cleanName)} &lt;${escapeHtml(normalizedEmail)}&gt;</p>
+                <p><strong>Request ID:</strong> ${request._id}</p>
                 <table style="border-collapse:collapse;width:100%;max-width:640px;">
                     ${rows}
                 </table>
             `),
         })
-    } catch (err) {
-        console.error('Customer confirmation email failed:', err.message)
     }
+
+    await sendEmail({
+        to: normalizedEmail,
+        subject: 'We received your Van Der Linde configuration request',
+        html: buildEmailLayout('Your Configuration Request Is Confirmed', `
+            <p>Dear ${escapeHtml(cleanName)},</p>
+            <p>Thank you for submitting your personalized watch request. Our team received your configuration and will contact you within 2-3 business days.</p>
+            <table style="border-collapse:collapse;width:100%;max-width:640px;">
+                ${rows}
+            </table>
+        `),
+    })
 
     return request // returns the configuration request
 }

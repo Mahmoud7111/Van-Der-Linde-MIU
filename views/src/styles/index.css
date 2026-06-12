@@ -69,19 +69,17 @@ dd {
   Document body baseline:
   Applies brand body typeface, global colors, and smooth text rendering.
 */
-html,
-body {
+html {
   overflow-x: hidden;
-  width: 100%;
-  position: relative;
-  scroll-behavior: smooth;
 }
 
 body {
+  width: 100%;
   min-height: 100vh;
   font-family: var(--font-body);
   background: var(--color-surface);
   color: var(--color-dark);
+  scroll-behavior: smooth;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

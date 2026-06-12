@@ -22,7 +22,6 @@ import * as Yup from 'yup'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { useCurrency } from '@/context/CurrencyContext'
 import { useLanguage } from '@/context/LanguageContext'
-import PageTransition from '@/components/common/PageTransition'
 import Button from '@/components/common/Button'
 import Watch3DModel from '@/components/configurator/Watch3DModel'
 import { cn } from '@/utils/cn'
@@ -50,6 +49,13 @@ const MODEL_OPTIONS = [
   { id: 'santos', label: 'Cartier Santos', path: santosModel, price: 6800, cameraOrbit: "333deg 84deg auto" },
   { id: 'seiko', label: 'Seiko Watch', path: seikoModel, price: 1200, cameraOrbit: "344deg 90deg auto" },
   { id: 'classic', label: 'Classic Watch', path: classicWatchModel, price: 2800, cameraOrbit: "245deg 39deg auto" },
+]
+
+const SCENE_ANGLES = [
+  { id: 'front', label: 'Front', icon: '◉', orbit: '0deg 75deg auto' },
+  { id: 'side', label: 'Side', icon: '▷', orbit: '90deg 85deg auto' },
+  { id: 'top', label: 'Top', icon: '△', orbit: '0deg 10deg auto' },
+  { id: 'detail', label: 'Detail', icon: '⊕', orbit: '220deg 65deg 60%' },
 ]
 
 const CASE_OPTIONS = [
@@ -145,6 +151,18 @@ export default function ConfiguratorPage() {
   // Active config panel tab
   const [activePanel, setActivePanel] = useState('model')
 
+  const STEPS = ['model', 'case', 'bezel', 'dial', 'strap']
+  const currentStepIndex = STEPS.indexOf(activePanel)
+  const goToNextStep = () => {
+    if (currentStepIndex < STEPS.length - 1) setActivePanel(STEPS[currentStepIndex + 1])
+  }
+  const goToPrevStep = () => {
+    if (currentStepIndex > 0) setActivePanel(STEPS[currentStepIndex - 1])
+  }
+
+  // Active 3D scene angle
+  const [activeScene, setActiveScene] = useState(SCENE_ANGLES[0])
+
   // Request form state
   const [formSubmitting, setFormSubmitting] = useState(false)
   const [formSuccess,    setFormSuccess]    = useState(false)
@@ -166,9 +184,10 @@ export default function ConfiguratorPage() {
                      (selectedDial?.price || 0) + 
                      (selectedStrap?.price || 0)
 
+  const activeCameraOrbit = activeScene.id === 'front' ? selectedModel.cameraOrbit : activeScene.orbit
+
   return (
-    <PageTransition>
-      <div className="cfg-page">
+    <div className="cfg-page">
 
         {/* ── PAGE HEADER ── */}
         <header className="cfg-header">
@@ -184,47 +203,69 @@ export default function ConfiguratorPage() {
 
           {/* ── LEFT: WATCH PREVIEW ── */}
           <div className="cfg-preview">
-            <div className="cfg-preview__stage">
-              <AnimatePresence mode="wait">
-                <Motion.div
-                  key={selectedModel.id}
-                  className="cfg-preview__watch"
-                  initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                  animate={{ opacity: 1, scale: 1,    y: 0 }}
-                  exit={{    opacity: 0, scale: 0.96, y: -8 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            {/* Scene angle thumbnails on the left */}
+            <div className="cfg-scene-thumbs">
+              {SCENE_ANGLES.map(scene => (
+                <button
+                  key={scene.id}
+                  type="button"
+                  className={cn('cfg-scene-thumb', activeScene.id === scene.id && 'cfg-scene-thumb--active')}
+                  onClick={() => setActiveScene(scene)}
                 >
-                  {/* 
-                    3D PREVIEW COMPONENT
-                    Passes all current selections down. The Watch3DModel will
-                    detect changes in these props and update the GLB materials automatically.
-                  */}
-                  <Watch3DModel
-                    selectedModel={selectedModel}
-                    caseOption={selectedCase}
-                    bezelOption={selectedBezel}
-                    dialOption={selectedDial}
-                    strapOption={selectedStrap}
-                  />
-                </Motion.div>
-              </AnimatePresence>
+                  <div className="cfg-scene-thumb__inner">
+                    <model-viewer
+                      src={selectedModel.path}
+                      camera-orbit={scene.id === 'front' ? selectedModel.cameraOrbit : scene.orbit}
+                      disable-zoom
+                      interaction-prompt="none"
+                      exposure="0.85"
+                      shadow-intensity="1"
+                      style={{ width: '100%', height: '100%', background: 'transparent', pointerEvents: 'none' }}
+                    />
+                  </div>
+                  <span className="cfg-scene-thumb__label">{scene.label}</span>
+                </button>
+              ))}
             </div>
 
-            {/* Price under the watch */}
-            <div className="cfg-preview__price-wrap">
-              <AnimatePresence mode="wait">
-                <Motion.p
-                  key={totalPrice}
-                  className="cfg-preview__price"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{    opacity: 0, y: -6 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  {formatPrice(totalPrice)}
-                </Motion.p>
-              </AnimatePresence>
-              <p className="cfg-preview__price-note">{t('config.estimatedPrice')}</p>
+            <div className="cfg-preview__main">
+              <div className="cfg-preview__stage">
+                <AnimatePresence mode="wait">
+                  <Motion.div
+                    key={selectedModel.id}
+                    className="cfg-preview__watch"
+                    initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                    animate={{ opacity: 1, scale: 1,    y: 0 }}
+                    exit={{    opacity: 0, scale: 0.96, y: -8 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <Watch3DModel
+                      selectedModel={{ ...selectedModel, cameraOrbit: activeCameraOrbit }}
+                      caseOption={selectedCase}
+                      bezelOption={selectedBezel}
+                      dialOption={selectedDial}
+                      strapOption={selectedStrap}
+                    />
+                  </Motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Price under the watch */}
+              <div className="cfg-preview__price-wrap">
+                <AnimatePresence mode="wait">
+                  <Motion.p
+                    key={totalPrice}
+                    className="cfg-preview__price"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{    opacity: 0, y: -6 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    {formatPrice(totalPrice)}
+                  </Motion.p>
+                </AnimatePresence>
+                <p className="cfg-preview__price-note">{t('config.estimatedPrice')}</p>
+              </div>
             </div>
           </div>
 
@@ -283,6 +324,17 @@ export default function ConfiguratorPage() {
                           className={cn('cfg-model-card', selectedModel.id === opt.id && 'cfg-model-card--selected')}
                           onClick={() => setSelectedModel(opt)}
                         >
+                          <div className="cfg-model-card__thumb">
+                            <model-viewer
+                              src={opt.path}
+                              camera-orbit={opt.cameraOrbit}
+                              disable-zoom
+                              interaction-prompt="none"
+                              exposure="0.85"
+                              shadow-intensity="1"
+                              style={{ width: '100%', height: '100%', background: 'transparent', pointerEvents: 'none' }}
+                            />
+                          </div>
                           <span className="cfg-model-card__name">{opt.label}</span>
                           <span className="cfg-model-card__price">{formatPrice(opt.price)}</span>
                         </button>
@@ -462,6 +514,20 @@ export default function ConfiguratorPage() {
               </AnimatePresence>
             </div>
 
+            {/* ── NAVIGATION BUTTONS ── */}
+            <div className="cfg-nav">
+              {currentStepIndex > 0 && (
+                <button type="button" className="cfg-nav__back" onClick={goToPrevStep}>
+                  ← Back
+                </button>
+              )}
+              {currentStepIndex < STEPS.length - 1 && (
+                <button type="button" className="cfg-nav__next" onClick={goToNextStep}>
+                  Continue →
+                </button>
+              )}
+            </div>
+
             {/* ── SUMMARY + CTA ── */}
             <div className="cfg-summary">
               <div className="cfg-summary__lines">
@@ -523,107 +589,149 @@ export default function ConfiguratorPage() {
               {t('config.submitDesc')}
             </p>
 
-            {formSuccess ? (
-              <Motion.div
-                className="configurator-form__success"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <span className="configurator-form__success-icon">✓</span>
-                <p>{t('config.success')}</p>
-                <p className="configurator-form__success-tag">{t('config.successTag')}</p>
-              </Motion.div>
-            ) : (
-              <form
-                id="configurator-request-form"
-                className="configurator-form__fields"
-                onSubmit={handleSubmit(async (values) => {
-                  setFormSubmitting(true)
-                  setFormError('')
-                  try {
-                    await configuratorService.submit({
-                      name:  values.name.trim(),
-                      email: values.email.trim().toLowerCase(),
-                      configuration: {
-                        model:         selectedModel.label,
-                        caseColor:     selectedCase.label,
-                        bezelColor:    selectedBezel.label,
-                        dialColor:     selectedDial.label,
-                        strapMaterial: selectedStrap.label,
-                        strapColor:    selectedStrap.color,
-                        estimatedPrice: totalPrice,
-                        notes:         values.notes?.trim() || '',
-                      },
-                    })
-                    setFormSuccess(true)
-                  } catch (err) {
-                    setFormError(err?.message || t('config.error'))
-                  } finally {
-                    setFormSubmitting(false)
-                  }
-                })}
-              >
-                <div className="configurator-form__field">
-                  <label htmlFor="cfg-req-name" className="configurator-form__label">{t('config.fullName')}</label>
-                  <input
-                    id="cfg-req-name"
-                    type="text"
-                    className={cn('configurator-form__input', errors.name && 'configurator-form__input--error')}
-                    placeholder={t('config.namePlaceholder')}
-                    {...register('name')}
-                  />
-                  {errors.name && <span className="configurator-form__error">{errors.name.message}</span>}
-                </div>
+            <div className="configurator-form__columns">
+              <div className="configurator-form__col-form">
+                {formSuccess ? (
+                  <Motion.div
+                    className="configurator-form__success"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <span className="configurator-form__success-icon">✓</span>
+                    <p>{t('config.success')}</p>
+                    <p className="configurator-form__success-tag">{t('config.successTag')}</p>
+                  </Motion.div>
+                ) : (
+                  <form
+                    id="configurator-request-form"
+                    className="configurator-form__fields"
+                    onSubmit={handleSubmit(async (values) => {
+                      setFormSubmitting(true)
+                      setFormError('')
+                      try {
+                        await configuratorService.submit({
+                          name:  values.name.trim(),
+                          email: values.email.trim().toLowerCase(),
+                          configuration: {
+                            model:         selectedModel.label,
+                            caseColor:     selectedCase.label,
+                            bezelColor:    selectedBezel.label,
+                            dialColor:     selectedDial.label,
+                            strapMaterial: selectedStrap.label,
+                            strapColor:    selectedStrap.color,
+                            estimatedPrice: totalPrice,
+                            notes:         values.notes?.trim() || '',
+                          },
+                        })
+                        setFormSuccess(true)
+                      } catch (err) {
+                        setFormError(err?.message || t('config.error'))
+                      } finally {
+                        setFormSubmitting(false)
+                      }
+                    })}
+                  >
+                    <div className="configurator-form__field">
+                      <label htmlFor="cfg-req-name" className="configurator-form__label">{t('config.fullName')}</label>
+                      <input
+                        id="cfg-req-name"
+                        type="text"
+                        className={cn('configurator-form__input', errors.name && 'configurator-form__input--error')}
+                        placeholder={t('config.namePlaceholder')}
+                        {...register('name')}
+                      />
+                      {errors.name && <span className="configurator-form__error">{errors.name.message}</span>}
+                    </div>
 
-                <div className="configurator-form__field">
-                  <label htmlFor="cfg-req-email" className="configurator-form__label">{t('config.email')}</label>
-                  <input
-                    id="cfg-req-email"
-                    type="email"
-                    className={cn('configurator-form__input', errors.email && 'configurator-form__input--error')}
-                    placeholder="your@email.com"
-                    {...register('email')}
-                  />
-                  {errors.email && <span className="configurator-form__error">{errors.email.message}</span>}
-                </div>
+                    <div className="configurator-form__field">
+                      <label htmlFor="cfg-req-email" className="configurator-form__label">{t('config.email')}</label>
+                      <input
+                        id="cfg-req-email"
+                        type="email"
+                        className={cn('configurator-form__input', errors.email && 'configurator-form__input--error')}
+                        placeholder="your@email.com"
+                        {...register('email')}
+                      />
+                      {errors.email && <span className="configurator-form__error">{errors.email.message}</span>}
+                    </div>
 
-                <div className="configurator-form__field">
-                  <label htmlFor="cfg-req-notes" className="configurator-form__label">
-                    {t('config.notes')} <span className="configurator-form__optional">{t('config.optional')}</span>
-                  </label>
-                  <textarea
-                    id="cfg-req-notes"
-                    className={cn('configurator-form__textarea', errors.notes && 'configurator-form__input--error')}
-                    placeholder={t('config.notesPlaceholder')}
-                    rows={4}
-                    aria-invalid={Boolean(errors.notes)}
-                    aria-describedby={errors.notes ? 'cfg-notes-error' : undefined}
-                    {...register('notes')}
-                  />
-                  {errors.notes && <span id="cfg-notes-error" className="configurator-form__error">{errors.notes.message}</span>}
-                </div>
+                    <div className="configurator-form__field">
+                      <label htmlFor="cfg-req-notes" className="configurator-form__label">
+                        {t('config.notes')} <span className="configurator-form__optional">{t('config.optional')}</span>
+                      </label>
+                      <textarea
+                        id="cfg-req-notes"
+                        className={cn('configurator-form__textarea', errors.notes && 'configurator-form__input--error')}
+                        placeholder={t('config.notesPlaceholder')}
+                        rows={4}
+                        aria-invalid={Boolean(errors.notes)}
+                        aria-describedby={errors.notes ? 'cfg-notes-error' : undefined}
+                        {...register('notes')}
+                      />
+                      {errors.notes && <span id="cfg-notes-error" className="configurator-form__error">{errors.notes.message}</span>}
+                    </div>
 
-                {formError && (
-                  <p className="configurator-form__submit-error">{formError}</p>
+                    {formError && (
+                      <p className="configurator-form__submit-error">{formError}</p>
+                    )}
+
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="lg"
+                      className="configurator-form__submit"
+                      isLoading={formSubmitting}
+                      disabled={formSubmitting}
+                    >
+                      {t('config.submit')}
+                    </Button>
+                  </form>
                 )}
+              </div>
 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  className="configurator-form__submit"
-                  isLoading={formSubmitting}
-                  disabled={formSubmitting}
-                >
-                  {t('config.submit')}
-                </Button>
-              </form>
-            )}
+              <div className="configurator-form__col-summary">
+                <div className="cfg-form-summary">
+                  <h3 className="cfg-form-summary__title">Your Configuration</h3>
+                  <div className="cfg-form-summary__model-thumb">
+                    <model-viewer
+                      src={selectedModel.path}
+                      camera-orbit={selectedModel.cameraOrbit}
+                      disable-zoom
+                      interaction-prompt="none"
+                      exposure="0.85"
+                      shadow-intensity="1"
+                      style={{ width: '100%', height: '100%', background: 'transparent', pointerEvents: 'none' }}
+                    />
+                  </div>
+                  <div className="cfg-form-summary__lines">
+                    <div className="cfg-form-summary__line">
+                      <span className="cfg-form-summary__label">Case</span>
+                      <span className="cfg-form-summary__value">{selectedCase.label}</span>
+                    </div>
+                    <div className="cfg-form-summary__line">
+                      <span className="cfg-form-summary__label">Bezel</span>
+                      <span className="cfg-form-summary__value">{selectedBezel.label}</span>
+                    </div>
+                    <div className="cfg-form-summary__line">
+                      <span className="cfg-form-summary__label">Dial</span>
+                      <span className="cfg-form-summary__value">{selectedDial.label}</span>
+                    </div>
+                    <div className="cfg-form-summary__line">
+                      <span className="cfg-form-summary__label">Strap</span>
+                      <span className="cfg-form-summary__value">{selectedStrap.label}</span>
+                    </div>
+                  </div>
+                  <div className="cfg-form-summary__total">
+                    <span className="cfg-form-summary__total-label">Total</span>
+                    <span className="cfg-form-summary__total-value">{formatPrice(totalPrice)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-      </div>
-    </PageTransition>
+    </div>
   )
 }
