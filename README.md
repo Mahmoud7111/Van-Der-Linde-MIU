@@ -1,21 +1,35 @@
-# 🕰️ Van Der Linde
+# 🕰️ Van Der Linde – A Full-Stack A luxury watch e-commerce platform built with the MERN stack
+<br>
+<div align="center">
+  <img src="views/public/Logo2Dark.png" alt="Van Der Linde Logo" width="444"/>
+      <br><br>
+  
+  [![React](https://img.shields.io/badge/react-v19.0+-blue.svg)](https://react.dev/)
+  [![Node.js](https://img.shields.io/badge/node.js-v16.0+-green.svg)](https://nodejs.org/)
+  [![Express.js](https://img.shields.io/badge/framework-Express.js-lightgrey.svg)](https://expressjs.com/)
+  [![MongoDB](https://img.shields.io/badge/database-MongoDB-green.svg)](https://www.mongodb.com/)
+  
+  
+</div>
 
-A luxury watch e-commerce platform built with the MERN stack (MongoDB, Express, React, Node.js).
+
+
 
 ---
 
 ## 📑 Table of Contents
 
-* [Overview](#overview)
-* [Tech Stack](#tech-stack)
-* [Features](#features)
-* [Architecture](#architecture)
-* [Project Structure](#project-structure)
-* [Getting Started](#getting-started)
-* [Environment Variables](#environment-variables)
-* [API Endpoints](#api-endpoints)
-* [Chatbot](#chatbot)
-* [Contributing](#contributing)
+
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [API Endpoints](#api-endpoints)
+- [Chatbot](#chatbot)
+- [Contributing](#contributing)
 
 ---
 
